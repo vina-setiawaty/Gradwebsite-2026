@@ -20,6 +20,17 @@ body {
     position: relative;
 }
 
+/* Interactive Background Canvas */
+#backgroundCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
 /* Navigation Bar */
 .navbar {
     background-color: var(--primary-dark);
@@ -27,6 +38,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    z-index: 10;
 }
 
 .nav-logo {
@@ -70,6 +83,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 5;
 }
 
 .loading-container {
@@ -129,6 +143,7 @@ body {
     display: flex;
     gap: 2rem;
     align-items: flex-end;
+    z-index: 5;
 }
 
 .footer-left {

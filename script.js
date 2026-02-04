@@ -1,7 +1,105 @@
 /**
  * 2026 Division of Industrial Design Graduation Show
- * Loading Screen Image Animation
+ * Interactive Background Canvas & Loading Screen Animation
  */
+
+/* ==========================================
+ * INTERACTIVE BACKGROUND CANVAS
+ * ========================================== */
+
+const canvas = document.getElementById('backgroundCanvas');
+const ctx = canvas.getContext('2d');
+
+// Mouse position tracking
+let mouseX = -1000;
+let mouseY = -1000;
+
+// Grid configuration
+const GRID_SPACING = 30; // Distance between circles
+const CIRCLE_OFFSET = 12; // Maximum distance circles can move toward mouse
+const CIRCLE_SIZE = 2; // Circle radius
+const CIRCLE_COLOR = '#d0d0d0'; // Light grey
+
+/**
+ * Set canvas size to match window dimensions
+ */
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+/**
+ * Update mouse position
+ */
+function updateMousePosition(e) {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+}
+
+/**
+ * Calculate attracted position for a point
+ */
+function getAttractedPosition(px, py, distance) {
+    const dx = mouseX - px;
+    const dy = mouseY - py;
+    const angle = Math.atan2(dy, dx);
+    
+    return {
+        x: px + distance * Math.cos(angle),
+        y: py + distance * Math.sin(angle)
+    };
+}
+
+/**
+ * Main animation loop
+ */
+function animate() {
+    // Clear canvas
+    ctx.fillStyle = '#f0f0f0'; // Match body background
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Calculate grid dimensions
+    const cols = Math.ceil(canvas.width / GRID_SPACING) + 1;
+    const rows = Math.ceil(canvas.height / GRID_SPACING) + 1;
+    
+    // Draw grid of circles
+    ctx.fillStyle = CIRCLE_COLOR;
+    
+    for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+            const px = col * GRID_SPACING;
+            const py = row * GRID_SPACING;
+            
+            // Get attracted position
+            const pos = getAttractedPosition(px, py, CIRCLE_OFFSET);
+            
+            // Draw circle
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, CIRCLE_SIZE, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+    
+    requestAnimationFrame(animate);
+}
+
+/**
+ * Initialize interactive canvas
+ */
+function initCanvas() {
+    resizeCanvas();
+    
+    // Event listeners
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('mousemove', updateMousePosition);
+    
+    // Start animation
+    animate();
+}
+
+/* ==========================================
+ * LOADING SCREEN IMAGE ANIMATION
+ * ========================================== */
 
 // Array of loading photos to cycle through
 const loadingPhotos = [
@@ -71,6 +169,9 @@ function initLoadingAnimation() {
     setInterval(changePhoto, 2500);
 }
 
-// Start animation when DOM is fully loaded
-document.addEventListener('DOMContentLoaded', initLoadingAnimation);
+// Start both animations when DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    initCanvas();
+    initLoadingAnimation();
+});
 
