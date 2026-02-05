@@ -63,7 +63,7 @@ function changePhoto() {
             loadingImage.src = loadingPhotos[currentPhotoIndex];
             loadingImage.style.opacity = '1';
             loadingImage.style.transform = 'scale(1)';
-        }, 300);
+        }, 150);
     }
 }
 
@@ -73,9 +73,9 @@ function changePhoto() {
 function initLoadingAnimation() {
     preloadImages();
     if (loadingImage) {
-        loadingImage.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        loadingImage.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
     }
-    photoInterval = setInterval(changePhoto, 2500);
+    photoInterval = setInterval(changePhoto, 500);
 }
 
 // ==================== PAGE TRANSITION FUNCTIONS ====================
