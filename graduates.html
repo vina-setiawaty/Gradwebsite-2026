@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Graduates | 2026 Division of Industrial Design Graduation Show</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background Canvas -->
+    <canvas id="backgroundCanvas"></canvas>
+
+    <div class="page-wrapper">
+        <!-- Header placeholder -->
+        <div id="header-placeholder" data-active="graduates"></div>
+
+        <main class="graduates-page">
+            <!-- Hero Banner Section -->
+            <section class="hero-banner">
+                <div class="hero-image-container">
+                    <img src="assets/heroBanner.png" alt="Venue" class="hero-image">
+                    <div class="hero-overlay"></div>
+                    <!-- Venue Info & Event Details (Bottom Left) -->
+                    <div class="hero-left-info">
+                        <div class="hero-venue-info">
+                            <img src="assets/geneoLongLogo.svg" alt="Geneo" class="hero-geneo-logo">
+                        </div>
+                        <div class="hero-event-details">
+                            <span class="hero-venue">Singapore Science Park 1</span>
+                            <span class="hero-days">Thursday - Monday</span>
+                            <span class="hero-time">10:00 AM - 8:00 PM</span>
+                        </div>
+                    </div>
+                    <!-- Date (Bottom Right) -->
+                    <div class="hero-date">
+                        <span class="hero-date-day">11</span>
+                        <span class="hero-date-range">- 15</span>
+                        <span class="hero-date-month">June 2025</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Graduates Grid Section -->
+            <section class="graduates-grid-section">
+                <div id="graduatesGrid" class="graduates-grid">
+                    <!-- Graduate cards will be dynamically inserted here -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer placeholder -->
+        <div id="footer-placeholder"></div>
+    </div>
+
+    <script src="canvas.js"></script>
+    <script src="header.js"></script>
+    <script src="data/data.js"></script>
+    <script src="graduates.js"></script>
+</body>
+</html>

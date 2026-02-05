@@ -7,71 +7,159 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Interactive Background Canvas -->
+    <!-- Background Canvas (global - outside loading overlay) -->
     <canvas id="backgroundCanvas"></canvas>
 
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-logo">
-            <img src="assets/longLogo.svg" alt="2026 Division of Industrial Design Graduation Show">
-        </div>
-        <!-- <div class="nav-links">
-            <a href="#" class="nav-link disabled">The Grad Show 2026</a>
-            <a href="#" class="nav-link disabled">The Graduates</a>
-            <a href="#" class="nav-link disabled">The Showcase</a>
-        </div> -->
-    </nav>
+    <!-- ==================== LOADING OVERLAY ==================== -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <!-- Navigation Bar (same as main page) -->
+        <div id="loading-header-placeholder" data-active="home"></div>
 
-    <!-- Main Content - Loading Screen -->
-    <main class="loading-screen">
-        <div class="loading-container">
-            <div class="loading-image-wrapper">
-                <img id="loadingImage" src="assets/loadingPhotos/landing-page-slides-photo-1.png" alt="Loading">
+        <!-- Main Content - Loading Screen -->
+        <main class="loading-screen">
+            <div class="loading-container">
+                <div class="loading-image-wrapper">
+                    <img id="loadingImage" src="assets/loadingPhotos/landing-page-slides-photo-1.png" alt="Loading">
+                </div>
+                <p class="coming-soon">COMING SOON</p>
             </div>
-            <p class="coming-soon">COMING SOON</p>
-        </div>
-    </main>
+        </main>
 
-    <!-- Event Details Section -->
-    <section class="footer">
-        <div class="footer-left">
-            <div class="date-section">
-                <!-- <span class="date-day">11</span> -->
-                <span class="date-range">11 - 15</span>
-                <span class="date-month">June 2025</span>
+        <!-- Footer Section -->
+        <footer class="footer">
+            <div class="footer-left">
+                <div class="date-section">
+                    <span class="date-range">11 - 15</span>
+                    <span class="date-month">June 2025</span>
+                </div>
+                <div class="footer-image">
+                    <img src="assets/geneoPic.png" alt="Venue">
+                    <img src="assets/geneoLongLogo.svg" alt="Geneo" class="geneo-logo">
+                </div>
             </div>
-            <div class="footer-image">
-                <img src="assets/geneoPic.png" alt="Venue">
-                <img src="assets/geneoLongLogo.svg" alt="Geneo" class="geneo-logo">
+            <div class="footer-right">
+                <div class="venue-info">
+                    <p class="venue-name">Singapore Science Park 1</p>
+                    <p class="venue-days">Thursday - Monday</p>
+                    <p class="venue-time">10:00 AM - 8:00 PM</p>
+                </div>
+                <div class="venue-icons">
+                    <button class="icon-btn" aria-label="Location">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </button>
+                    <button class="icon-btn" aria-label="Share">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                    </button>
+                </div>
             </div>
-        </div>
-        <div class="footer-right">
-            <div class="venue-info">
-                <p class="venue-name">Singapore Science Park1</p>
-                <p class="venue-days">Thursday - Monday</p>
-                <p class="venue-time">10:00 AM - 8:00 PM</p>
-            </div>
-            <div class="venue-icons">
-                <button class="icon-btn" aria-label="Location">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
-                </button>
-                <button class="icon-btn" aria-label="Share">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="18" cy="5" r="3"></circle>
-                        <circle cx="6" cy="12" r="3"></circle>
-                        <circle cx="18" cy="19" r="3"></circle>
-                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </section>
+        </footer>
+    </div>
 
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div id="mainContent" class="main-content">
+        <!-- Header placeholder -->
+        <div id="header-placeholder" data-active="home"></div>
+
+        <main class="main-page">
+            <!-- Hero Banner Section -->
+            <section class="hero-banner">
+                <div class="hero-image-container">
+                    <img src="assets/heroBanner.png" alt="Venue" class="hero-image">
+                    <div class="hero-overlay"></div>
+                    <!-- Venue Info & Event Details (Bottom Left) -->
+                    <div class="hero-left-info">
+                        <div class="hero-venue-info">
+                            <img src="assets/geneoLongLogo.svg" alt="Geneo" class="hero-geneo-logo">
+                        </div>
+                        <div class="hero-event-details">
+                            <span class="hero-venue">Singapore Science Park1</span>
+                            <span class="hero-days">Thursday - Monday</span>
+                            <span class="hero-time">10:00 AM - 8:00 PM</span>
+                        </div>
+                    </div>
+                    <!-- Date (Bottom Right) -->
+                    <div class="hero-date">
+                        <span class="hero-date-day">11</span>
+                        <span class="hero-date-range">- 15</span>
+                        <span class="hero-date-month">June 2025</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Class Photo Section -->
+            <section class="class-photo-section">
+                <div class="class-photo-placeholder">
+                    <span class="placeholder-text">CLASS PHOTO</span>
+                </div>
+            </section>
+
+            <!-- Search Section -->
+            <section class="search-section">
+                <div class="search-content">
+                    <p class="search-subtitle">See a familiar face?</p>
+                    <h2 class="search-title">Look them up!</h2>
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search a designer" class="search-input">
+                        <button class="search-btn" aria-label="Search">
+                            <img src="assets/searchIcon.svg" alt="Search">
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Feature Cards Section -->
+            <section class="feature-cards-section">
+                <a href="index.html" class="feature-card-link">
+                    <div class="feature-card">
+                        <div class="feature-card-image"></div>
+                        <span class="feature-card-title">The grad show 2026</span>
+                    </div>
+                </a>
+                <a href="graduates.html" class="feature-card-link">
+                    <div class="feature-card">
+                        <div class="feature-card-image"></div>
+                        <span class="feature-card-title">The graduates</span>
+                    </div>
+                </a>
+                <a href="#" class="feature-card-link">
+                    <div class="feature-card">
+                        <div class="feature-card-image"></div>
+                        <span class="feature-card-title">The showcase</span>
+                    </div>
+                </a>
+            </section>
+
+            <!-- Sponsors Section -->
+            <section class="sponsors-section">
+                <span class="section-placeholder-text">Sponsors</span>
+            </section>
+
+            <!-- Bottom Cards Section -->
+            <section class="bottom-cards-section">
+                <div class="bottom-card">
+                    <span class="bottom-card-title">Previous years<br>websites</span>
+                </div>
+                <div class="bottom-card">
+                    <span class="bottom-card-title">DID Archive</span>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer placeholder -->
+        <div id="footer-placeholder"></div>
+    </div>
+
+    <script src="canvas.js"></script>
+    <script src="header.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
-

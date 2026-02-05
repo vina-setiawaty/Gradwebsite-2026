@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designer Profile | 2026 Division of Industrial Design Graduation Show</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background Canvas -->
+    <canvas id="backgroundCanvas"></canvas>
+
+    <div class="page-wrapper">
+        <!-- Header placeholder -->
+        <div id="header-placeholder" data-active="graduates"></div>
+
+        <main class="designer-page">
+            <!-- Hero Banner Section -->
+            <section class="hero-banner">
+                <div class="hero-image-container">
+                    <img src="assets/heroBanner.png" alt="Venue" class="hero-image">
+                    <div class="hero-overlay"></div>
+                    <!-- Venue Info & Event Details (Bottom Left) -->
+                    <div class="hero-left-info">
+                        <div class="hero-venue-info">
+                            <img src="assets/geneoLongLogo.svg" alt="Geneo" class="hero-geneo-logo">
+                        </div>
+                        <div class="hero-event-details">
+                            <span class="hero-venue">Singapore Science Park 1</span>
+                            <span class="hero-days">Thursday - Monday</span>
+                            <span class="hero-time">10:00 AM - 8:00 PM</span>
+                        </div>
+                    </div>
+                    <!-- Date (Bottom Right) -->
+                    <div class="hero-date">
+                        <span class="hero-date-day">11</span>
+                        <span class="hero-date-range">- 15</span>
+                        <span class="hero-date-month">June 2025</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Designer Profile Section -->
+            <section class="designer-profile-section">
+                <div class="designer-intro">
+                    <span class="designer-hello">Hello, I'm</span>
+                    <h1 id="designerName" class="designer-name-styled">Designer Name</h1>
+                    <p class="designer-role">Graduate, Industrial Design 2026</p>
+                </div>
+
+                <div class="designer-content">
+                    <div class="designer-left">
+                        <!-- Designer Photo -->
+                        <div class="designer-photo-container">
+                            <div class="designer-photo-placeholder">
+                                <span>PHOTO</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Bio -->
+                        <div class="designer-bio">
+                            <p id="designerBio">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+                        </div>
+
+                        <!-- Social Links -->
+                        <div class="designer-social">
+                            <a href="#" class="social-link" id="linkedinLink">
+                                <img src="assets/linkedinIcon.svg" alt="LinkedIn">
+                                <span>LinkedIn</span>
+                            </a>
+                            <a href="#" class="social-link" id="portfolioLink">
+                                <img src="assets/portfolioIcon.svg" alt="Portfolio">
+                                <span>Portfolio</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="designer-right">
+                        <!-- Expertise & Specialization -->
+                        <div class="designer-skills">
+                            <div class="skill-category">
+                                <h3>Expertise</h3>
+                                <ul id="expertiseList" class="skill-list">
+                                    <li>Product Design</li>
+                                    <li>UX/UI Design</li>
+                                    <li>Design Research</li>
+                                </ul>
+                            </div>
+                            <div class="skill-category">
+                                <h3>Specialization</h3>
+                                <ul id="specializationList" class="skill-list">
+                                    <li>Medical Devices</li>
+                                    <li>Consumer Electronics</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Featured Projects / Browse Photos -->
+                        <div class="featured-projects">
+                            <h3>Browse the Photos</h3>
+                            <div class="projects-gallery">
+                                <div class="project-thumbnail active" style="background-color: #7a00db;" data-index="0"></div>
+                                <div class="project-thumbnail" style="background-color: #00a86b;" data-index="1"></div>
+                                <div class="project-thumbnail" style="background-color: #ff6b35;" data-index="2"></div>
+                                <div class="project-thumbnail" style="background-color: #0066cc;" data-index="3"></div>
+                                <div class="project-thumbnail" style="background-color: #ffc107;" data-index="4"></div>
+                            </div>
+                            <div class="project-preview">
+                                <div id="projectPreview" class="project-preview-box" style="background-color: #7a00db;">
+                                    <span class="preview-label">Selected Photo Preview</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Separator -->
+            <div class="section-separator">
+                <img src="assets/separator.svg" alt="" class="separator-line">
+            </div>
+
+            <!-- Other Designers Section -->
+            <section class="other-designers-section">
+                <h2 class="section-title">Other Designers</h2>
+                <div id="otherDesignersList" class="other-designers-list">
+                    <!-- Will be populated dynamically -->
+                </div>
+                <button class="view-all-btn" onclick="window.location.href='graduates.html'">
+                    View All Graduates
+                    <img src="assets/arrowDown.svg" alt="" class="arrow-icon">
+                </button>
+            </section>
+        </main>
+
+        <!-- Footer placeholder -->
+        <div id="footer-placeholder"></div>
+    </div>
+
+    <script src="canvas.js"></script>
+    <script src="header.js"></script>
+    <script src="data/data.js"></script>
+    <script src="designer.js"></script>
+</body>
+</html>
