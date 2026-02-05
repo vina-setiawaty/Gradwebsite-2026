@@ -32,9 +32,10 @@ let pageLoaded = false;
 let minimumTimePassed = false;
 
 // ==================== DOM ELEMENTS ====================
-const loadingImage = document.getElementById('loadingImage');
-const loadingOverlay = document.getElementById('loadingOverlay');
-const mainContent = document.getElementById('mainContent');
+// These will be set after DOM is ready
+let loadingImage = null;
+let loadingOverlay = null;
+let mainContent = null;
 
 // ==================== LOADING PHOTO FUNCTIONS ====================
 
@@ -124,11 +125,26 @@ function initPageTransition() {
         pageLoaded = true;
         checkReadyToReveal();
     });
+    
+    // Fallback: Force reveal after maximum wait time (5 seconds)
+    // This ensures the loading screen disappears even if some resources fail to load
+    setTimeout(() => {
+        if (!pageLoaded) {
+            console.warn('Page load timeout - forcing reveal');
+            pageLoaded = true;
+            checkReadyToReveal();
+        }
+    }, 5000);
 }
 
 // ==================== INITIALIZATION ====================
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Get DOM elements after DOM is ready
+    loadingImage = document.getElementById('loadingImage');
+    loadingOverlay = document.getElementById('loadingOverlay');
+    mainContent = document.getElementById('mainContent');
+    
     // Start loading animation
     initLoadingAnimation();
     
