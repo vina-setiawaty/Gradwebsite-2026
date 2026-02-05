@@ -61,6 +61,7 @@ body {
     font-family: 'Helvetica', 'Helvetica Neue', "Gradshow", sans-serif;
     background-color: var(--background-light);
     min-height: 100vh;
+    min-height: 100svh;
     position: relative;
     overflow-x: hidden;
 }
@@ -537,7 +538,8 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
+    height: 100svh; /* Small viewport height for mobile - fallback above for older browsers */
     background-color: transparent;
     z-index: 1000;
     opacity: 1;
@@ -557,6 +559,7 @@ body {
     visibility: hidden;
     transition: opacity 0.6s ease-in, visibility 0.6s ease-in;
     min-height: 100vh;
+    min-height: 100svh;
 }
 
 .main-content.visible {
@@ -985,6 +988,7 @@ body {
 /* ==================== PAGE WRAPPER ==================== */
 .page-wrapper {
     min-height: 100vh;
+    min-height: 100svh;
     display: flex;
     flex-direction: column;
 }
