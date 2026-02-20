@@ -213,6 +213,12 @@ body {
     color: var(--text-dark);
 }
 
+.date-range-large {
+    font-size: 4rem;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
 .date-month {
     font-size: 2rem;
     font-weight: 500;
@@ -311,6 +317,10 @@ body {
         font-size: 1.75rem;
     }
 
+    .date-range-large {
+        font-size: 3.5rem;
+    }
+
     .footer-image {
         width: 240px;
         height: 70px;
@@ -366,6 +376,10 @@ body {
     .date-range,
     .date-month {
         font-size: 1.5rem;
+    }
+
+    .date-range-large {
+        font-size: 3rem;
     }
 
     .footer-image {
@@ -450,6 +464,10 @@ body {
         font-size: 1.25rem;
     }
 
+    .date-range-large {
+        font-size: 2.5rem;
+    }
+
     .date-month {
         margin-left: 0.25rem;
     }
@@ -520,6 +538,11 @@ body {
     .date-range,
     .date-month {
         font-size: 1rem;
+    }
+
+    .date-range-large {
+
+        font-size: 2rem;
     }
 
     .footer-image {
@@ -599,14 +622,13 @@ body {
     text-decoration: none;
     gap: 0;
 }
-
-.main-nav-logo .logo-year {
+.logo-year {
     height: 40px;
     width: auto;
     object-fit: contain;
 }
 
-.main-nav-logo .logo-text {
+.logo-text {
     height: 38px;
     width: auto;
     object-fit: contain;
@@ -1454,11 +1476,11 @@ body {
         padding: 1rem 1.5rem;
     }
 
-    .main-nav-logo .logo-year {
+    .logo-year {
         height: 35px;
     }
 
-    .main-nav-logo .logo-text {
+    .logo-text {
         height: 32px;
         margin-left: 3px;
     }
@@ -1681,11 +1703,11 @@ body {
         gap: 0.75rem;
     }
 
-    .main-nav-logo .logo-year {
+    .logo-year {
         height: 30px;
     }
 
-    .main-nav-logo .logo-text {
+    .logo-text {
         height: 28px;
         margin-left: 2px;
     }
