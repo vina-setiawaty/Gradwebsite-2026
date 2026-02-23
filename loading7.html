@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 Division of Industrial Design Graduation Show - Coming Soon</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Custom header for loading page - logo aligned left */
+        .loading-page-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 1.5rem 2rem;
+        }
+
+        .loading-page-header .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .loading-page-header .logo-container a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .footer {
+            flex-direction: row;
+            align-items: center;
+            gap: 2rem;
+            flex: 1;
+            min-width: 0;
+            width: 100%;
+            justify-content: space-between;
+            padding: 0.5rem 2rem;
+        }
+
+        .footer-image .geneo-logo {
+            position: absolute;
+            bottom: 0.5rem;
+            left: 0.5rem;
+            width: 60%;
+            height: auto;
+            max-width: 240px;
+        }
+
+        .date-section {
+            flex-shrink: 0;
+        }
+
+        .footer-image {
+            flex: 1;
+            min-width: 0;
+            width: auto;
+            max-width: 100%;
+        }
+
+        .footer-details {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background Canvas (global) -->
+    <canvas id="backgroundCanvas"></canvas>
+
+    <!-- Loading Page Content -->
+    <div id="loadingOverlay" class="loading-overlay" style="opacity: 1; visibility: visible;">
+        <!-- Custom Header - Logo aligned right, no nav links -->
+        <nav class="loading-page-header">
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="assets/logoGroup2.svg" alt="2026" class="logo-year">
+                    <img src="assets/logoGroup1.svg" alt="Division of Industrial Design Graduation Show"
+                        class="logo-text">
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content - Loading Screen -->
+        <main class="loading-screen">
+            <div class="loading-container">
+                <div class="loading-image-wrapper">
+                    <img id="loadingImage" src="assets/loadingPhotos/breakaway 2.jpg" alt="Loading">
+                </div>
+                <p class="coming-soon">COMING SOON</p>
+            </div>
+        </main>
+
+        <!-- Footer Section -->
+        <footer class="footer">
+            <div class="date-section">
+                <span class="date-range-large">11</span>
+                <span class="date-range"> - 15</span>
+                <span class="date-month">June 2025</span>
+
+            </div>
+            <!-- <div class="footer-image">
+                <img src="assets/geneoPic.png" alt="Venue">
+                <img src="assets/geneoLongLogo.svg" alt="Geneo" class="geneo-logo">
+            </div> -->
+            <div class="footer-details">
+            <div class="venue-info">
+                <p class="venue-name">Singapore Science Park 1</p>
+                <p class="venue-days">Thursday - Monday</p>
+                <p class="venue-time">10:00 AM - 8:00 PM</p>
+            </div>
+            <div class="venue-icons">
+                <button class="icon-btn" aria-label="Location">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                </button>
+                <button class="icon-btn" aria-label="Share">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                </button>
+            </div>
+            </div>
+    </div>
+    </footer>
+    </div>
+
+    <script src="canvas.js"></script>
+    <script>
+        // ============================================================
+        // PHOTO SLIDESHOW - Cycles through all photos in loadingPhotos
+        // ============================================================
+
+        // LIST OF ALL PHOTOS IN THE loadingPhotos FOLDER
+        // Since browsers cannot scan folders, you must manually list them here.
+        // When you add/remove photos, update this array.
+        const loadingPhotos = [
+            'assets/loadingPhotos/breakaway 2.jpg',
+            'assets/loadingPhotos/Collage 7.jpg',
+            'assets/loadingPhotos/Collage 15.jpg',
+            'assets/loadingPhotos/Collage 17.jpg',
+            'assets/loadingPhotos/Collage 19.jpg',
+            'assets/loadingPhotos/Collage 23.jpg',
+            'assets/loadingPhotos/conclusion.jpg',
+            'assets/loadingPhotos/landing-page-slides-photo-1.png',
+            'assets/loadingPhotos/making maker.jpg',
+            'assets/loadingPhotos/moments.jpg',
+            'assets/loadingPhotos/preface.jpg',
+            'assets/loadingPhotos/space.jpg',
+            'assets/loadingPhotos/spread studio shot.jpg',
+            'assets/loadingPhotos/table.jpg',
+            'assets/loadingPhotos/tension.jpg',
+        ];
+
+        // SLIDESHOW SETTINGS
+        const slideshowInterval = 300;  // Time between photos in milliseconds (0.5 seconds)
+
+        // Current photo index
+        let currentPhotoIndex = 0;
+
+        // Preload all images for smooth loading
+        function preloadImages() {
+            loadingPhotos.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+        }
+
+        // Change to the next photo (no transition, instant switch)
+        function showNextPhoto() {
+            const imageElement = document.getElementById('loadingImage');
+            if (!imageElement || loadingPhotos.length === 0) return;
+
+            // Move to next photo (loop back to start when reaching end)
+            currentPhotoIndex = (currentPhotoIndex + 1) % loadingPhotos.length;
+
+            // Instantly change the image
+            imageElement.src = loadingPhotos[currentPhotoIndex];
+        }
+
+        // Start the slideshow when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            // Only start if we have photos
+            if (loadingPhotos.length > 1) {
+                preloadImages();
+                setInterval(showNextPhoto, slideshowInterval);
+            }
+        });
+    </script>
+</body>
+
+</html>
