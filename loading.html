@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,86 +19,299 @@
             align-items: center;
             padding: 1.5rem 2rem;
         }
-        
+
         .loading-page-header .logo-container {
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
-        
+
         .loading-page-header .logo-container a {
             display: flex;
             align-items: center;
             gap: 0.75rem;
             text-decoration: none;
         }
+
+        /* Header logo (independent of global .logo-text) */
+        .loading8-logo-text {
+            height: 96px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Namespaced loading overlay and content */
+        .loading8-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            height: 100svh;
+            background-color: transparent;
+            z-index: 1000;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+        }
+
+        .loading8-overlay.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loading8-screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading8-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .loading8-image-wrapper {
+            width: 200px;
+            height: 160px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loading8-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(1.2);
+            animation: fadeInOut 0.8s ease-in-out;
+        }
+
+        .loading8-coming-soon {
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            color: var(--text-dark);
+            text-align: center;
+        }
+
+        /* Footer layout specific to loading page */
+        .loading8-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            padding: 1.5rem 2rem 2rem;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 2rem;
+            flex: 1;
+            min-width: 0;
+            width: 100%;
+        }
+
+        .loading8-date-section {
+            flex-shrink: 0;
+            margin-bottom: 0;
+        }
+
+        .footer-details {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .loading8-venue-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.125rem;
+        }
+
+        .loading8-venue-name {
+            font-size: 0.875rem;
+            color: var(--text-dark);
+        }
+
+        .loading8-venue-days,
+        .loading8-venue-time {
+            font-size: 0.8125rem;
+            color: var(--text-dark);
+        }
+
+        .loading8-venue-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .loading8-icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-dark);
+            transition: opacity 0.3s ease;
+        }
+
+        .loading8-icon-btn:hover {
+            opacity: 0.7;
+        }
+
+        .loading8-footer-logo {
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .loading8-footer-logo img {
+            height: 140px;
+            width: auto;
+            display: block;
+        }
+
+        /* Keyframes reused locally so the loading image works even without styles.css */
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0;
+                transform: scale(0.98);
+            }
+
+            20% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            80% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .footer-details {
+                flex-direction: column-reverse;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .loading8-footer {
+                padding: 2rem;
+                /* flex-direction: column; */
+                /* align-items: flex-start; */
+            }
+
+            .loading8-footer-logo img {
+                width: auto;
+                height: auto;
+                max-height: 120px;
+            }
+
+            .loading8-image-wrapper {
+                width: 180px;
+                height: 144px;
+            }
+
+            .loading8-coming-soon {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .loading8-footer {
+                /* gap: 1rem; */
+            }
+
+            .loading8-image-wrapper {
+                width: 150px;
+                height: 120px;
+            }
+
+            .loading8-footer-logo img {
+                max-height: 90px;
+            }
+        }
     </style>
 </head>
+
 <body>
     <!-- Background Canvas (global) -->
     <canvas id="backgroundCanvas"></canvas>
 
     <!-- Loading Page Content -->
-    <div id="loadingOverlay" class="loading-overlay" style="opacity: 1; visibility: visible;">
+    <div id="loadingOverlay" class="loading-overlay loading8-overlay" style="opacity: 1; visibility: visible;">
         <!-- Custom Header - Logo aligned right, no nav links -->
         <nav class="loading-page-header">
             <div class="logo-container">
                 <a href="index.html">
-                    <img src="assets/logoGroup2.svg" alt="2026" class="logo-year">
-                    <img src="assets/logoGroup1.svg" alt="Division of Industrial Design Graduation Show" class="logo-text">
+                    <!-- <img src="assets/logoGroup2.svg" alt="2026" class="logo-year"> -->
+                    <img src="assets/logoDIDVertical.png" alt="Division of Industrial Design Graduation Show"
+                        class="loading8-logo-text">
                 </a>
             </div>
         </nav>
 
         <!-- Main Content - Loading Screen -->
-        <main class="loading-screen">
-            <div class="loading-container">
-                <div class="loading-image-wrapper">
-                    <img id="loadingImage" src="assets/loadingPhotos/breakaway 2.jpg" alt="Loading">
+        <main class="loading-screen loading8-screen">
+            <div class="loading-container loading8-container">
+                <p class="coming-soon loading8-coming-soon">SEE HOW WE DID IT!</p>
+                <div class="loading-image-wrapper loading8-image-wrapper">
+                    <img id="loadingImage" src="assets/loadingPhotos/Screenshot 2026-02-26 154921.png" alt="Loading">
                 </div>
-                <p class="coming-soon">COMING SOON</p>
+                <p class="coming-soon loading8-coming-soon">COMING SOON</p>
             </div>
         </main>
 
         <!-- Footer Section -->
-        <footer class="footer">
-            <div class="footer-left">
-                <div class="date-section">
-                    <span class="date-range-large">11</span>
-                        <span class="date-range"> - 15</span>
-                    <span class="date-month">June 2025</span>
-                    
-                </div>
-                <div class="footer-image">
-                    <img src="assets/geneoPic.png" alt="Venue">
-                    <img src="assets/geneoLongLogo.svg" alt="Geneo" class="geneo-logo">
-                </div>
-            </div>
-            <div class="footer-right">
-                <div class="venue-info">
-                    <p class="venue-name">Singapore Science Park 1</p>
-                    <p class="venue-days">Thursday - Monday</p>
-                    <p class="venue-time">10:00 AM - 8:00 PM</p>
-                </div>
-                <div class="venue-icons">
-                    <button class="icon-btn" aria-label="Location">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                            <circle cx="12" cy="10" r="3"></circle>
-                        </svg>
-                    </button>
-                    <button class="icon-btn" aria-label="Share">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="18" cy="5" r="3"></circle>
-                            <circle cx="6" cy="12" r="3"></circle>
-                            <circle cx="18" cy="19" r="3"></circle>
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                        </svg>
-                    </button>
+        <footer class="footer loading8-footer">
+            <div class="loading8-date-section">
+                <div class="footer-details">
+                    <div class="venue-info loading8-venue-info">
+                        <p class="venue-name loading8-venue-name">Geneo, Singapore Science Park 1</p>
+                        <p class="venue-days loading8-venue-days">11 - 15 June 2026</p>
+                        <p class="venue-time loading8-venue-time">10AM - 8PM</p>
+                    </div>
+                    <div class="venue-icons loading8-venue-icons">
+                        <button class="loading8-icon-btn" aria-label="Location">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </button>
+                        <button class="loading8-icon-btn" aria-label="Share">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </footer>
+            <div class="loading8-footer-logo">
+                <img src="assets/logo2026VerticalStaggered.png" alt="2026">
+                <!-- <img src="assets/geneoLongLogo.svg" alt="Geneo" class="geneo-logo"> -->
+            </div>
+
+    </div>
+    </footer>
     </div>
 
     <script src="canvas.js"></script>
@@ -105,34 +319,27 @@
         // ============================================================
         // PHOTO SLIDESHOW - Cycles through all photos in loadingPhotos
         // ============================================================
-        
+
         // LIST OF ALL PHOTOS IN THE loadingPhotos FOLDER
         // Since browsers cannot scan folders, you must manually list them here.
         // When you add/remove photos, update this array.
         const loadingPhotos = [
-            'assets/loadingPhotos/breakaway 2.jpg',
-            'assets/loadingPhotos/Collage 7.jpg',
-            'assets/loadingPhotos/Collage 15.jpg',
-            'assets/loadingPhotos/Collage 17.jpg',
-            'assets/loadingPhotos/Collage 19.jpg',
-            'assets/loadingPhotos/Collage 23.jpg',
-            'assets/loadingPhotos/conclusion.jpg',
-            'assets/loadingPhotos/landing-page-slides-photo-1.png',
-            'assets/loadingPhotos/making maker.jpg',
-            'assets/loadingPhotos/moments.jpg',
-            'assets/loadingPhotos/preface.jpg',
-            'assets/loadingPhotos/space.jpg',
-            'assets/loadingPhotos/spread studio shot.jpg',
-            'assets/loadingPhotos/table.jpg',
-            'assets/loadingPhotos/tension.jpg',
+            'assets/loadingPhotos/DSCF0375.JPG',
+            'assets/loadingPhotos/DSCF0384.JPG',
+            'assets/loadingPhotos/DSCF0403.JPG',
+            'assets/loadingPhotos/IMG_2428.jpg',
+            'assets/loadingPhotos/PXL_20260108_044359167.MP.jpg',
+            'assets/loadingPhotos/PXL_20260108_044505748.MP.jpg',
+            'assets/loadingPhotos/PXL_20260108_044735494.MP.jpg',
+            'assets/loadingPhotos/Screenshot 2026-02-26 154921.png',
         ];
-        
+
         // SLIDESHOW SETTINGS
         const slideshowInterval = 300;  // Time between photos in milliseconds (0.5 seconds)
-        
+
         // Current photo index
         let currentPhotoIndex = 0;
-        
+
         // Preload all images for smooth loading
         function preloadImages() {
             loadingPhotos.forEach(src => {
@@ -140,21 +347,21 @@
                 img.src = src;
             });
         }
-        
+
         // Change to the next photo (no transition, instant switch)
         function showNextPhoto() {
             const imageElement = document.getElementById('loadingImage');
             if (!imageElement || loadingPhotos.length === 0) return;
-            
+
             // Move to next photo (loop back to start when reaching end)
             currentPhotoIndex = (currentPhotoIndex + 1) % loadingPhotos.length;
-            
+
             // Instantly change the image
             imageElement.src = loadingPhotos[currentPhotoIndex];
         }
-        
+
         // Start the slideshow when page loads
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Only start if we have photos
             if (loadingPhotos.length > 1) {
                 preloadImages();
@@ -163,4 +370,5 @@
         });
     </script>
 </body>
+
 </html>
