@@ -42,7 +42,7 @@ function createGraduateCard(graduate, index) {
             <span>PHOTO</span>
         </div>
         <div class="graduate-info">
-            <span class="graduate-role">Graduate, Industrial Design 2026</span>
+            <!-- <span class="graduate-role">Graduate, Industrial Design 2026</span> -->
             <span class="graduate-name">${fullName}</span>
         </div>
     `;

@@ -8,22 +8,15 @@ const MINIMUM_LOADING_TIME = 2000; // 2 seconds minimum display time
 
 // ==================== LOADING PHOTOS ====================
 const loadingPhotos = [
-    'assets/loadingPhotos/breakaway 2.jpg',
-    'assets/loadingPhotos/Collage 15.jpg',
-    'assets/loadingPhotos/Collage 17.jpg',
-    'assets/loadingPhotos/Collage 19.jpg',
-    'assets/loadingPhotos/Collage 23.jpg',
-    'assets/loadingPhotos/Collage 7.jpg',
-    'assets/loadingPhotos/conclusion.jpg',
-    'assets/loadingPhotos/landing-page-slides-photo-1.png',
-    'assets/loadingPhotos/making maker.jpg',
-    'assets/loadingPhotos/moments.jpg',
-    'assets/loadingPhotos/preface.jpg',
-    'assets/loadingPhotos/space.jpg',
-    'assets/loadingPhotos/spread studio shot.jpg',
-    'assets/loadingPhotos/table.jpg',
-    'assets/loadingPhotos/tension.jpg'
-];
+    'assets/loadingPhotos/DSCF0375.JPG',
+    'assets/loadingPhotos/DSCF0384.JPG',
+    'assets/loadingPhotos/DSCF0403.JPG',
+    'assets/loadingPhotos/IMG_2428.jpg',
+    'assets/loadingPhotos/PXL_20260108_044359167.MP.jpg',
+    'assets/loadingPhotos/PXL_20260108_044505748.MP.jpg',
+    'assets/loadingPhotos/PXL_20260108_044735494.MP.jpg',
+    'assets/loadingPhotos/Screenshot 2026-02-26 154921.png',
+  ];
 
 // ==================== STATE ====================
 let currentPhotoIndex = 0;

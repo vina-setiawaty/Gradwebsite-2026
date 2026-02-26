@@ -25,7 +25,7 @@ function createFooter() {
     footer.className = 'main-footer';
     footer.innerHTML = `
         <div class="footer-links">
-            <a href="index.html" class="footer-link">The Grad Show 2026</a>
+            <a href="index.html" class="footer-link">The Grad Show 26'</a>
             <a href="graduates.html" class="footer-link">The Graduates</a>
             <a href="showcase.html" class="footer-link">The Showcase</a>
         </div>
