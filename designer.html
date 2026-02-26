@@ -18,20 +18,18 @@
             <!-- Hero Banner Section -->
             <section class="hero-banner">
                 <div class="hero-image-container">
-                    <img src="assets/heroBanner.png" alt="Venue" class="hero-image">
+                    <img src="./assets/heroBanner.png" alt="Venue" class="hero-image">
                     <div class="hero-overlay"></div>
-                    <!-- Venue Info & Event Details (Bottom Left) -->
                     <div class="hero-left-info">
                         <div class="hero-venue-info">
-                            <img src="assets/geneoLongLogo.svg" alt="Geneo" class="hero-geneo-logo">
+                            <img src="./assets/geneoLongLogo.svg" alt="Geneo" class="hero-geneo-logo">
                         </div>
                         <div class="hero-event-details">
                             <span class="hero-venue">Singapore Science Park 1</span>
                             <span class="hero-days">Thursday - Monday</span>
-                            <span class="hero-time">10:00 AM - 8:00 PM</span>
+                            <span class="hero-time">10AM - 8PM</span>
                         </div>
                     </div>
-                    <!-- Date (Bottom Right) -->
                     <div class="hero-date">
                         <span class="hero-date-day">11</span>
                         <span class="hero-date-range">- 15</span>
@@ -42,83 +40,117 @@
 
             <!-- Designer Profile Section -->
             <section class="designer-profile-section">
-                <div class="designer-intro">
-                    <span class="designer-hello">Hello, I'm</span>
-                    <h1 id="designerName" class="designer-name-styled">Designer Name</h1>
-                    <p class="designer-role">Graduate, Industrial Design 2026</p>
-                </div>
+                <div class="designer-layout">
+                    <div class="designer-column designer-column-left">
+                        <div class="designer-intro">
+                            <span class="designer-hello">Hello, I'm</span>
+                            <h1 id="designerName" class="designer-name-styled">Designer Name</h1>
+                        </div>
 
-                <div class="designer-content">
-                    <div class="designer-left">
-                        <!-- Designer Photo -->
-                        <div class="designer-photo-container">
+                        <div class="designer-photo-card">
                             <div class="designer-photo-placeholder">
                                 <span>PHOTO</span>
                             </div>
                         </div>
-                        
-                        <!-- Bio -->
-                        <div class="designer-bio">
-                            <p id="designerBio">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
-                        </div>
-
-                        <!-- Social Links -->
-                        <div class="designer-social">
-                            <a href="#" class="social-link" id="linkedinLink">
-                                <img src="assets/linkedinIcon.svg" alt="LinkedIn">
-                                <span>LinkedIn</span>
-                            </a>
-                            <a href="#" class="social-link" id="portfolioLink">
-                                <img src="assets/portfolioIcon.svg" alt="Portfolio">
-                                <span>Portfolio</span>
-                            </a>
-                        </div>
                     </div>
 
-                    <div class="designer-right">
-                        <!-- Expertise & Specialization -->
-                        <div class="designer-skills">
-                            <div class="skill-category">
-                                <h3>Expertise</h3>
-                                <ul id="expertiseList" class="skill-list">
+                    <div class="designer-column designer-column-right">
+                        <div class="designer-bio-block">
+                            <p id="designerBio" class="designer-bio-text">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                                exercitation ullamco laboris.
+                            </p>
+                        </div>
+
+                        <div class="designer-info-grid">
+                        <div class="designer-info-group">
+                            <h3 class="designer-info-label">Profile</h3>
+                            <p id="designerRole" class="designer-role">Graduate, Industrial Design 2026</p>
+                        </div>
+                        <div class="designer-info-group">
+                            <h3 class="designer-info-label">Expertise</h3>
+                            <ul id="expertiseList" class="designer-tag-list">
                                     <li>Product Design</li>
                                     <li>UX/UI Design</li>
                                     <li>Design Research</li>
                                 </ul>
                             </div>
-                            <div class="skill-category">
-                                <h3>Specialization</h3>
-                                <ul id="specializationList" class="skill-list">
+                        <div class="designer-info-group">
+                            <h3 class="designer-info-label">Specialisation</h3>
+                            <ul id="specializationList" class="designer-tag-list">
                                     <li>Medical Devices</li>
                                     <li>Consumer Electronics</li>
                                 </ul>
                             </div>
                         </div>
 
-                        <!-- Featured Projects / Browse Photos -->
-                        <div class="featured-projects">
-                            <h3>Browse the Photos</h3>
-                            <div class="projects-gallery">
-                                <div class="project-thumbnail active" style="background-color: #7a00db;" data-index="0"></div>
-                                <div class="project-thumbnail" style="background-color: #00a86b;" data-index="1"></div>
-                                <div class="project-thumbnail" style="background-color: #ff6b35;" data-index="2"></div>
-                                <div class="project-thumbnail" style="background-color: #0066cc;" data-index="3"></div>
-                                <div class="project-thumbnail" style="background-color: #ffc107;" data-index="4"></div>
-                            </div>
-                            <div class="project-preview">
-                                <div id="projectPreview" class="project-preview-box" style="background-color: #7a00db;">
-                                    <span class="preview-label">Selected Photo Preview</span>
-                                </div>
+                        <div class="designer-contact">
+                            <p id="designerEmail" class="designer-email">shaheed.designs@gmail.com</p>
+                            <div class="designer-social">
+                                <a href="#" class="social-link" id="linkedinLink" aria-label="LinkedIn">
+                                    <img src="./assets/linkedinIcon.svg" alt="LinkedIn">
+                                </a>
+                                <a href="#" class="social-link" id="portfolioLink" aria-label="Portfolio">
+                                    <img src="./assets/portfolioIcon.svg" alt="Portfolio">
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
+            <!-- Projects Section -->
+            <section class="designer-projects-section">
+                <div class="designer-projects-header">
+                    <h2 class="designer-section-title">Projects</h2>
+                </div>
+
+                <article class="designer-project">
+                    <div class="designer-project-info">
+                        <h3 class="project-title">01 Project Title</h3>
+                        <p class="project-description">
+                            Brief description of the project goes here. Use this space to describe the design
+                            challenge, your approach, and the key outcomes of the work.
+                        </p>
+                        <div class="project-meta">
+                            <p>Supervisor: Name Here</p>
+                            <p>Focus: UX, Product Innovation</p>
+                        </div>
+                    </div>
+                    <div class="designer-project-visual">
+                        <div class="project-frame project-frame-1"></div>
+                        <div class="project-frame project-frame-2"></div>
+                        <div class="project-frame project-frame-3"></div>
+                        <div class="project-frame project-frame-4"></div>
+                    </div>
+                </article>
+
+                <article class="designer-project">
+                    <div class="designer-project-info">
+                        <h3 class="project-title">02 Project Title</h3>
+                        <p class="project-description">
+                            A second feature project can be highlighted here, mirroring the structure of the
+                            graduation booklet layout with supporting visuals on the right.
+                        </p>
+                        <div class="project-meta">
+                            <p>Supervisor: Name Here</p>
+                            <p>Focus: Strategy, Service Design</p>
+                        </div>
+                    </div>
+                    <div class="designer-project-visual">
+                        <div class="project-frame project-frame-1"></div>
+                        <div class="project-frame project-frame-2"></div>
+                        <div class="project-frame project-frame-3"></div>
+                        <div class="project-frame project-frame-4"></div>
+                    </div>
+                </article>
+            </section>
+
             <!-- Separator -->
-            <div class="section-separator">
-                <img src="assets/separator.svg" alt="" class="separator-line">
-            </div>
+            <!-- <div class="section-separator">
+                <img src="./assets/separator.svg" alt="" class="separator-line">
+            </div> -->
 
             <!-- Other Designers Section -->
             <section class="other-designers-section">
@@ -128,7 +160,7 @@
                 </div>
                 <button class="view-all-btn" onclick="window.location.href='graduates.html'">
                     View All Graduates
-                    <img src="assets/arrowDown.svg" alt="" class="arrow-icon">
+                    <img src="./assets/arrowDown.svg" alt="" class="arrow-icon">
                 </button>
             </section>
         </main>

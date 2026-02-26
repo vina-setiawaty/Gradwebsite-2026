@@ -7,14 +7,14 @@ function createHeader(activePage = '') {
     header.innerHTML = `
         <div class="main-nav-logo">
             <a href="index.html">
-                <img src="assets/logoGroup2.svg" alt="2026" class="logo-year">
-                <img src="assets/logoGroup1.svg" alt="Division of Industrial Design Graduation Show" class="logo-text">
+                <img src="./assets/logoGroup2.svg" alt="2026" class="logo-year">
+                <img src="./assets/logoGroup1.svg" alt="Division of Industrial Design Graduation Show" class="logo-text">
             </a>
         </div>
         <div class="main-nav-links">
-            <a href="index.html" class="main-nav-link${activePage === 'home' ? ' active' : ''}">The Grad Show 2026</a>
+            <a href="index.html" class="main-nav-link${activePage === 'home' ? ' active' : ''}">The Grad Show 26'</a>
             <a href="graduates.html" class="main-nav-link${activePage === 'graduates' ? ' active' : ''}">The Graduates</a>
-            <a href="#" class="main-nav-link${activePage === 'showcase' ? ' active' : ''}">The Showcase</a>
+            <a href="showcase.html" class="main-nav-link${activePage === 'showcase' ? ' active' : ''}">The Showcase</a>
         </div>
     `;
     return header;
@@ -27,10 +27,10 @@ function createFooter() {
         <div class="footer-links">
             <a href="index.html" class="footer-link">The Grad Show 2026</a>
             <a href="graduates.html" class="footer-link">The Graduates</a>
-            <a href="#" class="footer-link">The Showcase</a>
+            <a href="showcase.html" class="footer-link">The Showcase</a>
         </div>
         <div class="footer-logo">
-            <img src="assets/logo2026HorizontalHALF.png" alt="2026">
+            <img src="./assets/logo2026HorizontalHALF.png" alt="2026">
         </div>
     `;
     return footer;
