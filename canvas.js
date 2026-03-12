@@ -7,9 +7,9 @@
 (function() {
     // Configuration
     const CONFIG = {
-        gridSpacing: 30,      // Space between grid points
-        attractDistance: 10,  // How far dots move toward mouse
-        dotSize: 3,           // Size of each dot
+        gridSpacing: 24,      // Space between grid points
+        attractDistance: 8,  // How far dots move toward mouse
+        dotSize: 2,           // Size of each dot
         dotColor: 'lightgrey' // Color of dots
     };
 

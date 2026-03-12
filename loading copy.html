@@ -104,8 +104,9 @@
         /* Footer layout specific to loading page */
         .loading8-footer {
             position: absolute;
-            bottom: 0;
+            top: 50%;
             left: 0;
+            transform: translateY(-50%);
             padding: 1.5rem 2rem 2rem;
             display: flex;
             flex-direction: row;
@@ -206,12 +207,6 @@
                 gap: 0.5rem;
             }
 
-            .loading8-logo-text {
-                height: 56px;
-                width: auto;
-                object-fit: contain;
-            }
-
             .loading8-footer {
                 padding: 2rem;
                 /* flex-direction: column; */
@@ -232,19 +227,9 @@
             .loading8-coming-soon {
                 font-size: 0.8rem;
             }
-
-            .loading8-footer-logo img {
-                max-height: 96px;
-            }
         }
 
         @media screen and (max-width: 480px) {
-            .loading8-logo-text {
-                height: 48px;
-                width: auto;
-                object-fit: contain;
-            }
-
             .loading8-footer {
                 /* gap: 1rem; */
             }
@@ -255,7 +240,7 @@
             }
 
             .loading8-footer-logo img {
-                max-height: 72px;
+                max-height: 90px;
             }
         }
     </style>
@@ -325,7 +310,7 @@
                     </div>
                 </div>
             </div>
-
+            
 
     </div>
     </footer>
