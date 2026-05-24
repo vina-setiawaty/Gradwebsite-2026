@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Showcase | 2026 Division of Industrial Design Graduation Show</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background Canvas -->
+    <canvas id="backgroundCanvas"></canvas>
+
+    <div class="page-wrapper">
+        <!-- Header placeholder -->
+        <div id="header-placeholder" data-active="showcase"></div>
+
+        <main class="showcase-page">
+            <!-- Hero Banner Section (reusing main hero styles) -->
+            <section class="hero-banner">
+                <div class="hero-image-container">
+                    <img src="./assets/heroBanner.png" alt="Venue" class="hero-image">
+                    <div class="hero-overlay"></div>
+
+                    <div class="hero-left-info">
+                        <div class="hero-venue-info">
+                            <img src="./assets/geneoLongLogo.svg" alt="Geneo" class="hero-geneo-logo">
+                        </div>
+                        <div class="hero-event-details">
+                            <span class="hero-venue">Singapore Science Park 1</span>
+                            <span class="hero-time">|</span>
+                            <span class="hero-time">10AM - 8PM</span>
+                        </div>
+                    </div>
+
+                    <div class="hero-date">
+                        <span class="hero-date-day">11</span>
+                        <span class="hero-date-range">- 15</span>
+                        <span class="hero-date-month">June 2026</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Showcase Intro + Event Details -->
+            <section class="showcase-main-section">
+                <div class="showcase-main-grid">
+                    <!-- Left: Intro Copy -->
+                    <div class="showcase-intro-panel">
+                        <!-- <p class="showcase-intro-label">The Showcase</p> -->
+                        <h1 class="showcase-intro-title">
+                            Industrial Design<br>
+                            Graduation <span class="showcase-highlight">Showcase</span>
+                        </h1>
+
+                        <div class="showcase-copy-block">
+                            <p class="showcase-intro-text">
+                                We warmly invite you to join us at the DID Graduation Show 2026.
+                            </p>
+                            <p class="showcase-intro-text">
+                                This year’s graduation showcase celebrates the design journeys behind the graduating cohort from the Division of Industrial Design, shaped by curiosity, rigor, and intent.
+                            </p>
+                            <p class="showcase-intro-text">
+                                The works on display sit at the intersection of play and precision, imagination and purpose. This duality reflects how our students think, make and adapt. In an ever evolving world, we stay ready for what’s next.
+                            </p>
+                            <p class="showcase-intro-text showcase-intro-hashtag">
+                                #SeeHowWeDidIt
+                            </p>
+                        </div>
+                        <button
+                            class="view-all-btn showcase-map-btn"
+                            type="button"
+                            onclick="document.getElementById('showcase-map-heading')?.scrollIntoView({ behavior: 'smooth', block: 'start' })"
+                        >
+                            View Exhibition Map
+                            <img src="./assets/arrowDown.svg" alt="" class="arrow-icon arrow-icon--ne" width="16" height="16">
+                        </button>
+                    </div>
+
+                    <div class="showcase-main-divider" aria-hidden="true"></div>
+
+                    <!-- Right: Event Details -->
+                    <aside class="event-details-card" aria-label="Event details">
+                        <p class="event-details-label">Event Details</p>
+                        <dl class="event-details-list">
+                            <div class="event-detail">
+                                <div class="event-detail-meta">
+                                    <img src="./assets/event-date.svg" alt="" class="event-detail-icon" aria-hidden="true">
+                                    <dt class="event-detail-label">Date</dt>
+                                </div>
+                                <dd class="event-detail-value">11 – 15 June 2026</dd>
+                            </div>
+                            <div class="event-detail">
+                                <div class="event-detail-meta">
+                                    <img src="./assets/event-time.svg" alt="" class="event-detail-icon" aria-hidden="true">
+                                    <dt class="event-detail-label">Time</dt>
+                                </div>
+                                <dd class="event-detail-value">10AM – 8PM</dd>
+                            </div>
+                            <div class="event-detail">
+                                <div class="event-detail-meta">
+                                    <img src="./assets/event-location.svg" alt="" class="event-detail-icon" aria-hidden="true">
+                                    <dt class="event-detail-label">Location</dt>
+                                </div>
+                                <dd class="event-detail-value">
+                                    Geneo<br>
+                                    Atrium, Level 1<br>
+                                    Singapore Science Park 1, S118221
+                                </dd>
+                            </div>
+                            <div class="event-detail">
+                                <div class="event-detail-meta">
+                                    <img src="./assets/event-people.svg" alt="" class="event-detail-icon" aria-hidden="true">
+                                    <dt class="event-detail-label">Featuring</dt>
+                                </div>
+                                <dd class="event-detail-value">
+                                    43 Undergraduate students<br>
+                                    16 Graduate students<br>
+                                    Over 70 projects
+                                </dd>
+                            </div>
+                        </dl>
+                    </aside>
+                </div>
+            </section>
+
+            <!-- Venue map (replace iframe src with Share → Embed a map from Google Maps if you prefer) -->
+            <section class="showcase-map-section" aria-labelledby="showcase-map-heading">
+                <h2 id="showcase-map-heading" class="showcase-map-title">Venue map</h2>
+                <div class="showcase-map-embed">
+                    <iframe
+                        title="Map of Geneo at Singapore Science Park 1"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.803394213415!2d103.78258701083472!3d1.2923718617518618!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da1b4b042abf7d%3A0x4cb2426057b627c5!2sSingapore%20Science%20Park%201%2C%20Geneo!5e0!3m2!1sen!2sid!4v1778754294705!5m2!1sen!2sid"
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        allowfullscreen
+                    ></iframe>
+                </div>
+            </section>
+
+            <!-- Getting There Section -->
+            <section class="getting-there-section">
+                <h2 class="getting-there-title">Getting There</h2>
+                <div class="getting-there-grid">
+                    <article class="info-card info-card--transport">
+                        <h3 class="info-card-title">By Public Transport</h3>
+                        <div class="info-card-body">
+                            <p class="info-card-subheading">MRT:</p>
+                            <p class="info-card-text">
+                                Take the Circle Line to Kent Ridge MRT (CC24)<br>
+                                Head to Exit E to Geneo, Level 1
+                            </p>
+                            <p class="info-card-subheading">Bus:</p>
+                            <p class="info-card-text">
+                                Take public bus no. 92/92A from Buona Vista MRT station.<br>
+                                Other buses available include 14, 33, 97, 166, 197, 963/963e.
+                            </p>
+                        </div>
+                    </article>
+
+                    <article class="info-card info-card--car">
+                        <h3 class="info-card-title">By Car</h3>
+                        <div class="info-card-body">
+                            <p class="info-card-text">
+                                From AYE, take the Normanton Park or South Buona Vista Road exit via the new slip road and then turn into Science Park Drive.
+                            </p>
+                        </div>
+                        <div class="info-card-footer">
+                            <h3 class="info-card-subheading info-card-text-light">Parking:</h3>
+                            <!-- <p class="info-card-subheading info-card-subheading-light">Parking Rates:</p> -->
+                            <p class="info-card-text info-card-text-light">
+                                FREE PARKING from 11:30 am to 2:00pm and 6:00 pm to 11:59 pm on weekdays, plus all day on weekends and public holidays.
+                            </p>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Sponsors Section -->
+            <section class="sponsors-section" aria-label="Sponsors">
+                <div class="sponsors-marquee">
+                    <div class="sponsors-track">
+                        <div class="sponsors-logos">
+                            <img class="sponsor-marquee-logo" src="./assets/sponsors/Vector-3.png" alt="">
+                            <img class="sponsor-marquee-logo" src="./assets/sponsors/geneoLongLogo.svg" alt="Geneo">
+                            <img class="sponsor-marquee-logo" src="./assets/sponsors/Vector-2.png" alt="">
+                            <img class="sponsor-marquee-logo" src="./assets/sponsors/Vector.png" alt="">
+                        </div>
+                        <div class="sponsors-logos sponsors-logos--duplicate" aria-hidden="true">
+                            <img class="sponsor-marquee-logo" src="./assets/sponsors/Vector-3.png" alt="">
+                            <img class="sponsor-marquee-logo" src="./assets/sponsors/geneoLongLogo.svg" alt="">
+                            <img class="sponsor-marquee-logo" src="./assets/sponsors/Vector-2.png" alt="">
+                            <img class="sponsor-marquee-logo" src="./assets/sponsors/Vector.png" alt="">
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer placeholder -->
+        <div id="footer-placeholder"></div>
+    </div>
+
+    <script src="canvas.js"></script>
+    <script src="header.js"></script>
+</body>
+</html>
+

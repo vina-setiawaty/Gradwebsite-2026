@@ -1,0 +1,19 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="eventLocationBg" cx="30%" cy="20%" r="80%">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.4" stop-color="#F4E9FF"/>
+      <stop offset="1" stop-color="#E0C7FF"/>
+    </radialGradient>
+    <linearGradient id="eventLocationPin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#A35BFF"/>
+      <stop offset="1" stop-color="#7A00DB"/>
+    </linearGradient>
+  </defs>
+  <circle cx="16" cy="16" r="15" fill="url(#eventLocationBg)"/>
+  <path d="M16 8.5C12.96 8.5 10.5 11 10.5 14.1C10.5 17.85 13.3 21.35 15.35 23.6C15.7 23.98 16.3 23.98 16.65 23.6C18.7 21.35 21.5 17.85 21.5 14.1C21.5 11 19.04 8.5 16 8.5Z"
+        fill="url(#eventLocationPin)"/>
+  <circle cx="16" cy="14.2" r="2.4" fill="#FFFFFF"/>
+  <ellipse cx="16" cy="24.5" rx="4.2" ry="1.2" fill="#C6B0F5" opacity="0.75"/>
+</svg>
+
