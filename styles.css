@@ -74,7 +74,7 @@
     /* ─── Brand Purple ─── */
     --purple-1: #FDF7FF;    /* Surface Light */
     --purple-2: #D1BADA;    /* Surface */
-    --purple-3: #502C85;    /* Primary – CTAs, interactive, accents */
+    --purple-3: #7A00DB;    /* Primary – CTAs, interactive, accents */
     --purple-4: #29124C;    /* Primary Dark – headings, deep fills */
 
     /* ─── Neutral ─── */
@@ -1567,35 +1567,26 @@ body {
 
 .designer-social {
     display: flex;
-    gap: var(--space-3);
+    gap: var(--space-4);
 }
 
 .social-link {
-    width: 64px;
-    height: 64px;
-    border-radius: 999px;
-    border: 1px solid var(--purple-4);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--color-surface);
-    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    color: var(--color-accent);
+    transition: color 0.2s ease, transform 0.2s ease;
 }
 
-.social-link img {
+.social-link svg {
     width: 36px;
     height: 36px;
-    object-fit: contain;
+    display: block;
 }
 
 .social-link:hover {
-    background-color: var(--purple-4);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    color: var(--purple-2);
     transform: translateY(-1px);
-}
-
-.social-link:hover img {
-    filter: brightness(0) invert(1);
 }
 
 /* ==================== DESIGNER PROJECTS ==================== */

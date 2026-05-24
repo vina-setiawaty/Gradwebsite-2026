@@ -174,6 +174,8 @@ function displayDesignerInfo(name) {
 
     setupSocialLink('linkedinLink', designerRecord ? designerRecord.linkedinUrl : '');
     setupSocialLink('portfolioLink', designerRecord ? designerRecord.websitePortfolioUrl : '');
+    setupSocialLink('behanceLink', designerRecord ? designerRecord.behanceUrl : '');
+    setupSocialLink('instagramLink', designerRecord ? designerRecord.instagramUrl : '');
 
     renderDesignerHeadshot(designerRecord);
 
@@ -279,6 +281,10 @@ function normalizeUrl(url) {
     const trimmed = url.trim();
     if (/^https?:\/\//i.test(trimmed)) {
         return trimmed;
+    }
+    if (trimmed.startsWith('@')) {
+        const handle = trimmed.slice(1).replace(/^@/, '');
+        return `https://www.instagram.com/${encodeURIComponent(handle)}/`;
     }
     return `https://${trimmed}`;
 }

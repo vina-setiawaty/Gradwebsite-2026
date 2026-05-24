@@ -1057,9 +1057,9 @@ const DESIGNER_DATA = [
       "images": [
         "A Service Set for One_1.jpg",
         "A Service Set for One_2.jpg",
-        "A Service Set for One_3.jpg",
-        "A Service Set for One_4.jpg",
-        "A Service Set for One_6.jpg"
+        "A Service Set for One_3.png",
+        "A Service Set for One_4.png",
+        "A Service Set for One_5.jpg"
       ],
       "videoUrl": "https://www.youtube.com/embed/I0fj3eG0JSs?si=pCmXLTdl4YWMNF01"
     },
@@ -1157,11 +1157,11 @@ const DESIGNER_DATA = [
       "teammates": [],
       "writeUp": "Designed around the realities of feeding on the go, mömigo is a reusable food-grade silicone bag that allows parents to freeze, warm and feed breastmilk in one continuous flow, reducing transfers, washing and mental load. Ultimately, this project rethinks the unseen effort behind something often assumed to be natural.",
       "images": [
-        "mömigo_1.png",
-        "mömigo_2.jpg",
-        "mömigo_3.jpg",
-        "mömigo_4.png",
-        "mömigo_5.png"
+        "momigo_1.png",
+        "momigo_2.jpg",
+        "momigo_3.jpg",
+        "momigo_4.png",
+        "momigo_5.jpg"
       ],
       "videoUrl": "https://www.youtube.com/embed/e6smoXf0UMU?si=fv-rZvyWeOZAzjs3"
     },
@@ -1401,11 +1401,11 @@ const DESIGNER_DATA = [
       ],
       "writeUp": "Moneyverse is an integrated platform that simplifies insurance with personalised, easy-to-apply educational resources. Its dynamic design highlights relevant information, reducing overwhelm and enabling independent coverage evaluation. Its features Cofi, a friendly conversational guide for young adults, it explains jargon, identifies gaps, and uses quizzes and nudges to build confidence in managing finances.",
       "images": [
-        "Moneyverse_1",
-        "Moneyverse_2",
-        "Moneyverse_3",
-        "Moneyverse_4",
-        "Moneyverse_5"
+        "Moneyverse_1.png",
+        "Moneyverse_2.png",
+        "Moneyverse_3.png",
+        "Moneyverse_4.png",
+        "Moneyverse_5.png"
       ],
       "videoUrl": "https://www.youtube.com/embed/Y93ru_hyOMw?si=r-MlfbvD5CgD4w3R"
     },
@@ -1420,11 +1420,11 @@ const DESIGNER_DATA = [
       ],
       "writeUp": "Once, grocery shopping in Singapore was a vibrant ritual. Chatting with fishmongers, bargaining with sellers, and connecting with neighbors at wet markets. Supermarkets brought silent efficiency, turning it transactional. Project Rebuilding (Re)tuals revives this spirit through FairPrice Commune: bringing the DNA of wet markets into today’s supermarkets and restoring the spirit of these spaces to be social and vibrant by weaving everyday communal micro-moments into our neighborhood shopping experience.",
       "images": [
-        "Fairprice Commune_1",
-        "Fairprice Commune_2",
-        "Fairprice Commune_3",
-        "Fairprice Commune_4",
-        "Fairprice Commune_5"
+        "Fairprice Commune_1.jpg",
+        "Fairprice Commune_2.png",
+        "Fairprice Commune_3.png",
+        "Fairprice Commune_4.jpg",
+        "Fairprice Commune_5.jpg"
       ],
       "videoUrl": "https://www.youtube.com/embed/RSkAGqT-82s?si=EIqJey_gRMHBQZl6"
     },
@@ -1496,7 +1496,7 @@ const DESIGNER_DATA = [
       "year": "2025/2026",
       "supervisor": "Janghee Cho",
       "teammates": [],
-      "writeUp": "",
+      "writeUp": "Facilitating better onboarding for first-time employers and first-time migrant domestic workers, HomeGround structures conversations through prompt cards across ten key topics, staged across the first month of work. With a shared review system, it equips employers to lead, gives domestic workers space to voice their needs, and fosters open communication from the very start.",
       "images": [
         "P5030010.jpg",
         "P1010004.jpg",
@@ -1518,7 +1518,7 @@ const DESIGNER_DATA = [
         "InwardBound_1.jpg",
         "InwardBound_2.jpg",
         "InwardBound_3.jpg",
-        "InwardBound_4.jpg",
+        "InwardBound_4.png",
         "InwardBound_5.jpg"
       ],
       "videoUrl": "https://www.youtube.com/embed/a5L_nELB-VE?si=ukEecNhvBfIqNf6s"
@@ -1566,7 +1566,7 @@ const DESIGNER_DATA = [
       "images": [
         "BRIDGE_1.png",
         "BRIDGE_2.png",
-        "BRIDGE_3.png",
+        "BRIDGE_3.jpg",
         "BRIDGE_4.jpg"
       ],
       "videoUrl": "https://www.youtube.com/embed/LFysdE8AwIE?si=KRSrQ0tyTZMyXVEn"
@@ -1596,7 +1596,7 @@ const DESIGNER_DATA = [
       "writeUp": "First Floor Friends is a phygital neighbourhood system that mediates community cat encounters. Through spatial analysis of movement patterns and cat territories, physical touchpoints are situated where encounters typically occur, and introduces digital points of information entry within these spaces about the evolving presence and personalities of these cats.",
       "images": [
         "First Floor Friends_1.png",
-        "First Floor Friends_2,jpg",
+        "First Floor Friends_2.jpg",
         "First Floor Friends_3.png",
         "First Floor Friends_4.jpg"
       ]
