@@ -1,50 +1,3 @@
-// Shared graduate data used across the site
-const GRADUATES_DATA = [
-  { fullName: "ADAM CHOO WEN WU", "headshot-image": "assets/Adam_Headshot_Edited.jpg" },
-  { fullName: "ANG ZI YI HANNAH", "headshot-image": "assets/Hannah_Headshot_Edited.jpg" },
-  { fullName: "ANNABELLE PHUA YUE TONG", "headshot-image": "assets/Annabelle_Headshot_Edited.jpg" },
-  { fullName: "CHEW TONG YUN", "headshot-image": "assets/Tong Yun_08-3.jpg" },
-  { fullName: "CHLOE CHONG WEN JING", "headshot-image": "assets/ChloeC_Headshot_Edited.jpg" },
-  { fullName: "CLEMENT KOH YUEN JIE", "headshot-image": "assets/Clement_Headshot_Edited.jpg" },
-  { fullName: "DAMIAN LIM JIA YU", "headshot-image": "assets/Damian.jpg" },
-  { fullName: "ELIZABETH PAULYN GOSTELOW", "headshot-image": "assets/Elizabeth_Re-edit.jpg" },
-  { fullName: "ESTHER-J YOONG", "headshot-image": "assets/EJ.png" },
-  { fullName: "GOH YU YAN", "headshot-image": "assets/Yu Yan_Headshot_Edited.jpg" },
-  { fullName: "GRACIA CHUA WEI", "headshot-image": "assets/Gracia_02-2.jpg" },
-  { fullName: "JANINA CLARIS SANTIAGO ALVAREZ", "headshot-image": "assets/Janina_Headshot_Edited.jpg" },
-  { fullName: "JOCELYN TAN XIN YEE", "headshot-image": "assets/Joc_04(fav).jpg" },
-  { fullName: "KHOO LI EN JOLENE", "headshot-image": "assets/Jolene_Headshot_Edited_1.jpg" },
-  { fullName: "KO TIARRA", "headshot-image": "assets/TIARRA_FINAL.jpg" },
-  { fullName: "KOH YI NING, PRISCILLA", "headshot-image": "assets/Pris_Edited.jpg" },
-  { fullName: "LEEN AMRO ISHAQ ABU-KHADRA", "headshot-image": "assets/Leen_FinalEdited.jpg" },
-  { fullName: "LEON PEREIRA", "headshot-image": "assets/LEON_FINAL.jpg" },
-  { fullName: "LIM PEI CHIN", "headshot-image": "assets/Pei Chin-2.png" },
-  { fullName: "LIM XIN YI", "headshot-image": "assets/XinYi.jpg" },
-  { fullName: "LIN WENKANG", "headshot-image": "assets/Wenkang_06.jpg" },
-  { fullName: "LIU XINXIN", "headshot-image": "assets/XinXin_Headshot_SpacingEdited_1.jpg" },
-  { fullName: "MADELINE SEE", "headshot-image": "assets/MadelineEdited_6.jpg" },
-  { fullName: "NG YIXUAN", "headshot-image": "assets/NgYixuan_FINAL.png" },
-  { fullName: "NICOLETTE WONG SU-ANN", "headshot-image": "assets/Nicolette_FINAL.jpg" },
-  { fullName: "NOR NADIA DIYANA BINTE MOHD NORZAIDI", "headshot-image": "assets/Nadia_FINAL.png" },
-  { fullName: "OH YU NING, DENISE", "headshot-image": "assets/DENISE_FINAL.jpg" },
-  { fullName: "ONG TIAN GUI GIVSON", "headshot-image": "assets/GIVSON_FINAL.jpg" },
-  { fullName: "ONG YONG QING", "headshot-image": "assets/YONG QING WHITE-2.png" },
-  { fullName: "SHAHEED IBNU MOHAMED HASSAN", "headshot-image": "assets/shaheedcleanededit.jpg" },
-  { fullName: "SIM ZHI-YI, JARED", "headshot-image": "assets/Jared_01.jpg" },
-  { fullName: "SING PEARLYN", "headshot-image": "assets/Pearlyn_FINAL.jpg" },
-  { fullName: "TAN LE EN, ASHLEY", "headshot-image": "assets/Ashley_FINAL.jpg" },
-  { fullName: "TEE JIA YU", "headshot-image": "assets/Jia Yu_FINAL.jpg" },
-  { fullName: "TEO JUN NING, CHLOE", "headshot-image": "assets/chloelighting.jpg" },
-  { fullName: "TEW JIA EN", "headshot-image": "assets/Jenn_FINAL.jpg" },
-  { fullName: "TONG SIYUAN", "headshot-image": "assets/Siyuan_FINAL.jpg" },
-  { fullName: "VELYN CHIA YU SHIN", "headshot-image": "assets/Velyn CROP-2.png" },
-  { fullName: "VILMOS SOH ZHI HAN", "headshot-image": "assets/Vilmos_FINAL.jpg" },
-  { fullName: "VINA SETIAWATY", "headshot-image": "assets/Vina_FINAL.jpg" },
-  { fullName: "WANG FAN", "headshot-image": "assets/Stephen_FINAL.jpg" },
-  { fullName: "WONG KAI YUN FELICIA", "headshot-image": "assets/Felicia_FINAL.jpg" },
-  { fullName: "YANG YIXUAN", "headshot-image": "assets/YangYixuan_FINAL.jpg" }
-];
-
 const DESIGNER_DATA = [
   {
     "fullName": "ADAM CHOO WEN WU",
@@ -79,7 +32,7 @@ const DESIGNER_DATA = [
       "writeUp": "The In(formal) Spaces Framework and Toolkit is a design intervention focused on “Accessibility through Informality”. We devised a system that encourages planners to design unique event spaces which incorporates a sense of informality, which in turn makes events more accessible.",
       "images": [
         "TISF1.jpg",
-        "TISF2.jpg"
+        "TISF2.JPG"
       ],
       "videoUrl": "https://www.youtube.com/embed/cZpUec_-sP4?si=ib4peTdepU5tU5ni"
     },
@@ -346,8 +299,8 @@ const DESIGNER_DATA = [
       ],
       "writeUp": "Beacon+ is a compact survival device using Active-Locate technology to bridge the gap between victims and rescuers. Its integrated inflatable beacon features a 360° high-intensity strobe, pinpointing individuals through smoke or dense foliage. By enabling active signaling, Beacon+ drastically reduces evacuation times during the critical \"Golden Hour\" of a crisis.",
       "images": [
-        "Image1.jpg",
-        "Image2.jpg",
+        "Image1.png",
+        "Image2.png",
         "Image3.jpg"
       ]
     },
@@ -455,9 +408,7 @@ const DESIGNER_DATA = [
       "platformName": "Fictitious Forms",
       "year": "2024",
       "supervisor": "Olivia Lee",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "Wall Earth Theory is a speculative project where Earth takes the form of a flat, planet-sized wall and people can only move on one plane like magnets on a fridge. Ordinary activities like cooking are radically different on the Wall Earth, but are made possible thanks to specially designed objects.",
       "images": [
         "wall1.png",
@@ -488,9 +439,7 @@ const DESIGNER_DATA = [
       "platformNameThesis": "Drawing /= drawing",
       "year": "2025",
       "supervisor": "Grace Tan",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "This project explores encoding transformative forms into knitted textiles. By combining wool yarn with a stable material within the knit structure, textures and forms emerge through aggressive washing (also known as fulling). By compiling morphed effects collected through material-driven exploration, a design space for transformative textile forms is defined.",
       "images": [
         "wool_1.png",
@@ -535,9 +484,7 @@ const DESIGNER_DATA = [
       "platformNameThesis": "Visualizing the City",
       "year": "2024",
       "supervisor": "Qimmy Lim",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "Home is more than just a word; its meaning shifts through the seasons and weighs differently on every heart. In this collection of 30 short letters, we delve into the essence of home through the eyes of fellow Singaporeans and the stories of how home ties us all back together.",
       "images": [
         "Home_ The Threads That Binds Us _0.jpg",
@@ -587,7 +534,7 @@ const DESIGNER_DATA = [
       ],
       "writeUp": "Nurture is a spatial learning platform redefining maternal education through immersive, flexible experiences. Developed with NUH Maternity Ward, it delivers interactive videos, 3D simulations, and on-demand modules on Apple Vision Pro. By combining trusted healthcare guidance with self-paced digital learning, it empowers mothers to feel confident and prepared for parenthood.",
       "images": [
-        "Nurture_1.jpg",
+        "Nurture_1.jpeg",
         "Nurture_2.jpg",
         "Nurture_3.jpg"
       ]
@@ -628,14 +575,12 @@ const DESIGNER_DATA = [
       "platformNameThesis": "Thesis",
       "year": "2026",
       "supervisor": "Hans Tan",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "Unobjectifying Objects reconsiders everyday objects beyond their utility, revealing the emotional meanings embedded within them through three acts: nullify, preserve, and renew. By permanently stripping objects of their original utility, preserving the memories they hold, and reconfiguring them into new forms, the project challenges how objective design doesn't have to end at usability.",
       "images": [
-        "UnobjectifyingObjects_1.JPG",
-        "UnobjectifyingObjects_2.JPG",
-        "UnobjectifyingObjects_3.JPG"
+        "Unobjectifyingobject_1.JPG",
+        "Unobjectifyingobject_2.JPG",
+        "Unobjectifyingobject_3.JPG"
       ]
     },
     "projectB": {
@@ -774,12 +719,10 @@ const DESIGNER_DATA = [
       "platformNameThesis": "Thesis",
       "year": "2026",
       "supervisor": "Hans Tan",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "Chapters reimagines how we grow plants in a home by eliminating the 'friction of care'. By replacing traditional repotting with a modular, expanding inner mesh and introducing self-regulating irrigation, it flattens the stressful spikes of plant parenthood. This allows plants to grow in the same environment without interruptions, enabling us to experience growing through chapters with Chapters.",
       "images": [
-        "Chapters 0.jpg",
+        "Chapters 01.jpg",
         "Chapters 02.jpg",
         "Chapters 03.jpg",
         "Chapters 04.jpg",
@@ -791,9 +734,7 @@ const DESIGNER_DATA = [
       "platformName": "Family of Forms",
       "year": "2024",
       "supervisor": "Christian Boucharenc",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "Symys is a contemporary reinterpretation of the traditional matcha ritual, inspired by the elegant form of Cosmarium algae. Crafted from frosted glass and chrome-finished stainless steel, it reflects the delicate beauty of the algae's mirrored halves. Designed to foster mindful preparation and connection, each piece complements the other, encouraging balance and quiet contemplation. Symys invites us to elevate our matcha ritual and reconnect with nature’s artistry.",
       "images": [
         "Symys 01.png",
@@ -824,9 +765,7 @@ const DESIGNER_DATA = [
       "platformNameThesis": "Thesis",
       "year": "2025-2026",
       "supervisor": "Janghee Cho",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "Qahwa in Migration is a design ethnography-led physical-digital framework that helps SWANA migrants in Singapore sustain Qahwa ritual through adaptation. Combining a reflective zine and the Qahwa Majlis web app, it makes hidden adjustments visible, reframes authenticity beyond rigid replication, and rebuilds hosting confidence, belonging, and community through gathering and exchange.",
       "images": [
         "Qahwa in Migration_1.jpeg",
@@ -973,9 +912,7 @@ const DESIGNER_DATA = [
       "platformNameThesis": "Thesis",
       "year": "2025/2026",
       "supervisor": "Patrick Chia",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "Co-Bou Collection revisits cuir bouilli, a historical leather-hardening technique, to explore leather as a structural material. Through controlled applications of heat and water, the project investigates how leather can transform from a soft surface into rigid, self-supporting forms, proposing an alternative understanding of leather beyond its conventional decorative and surface-oriented use.",
       "images": [
         "CB_1.jpg",
@@ -991,9 +928,7 @@ const DESIGNER_DATA = [
       "platformName": "The Appreciation of Wood Craft",
       "year": "2021",
       "supervisor": "Jason Ong",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "Created for The Appreciation of Wood Craft, this stool explores the dialogue between wood and leather through tension and restraint. Crafted from angsana and cherry wood, the frame supports a suspended leather seat that naturally conforms to the body. The piece highlights the warmth, tactility, and structural honesty of both materials through a simple yet intentional construction.",
       "images": [
         "Stool_1.jpg",
@@ -1024,9 +959,7 @@ const DESIGNER_DATA = [
       "platformNameThesis": "Thesis",
       "year": "2026",
       "supervisor": "Patrick Chia, Song Kee Hong",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "As the climate crisis worsens, the move towards sustainable farming will need to start at consumer demand.\n\nWorking with Talula Farms, I implemented a distribution channel for community group-buys, helping sustainable regional farms reach Singaporean households. The service interface spanned a standardised hosting framework, targeted marketing, and simplified ordering journeys.",
       "images": [
         "Community Buying for Sustainable Agriculture_1.png",
@@ -1073,9 +1006,7 @@ const DESIGNER_DATA = [
       "platformNameThesis": "Thesis",
       "year": "2025/2026",
       "supervisor": "Song Kee Hong",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "PENDING reframes early-stage hoarding not as clutter, but as delayed decision-making. Combining a companion app with identity-driven “Space Decision Profiles” and a physical toolkit, the project supports healthier decision-making habits through personalised behavioural nudges. By shifting intervention from reactive clean-ups to preventive support, PENDING encourages sustainable relationships with our spaces.",
       "images": [
         "PENDING 1.png",
@@ -1121,9 +1052,7 @@ const DESIGNER_DATA = [
       "platformNameThesis": "Thesis",
       "year": "2026",
       "supervisor": "Hans Tan",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "A Service Set for One examines the act of eating alone in an age where the mobile device has become a natural fixture at the table, structuring the meal into an act of divided attention. In giving the device a dedicated place, the plate stages a tension between historical rituals of dining and behaviours reshaping the meal today. Extending into the tools that once mediated eating, the cutlery collapses gestures of consumption and screen interaction into a new choreography of use. Together, they question what we are really consuming at the table.",
       "images": [
         "A Service Set for One_1.jpg",
@@ -1225,9 +1154,7 @@ const DESIGNER_DATA = [
       "platformNameThesis": "Thesis",
       "year": "2025/2026",
       "supervisor": "Christophe Gaubert",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "Designed around the realities of feeding on the go, mömigo is a reusable food-grade silicone bag that allows parents to freeze, warm and feed breastmilk in one continuous flow, reducing transfers, washing and mental load. Ultimately, this project rethinks the unseen effort behind something often assumed to be natural.",
       "images": [
         "mömigo_1.png",
@@ -1323,9 +1250,7 @@ const DESIGNER_DATA = [
       "platformNameThesis": "Visualizing the City",
       "year": "2024/2025",
       "supervisor": "Lim Qi Xuan",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "Across Singapore, every street, every corner holds a story—of childhood laughter, lifelong friendships, and quiet moments of reflection. These places shape us, anchoring our emotions to the physical world, whether in the warmth of a familiar home or somewhere new to us. In this project, we explore the psychological stories behind where people choose to spend their last location at and why so. Do they seek comfort in the familiar, or embrace the unknown for one last adventure?",
       "images": [
         "VTC 1.png",
@@ -1521,12 +1446,10 @@ const DESIGNER_DATA = [
     "personalDescription": "Hi, I’m Jared, and I like making sense of messy problems through design. To me, the best solution is rarely the most elegant or all-encompassing one; it is the one that makes the most sense in the real world, despite its compromises. I enjoy working end to end, from research to prototyping to execution, with a hands-on, slightly obsessive focus on usability, clarity, intuition, and thoughtful visual communication for users.",
     "projectA": {
       "title": "Steam-ID",
-      "platformNameThesis": "-",
+      "platformNameThesis": "",
       "year": "2025/2026",
       "supervisor": "Cheng Zhai Wei",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "Designed during my internship at Versuni as a UX Research Intern, Steam ID is a mobile-first web application that consolidates fragmented support resources into a single, intuitive interface. By integrating interactive 3D models, animated tutorials, and UX design principles, it enhances product maintenance through a more accessible and engaging digital support experience.",
       "images": [
         "Steam-ID1.png",
@@ -1669,9 +1592,7 @@ const DESIGNER_DATA = [
       "platformNameThesis": "Thesis",
       "year": "2025/2026",
       "supervisor": "Patrick Chia, Janghee Cho",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "First Floor Friends is a phygital neighbourhood system that mediates community cat encounters. Through spatial analysis of movement patterns and cat territories, physical touchpoints are situated where encounters typically occur, and introduces digital points of information entry within these spaces about the evolving presence and personalities of these cats.",
       "images": [
         "First Floor Friends_1.png",
@@ -1685,9 +1606,7 @@ const DESIGNER_DATA = [
       "platformName": "Direct to Design (& P for Planter)",
       "year": "2024",
       "supervisor": "Donn Koh",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "How can a planter draw attention to the plant's inherent beauty? Leveraging on water's refractive properties, this planter challenges the role of a conventional planter to reveal a plant's intricacies. The planter simultaneously acts as a water reserve for watering the plant, highlighting the symbiotic relationship between plant and planter.",
       "images": [
         "Planter_01.jpg",
@@ -1696,7 +1615,6 @@ const DESIGNER_DATA = [
         "Planter_04.jpg",
         "Planter_05.jpg"
       ],
-      "videoUrl": "-"
     },
     "industryTypeA": "UX/UI, User Research, Service Design",
     "specialisation": "Social & Service Transformation",
@@ -1719,9 +1637,7 @@ const DESIGNER_DATA = [
       "platformNameThesis": "Thesis",
       "year": "2025-2026",
       "supervisor": "Patrick Chia, Janghee Cho",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "Common Ground is a teaching kit for mainstream primary school teachers to foster empathy towards Students with Diverse Needs. It embeds empathy learning into everyday lessons through approaches like playful learning, empathetic roleplay, and guided discussions, complementing existing classroom practices and building inclusive learning environments without adding to teachers' workloads.",
       "images": [
         "CommonGround_1.jpg",
@@ -1767,9 +1683,7 @@ const DESIGNER_DATA = [
       "platformNameThesis": "Thesis",
       "year": "2026",
       "supervisor": "Hans Tan",
-      "teammates": [
-        "-"
-      ],
+      "teammates": [],
       "writeUp": "What if text could carry emotional nuances like the prosodic features of spoken speech? Experimental Text is an experiment that explores typography as a form of digital body language, where words stretch, distort, or move. Through public experimentation, the project investigates how digital text could expand its expressive capacity and uncover subtle social meanings.",
       "images": [
         "EXPTXT_1.png",

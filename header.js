@@ -12,10 +12,10 @@ function createHeader(activePage = '') {
             </a>
         </div>
         <div class="main-nav-links">
-            <a href="index.html" class="main-nav-link${activePage === 'home' ? ' active' : ''}" data-nav="home" style="display: none;">The Gradshow 26'</a>
-            <a href="index.html#graduates-grid-section" class="main-nav-link${activePage === 'graduates' ? ' active' : ''}" data-nav="graduates">The Graduates</a>
-            <a href="showcase.html" class="main-nav-link${activePage === 'showcase' ? ' active' : ''}" data-nav="showcase">The Showcase</a>
-            <a class="main-nav-link main-nav-link--placeholder" aria-disabled="true">The Gradbook</a>
+            <a href="index.html" class="main-nav-link${activePage === 'home' ? ' active' : ''}" data-nav="home" style="display: none;">Gradshow 26'</a>
+            <a href="index.html#graduates-grid-section" class="main-nav-link${activePage === 'graduates' ? ' active' : ''}" data-nav="graduates">Graduates</a>
+            <a href="showcase.html" class="main-nav-link${activePage === 'showcase' ? ' active' : ''}" data-nav="showcase">Showcase</a>
+            <a class="main-nav-link main-nav-link--placeholder" aria-disabled="true">Gradbook</a>
             <a href="https://cde.nus.edu.sg/did/" class="main-nav-link" target="_blank" rel="noopener noreferrer">About DID</a>
         </div>
     `;

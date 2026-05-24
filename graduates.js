@@ -2,20 +2,8 @@
 // Requires: data/data.js to be loaded first
 
 document.addEventListener('DOMContentLoaded', function() {
-    loadGraduates();
+    renderGraduateCards(DESIGNER_DATA);
 });
-
-async function loadGraduates() {
-    try {
-        const response = await fetch('data/graduates.json');
-        const data = await response.json();
-        renderGraduateCards(data.graduates);
-    } catch (error) {
-        console.error('Error loading graduates from JSON, using fallback data:', error);
-        // Fallback: use embedded data
-        renderGraduateCards(DESIGNER_DATA);
-    }
-}
 
 function renderGraduateCards(graduates) {
     const grid = document.getElementById('graduatesGrid');
@@ -61,7 +49,7 @@ function applyNewTabIfOffSite(anchor, href) {
     }
 }
 
-/** Optional explicit card URL from JSON/data; otherwise designer profile. */
+/** Optional explicit card URL from data; otherwise designer profile. */
 function getGraduateCardHref(graduate, fullName) {
     if (graduate && typeof graduate === 'object') {
         const keys = ['cardHref', 'cardUrl', 'externalUrl'];

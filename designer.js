@@ -121,12 +121,13 @@ function displayDesignerInfo(name) {
         designerRecord = allGraduates[currentDesignerIndex];
     }
 
-    // Display name on page (preferredFullName); URLs still use fullName via getFullName()
+    // Hero heading uses preferredFirstName; bio/links use preferredFullName. URLs use fullName.
     const displayName = designerRecord ? getDisplayName(designerRecord) : formatFullDisplayName(name);
+    const headingName = designerRecord ? getDesignerHeadingName(designerRecord) : formatFullDisplayName(name);
 
     const nameElement = document.getElementById('designerName');
     if (nameElement) {
-        nameElement.textContent = displayName;
+        nameElement.textContent = headingName;
     }
 
     // Bio / personal description
@@ -203,6 +204,16 @@ function getDisplayName(graduate) {
         return graduate.preferredFullName;
     }
     return formatFullDisplayName(graduate.fullName || '');
+}
+
+/** Large hero heading (#designerName) — first name only when available. */
+function getDesignerHeadingName(graduate) {
+    if (!graduate || typeof graduate !== 'object') {
+        return formatFullDisplayName(getFullName(graduate));
+    }
+    const first = graduate.preferredFirstName != null ? String(graduate.preferredFirstName).trim() : '';
+    if (first) return first;
+    return getDisplayName(graduate);
 }
 
 function toTitleCase(str) {
@@ -754,7 +765,9 @@ function populateProjects(designerRecord) {
         if (teammatesBlock && teammatesValue) {
             const list = Array.isArray(project.teammates) ? project.teammates.map(t => String(t).trim()).filter(Boolean) : [];
             teammatesValue.textContent = list.join(', ');
-            teammatesBlock.hidden = list.length === 0;
+            const hasTeammates = list.length > 0;
+            teammatesBlock.style.display = hasTeammates ? '' : 'none';
+            teammatesBlock.hidden = !hasTeammates;
         }
 
         const frames = slot.querySelectorAll('.project-frame');
