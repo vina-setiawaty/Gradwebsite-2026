@@ -7,6 +7,23 @@
 const MINIMUM_LOADING_TIME = 2000; // 2 seconds minimum display time
 const LOADING_PHOTO_CYCLE_MS = 500;
 const FEATURE_CARD_SLIDESHOW_MS = 1000; // Same interval as teaser.html
+const LOADING_SEEN_KEY = 'gradshow2026_loadingSeen';
+
+function hasSeenLoadingThisSession() {
+    try {
+        return sessionStorage.getItem(LOADING_SEEN_KEY) === '1';
+    } catch {
+        return false;
+    }
+}
+
+function markLoadingSeenThisSession() {
+    try {
+        sessionStorage.setItem(LOADING_SEEN_KEY, '1');
+    } catch {
+        /* private mode / blocked storage */
+    }
+}
 
 // ==================== LOADING PHOTOS ====================
 const loadingPhotos = [
@@ -32,6 +49,7 @@ const loadingPhotos = [
 
 // ==================== STATE ====================
 let currentPhotoIndex = 0;
+let loadingScreenPhotoIndex = 0;
 let photoInterval = null;
 let flipCardBgInterval = null;
 let flipCardBgPhotoIndex = 0;
@@ -113,15 +131,27 @@ function initFeatureCardSlideshow() {
 }
 
 /**
- * Advance slideshow index and update loading screen + flip-card back (if present).
+ * Random index for loading overlay only (avoid repeating the current image).
+ */
+function getRandomLoadingPhotoIndex(excludeIndex) {
+    if (loadingPhotos.length <= 1) return 0;
+    let next;
+    do {
+        next = Math.floor(Math.random() * loadingPhotos.length);
+    } while (next === excludeIndex);
+    return next;
+}
+
+/**
+ * Advance loading overlay (random) and flip-card back during load (sequential, if present).
  */
 function changePhoto() {
-    currentPhotoIndex = (currentPhotoIndex + 1) % loadingPhotos.length;
-
     if (loadingImage) {
-        applyLoadingPhotoToLoadingScreen(loadingImage, currentPhotoIndex);
+        loadingScreenPhotoIndex = getRandomLoadingPhotoIndex(loadingScreenPhotoIndex);
+        applyLoadingPhotoToLoadingScreen(loadingImage, loadingScreenPhotoIndex);
     }
     if (flipCardBackBgImage) {
+        currentPhotoIndex = (currentPhotoIndex + 1) % loadingPhotos.length;
         applyLoadingPhotoToFlipCard(flipCardBackBgImage, currentPhotoIndex);
     }
 }
@@ -153,6 +183,10 @@ function initLoadingAnimation() {
     preloadImages();
     if (loadingImage) {
         loadingImage.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+        if (loadingPhotos.length > 0) {
+            loadingScreenPhotoIndex = Math.floor(Math.random() * loadingPhotos.length);
+            loadingImage.src = loadingPhotos[loadingScreenPhotoIndex];
+        }
     }
     if (flipCardBackBgImage) {
         flipCardBackBgImage.style.transition = 'none';
@@ -176,9 +210,32 @@ function scrollToHashTargetAfterReveal() {
 }
 
 /**
+ * Return visit in same tab: overlay already hidden via html.skip-loading; show main immediately.
+ */
+function skipLoadingAndShowMain() {
+    if (photoInterval) {
+        clearInterval(photoInterval);
+        photoInterval = null;
+    }
+
+    if (loadingOverlay) {
+        loadingOverlay.classList.add('fade-out');
+    }
+
+    if (mainContent) {
+        mainContent.classList.add('visible');
+    }
+
+    startFlipCardBackSlideshowAfterReveal();
+    requestAnimationFrame(() => scrollToHashTargetAfterReveal());
+}
+
+/**
  * Reveal the main content and hide the loading overlay
  */
 function revealMainContent() {
+    markLoadingSeenThisSession();
+
     if (photoInterval) {
         clearInterval(photoInterval);
         photoInterval = null;
@@ -360,15 +417,16 @@ document.addEventListener('DOMContentLoaded', () => {
     flipCardBackBgImage = document.getElementById('flipCardBackBgImage');
     loadingOverlay = document.getElementById('loadingOverlay');
     mainContent = document.getElementById('mainContent');
-    
-    // Start loading animation
-    initLoadingAnimation();
 
-    // 4:3 feature card: cycle loadingPhotos (teaser-style instant swap)
+    preloadImages();
     initFeatureCardSlideshow();
-    
-    // Initialize page transition
-    initPageTransition();
+
+    if (hasSeenLoadingThisSession()) {
+        skipLoadingAndShowMain();
+    } else {
+        initLoadingAnimation();
+        initPageTransition();
+    }
 
     // Mobile: scroll-driven hover substitute for class photo + feature card
     initScrollRevealInteractions();

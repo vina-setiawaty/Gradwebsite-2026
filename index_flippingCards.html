@@ -7,6 +7,15 @@
     <title>2026 Division of Industrial Design Graduation Show</title>
     <link rel="icon" type="image/png" href="assets/logo_26.png">
     <link rel="apple-touch-icon" href="assets/logo_26.png">
+    <script>
+        (function () {
+            try {
+                if (sessionStorage.getItem('gradshow2026_loadingSeen') === '1') {
+                    document.documentElement.classList.add('skip-loading');
+                }
+            } catch (e) {}
+        })();
+    </script>
     <link rel="stylesheet" href="styles.css">
     <!-- Flip cards: styles local to this file only (not in styles.css) -->
     <style>

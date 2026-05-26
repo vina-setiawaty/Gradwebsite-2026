@@ -644,6 +644,19 @@ body {
     visibility: visible;
 }
 
+html.skip-loading .loading-overlay {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: none;
+}
+
+html.skip-loading .main-content {
+    opacity: 1;
+    visibility: visible;
+    transition: none;
+}
+
 /* ==================== MAIN NAVBAR (Light Theme) ==================== */
 .main-navbar {
     background-color: transparent;
