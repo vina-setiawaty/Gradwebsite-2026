@@ -475,18 +475,49 @@ function applyProjectStripWidths(track, frames, expandedIndex) {
 
     const k = n - 1;
     const expImg = imgs[expandedIndex];
+    const leftCount = expandedIndex;
+    const rightCount = n - 1 - expandedIndex;
     let wExp = intrinsicW(expImg);
     wExp = Math.min(wExp, S);
-    let wColl = (S - wExp) / k;
 
-    if (wColl < STRIP_MIN_COLLAPSED_PX) {
+    function slotWidthForIndex(i, wExpanded, wCollLeft, wCollRight) {
+        if (i === expandedIndex) return wExpanded;
+        if (i < expandedIndex) return wCollLeft;
+        return wCollRight;
+    }
+
+    if (leftCount === 0 || rightCount === 0) {
+        let wColl = (S - wExp) / k;
+        if (wColl < STRIP_MIN_COLLAPSED_PX) {
+            wExp = Math.min(intrinsicW(expImg), S - k * STRIP_MIN_COLLAPSED_PX);
+            wColl = (S - wExp) / k;
+        }
+        frames.forEach((frame, i) => {
+            setSlotWidth(frame, slotWidthForIndex(i, wExp, wColl, wColl));
+        });
+        return;
+    }
+
+    let wCollLeft = (S - wExp) / k;
+    let wCollRight = (S - wExp - leftCount * wCollLeft) / rightCount;
+
+    if (wCollRight < STRIP_MIN_COLLAPSED_PX) {
+        wCollRight = STRIP_MIN_COLLAPSED_PX;
+        wExp = Math.min(
+            intrinsicW(expImg),
+            S - leftCount * wCollLeft - rightCount * wCollRight
+        );
+        wCollRight = (S - wExp - leftCount * wCollLeft) / rightCount;
+    }
+
+    if (wCollLeft < STRIP_MIN_COLLAPSED_PX || wCollRight < STRIP_MIN_COLLAPSED_PX) {
         wExp = Math.min(intrinsicW(expImg), S - k * STRIP_MIN_COLLAPSED_PX);
-        wColl = (S - wExp) / k;
+        wCollLeft = (S - wExp) / k;
+        wCollRight = wCollLeft;
     }
 
     frames.forEach((frame, i) => {
-        const px = i === expandedIndex ? wExp : wColl;
-        setSlotWidth(frame, px);
+        setSlotWidth(frame, slotWidthForIndex(i, wExp, wCollLeft, wCollRight));
     });
 }
 function setupDesignerProjectSlider(slot) {
