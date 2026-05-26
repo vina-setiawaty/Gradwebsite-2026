@@ -2008,9 +2008,9 @@ const DESIGNER_DATA = [
     "industryTypeA": "UIUX Design, User Research, Experience Design",
     "specialisation": "",
     "industryTypeB": "User Research, Experience Design",
-    "email": "",
+    "email": "fwong432@gmail.com",
     "linkedinUrl": "",
-    "websitePortfolioUrl": "",
+    "websitePortfolioUrl": "https://feliciawong.myportfolio.com/",
     "behanceUrl": "",
     "instagramUrl": "",
     "otherUrl": ""

@@ -435,10 +435,24 @@ function syncProjectVisualHeight(slot, track, frames, imgs) {
  * Sets each slot width on .project-frame-media (animated). Image fills that box
  * so the frame's grey background does not flash during max-width transitions.
  */
+function clearProjectStripInlineWidths(frames) {
+    frames.forEach(frame => {
+        const media = frame.querySelector('.project-frame-media');
+        const img = frame.querySelector('.project-frame-img');
+        if (media) media.style.removeProperty('max-width');
+        if (img) img.style.removeProperty('max-width');
+    });
+}
+
 function applyProjectStripWidths(track, frames, expandedIndex) {
     const imgs = frames.map(f => f.querySelector('.project-frame-img')).filter(Boolean);
     const n = imgs.length;
     if (!track || n === 0) return;
+
+    if (isProjectStripStackedLayout()) {
+        clearProjectStripInlineWidths(frames);
+        return;
+    }
 
     const rect = track.getBoundingClientRect();
     let h = rect.height;
@@ -554,12 +568,21 @@ function setupDesignerProjectSlider(slot) {
     function applyLayout() {
         syncProjectVisualHeight(slot, track, frames, imgs);
         void track.offsetHeight;
+        if (isProjectStripStackedLayout()) {
+            clearProjectStripInlineWidths(frames);
+            clearExpanded();
+            return;
+        }
         applyProjectStripWidths(track, frames, currentIndex);
     }
     const applyLayoutDebounced = debounce(applyLayout, 80);
 
     function onStripLayoutModeChange() {
-        applyLayoutDebounced();
+        if (isProjectStripStackedLayout()) {
+            applyLayoutDebounced();
+        } else {
+            applyExpandFrame(0, 'init');
+        }
     }
     PROJECT_STRIP_STACKED_MQ.addEventListener('change', onStripLayoutModeChange);
 
@@ -579,6 +602,7 @@ function setupDesignerProjectSlider(slot) {
     }
 
     function tryExpandFromPointerIdle() {
+        if (isProjectStripStackedLayout()) return;
         if (isWidthTransitioning) return;
         if (requirePointerMoveAfterExpand) return;
         if (lastPointerX < 0) return;
@@ -658,6 +682,7 @@ function setupDesignerProjectSlider(slot) {
     }
 
     function applyExpandFrame(i, source = 'pointer') {
+        if (isProjectStripStackedLayout()) return;
         activeTransitionBatchId += 1;
         const batchId = activeTransitionBatchId;
         isWidthTransitioning = true;
@@ -677,7 +702,11 @@ function setupDesignerProjectSlider(slot) {
         applyLayout();
     }
 
-    applyExpandFrame(0, 'init');
+    if (isProjectStripStackedLayout()) {
+        applyLayout();
+    } else {
+        applyExpandFrame(0, 'init');
+    }
 
     track._sliderCleanup = () => {
         PROJECT_STRIP_STACKED_MQ.removeEventListener('change', onStripLayoutModeChange);
