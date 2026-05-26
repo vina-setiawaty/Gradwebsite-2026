@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026 Division of Industrial Design Graduation Show</title>
+    <link rel="icon" type="image/png" href="assets/logo_26.png">
+    <link rel="apple-touch-icon" href="assets/logo_26.png">
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -21,7 +23,7 @@
         <main class="loading-screen">
             <div class="loading-container">
                 <div class="loading-image-wrapper">
-                    <img id="loadingImage" src="./assets/loadingPhotos/Screenshot 2026-02-26 154921.png" alt="Loading">
+                    <img id="loadingImage" src="./loadingPhotos/DSCF0375.JPG" alt="Loading">
                 </div>
                 <!-- <p class="coming-soon">COMING SOON</p> -->
             </div>
@@ -84,7 +86,7 @@
                         </div>
                         <div class="hero-event-details">
                             <span class="hero-venue">Singapore Science Park 1</span>
-                            <span class="hero-time">|</span>
+                            <span class="hero-time hero-separator">|</span>
                             <span class="hero-time">10AM - 8PM</span>
                         </div>
                     </div>
@@ -121,9 +123,12 @@
 
             <!-- Feature Cards Section -->
             <section class="feature-cards-section">
-                <a href="index.html" class="feature-card-link">
-                    <div class="feature-card">
-                        <img src="./assets/Cover_Cohort.png" alt="The Grad Show 2026" class="feature-card-cover">
+                <!-- <a href="index.html" class="feature-card-link"> -->
+                    <div class="feature-card feature-card-link">
+                        <picture>
+                            <source media="(max-width: 768px)" srcset="./assets/SeeHowWeDidIt_horizontal.png">
+                            <img src="./assets/Cover_Cohort.png" alt="The Grad Show 2026" class="feature-card-cover">
+                        </picture>
                         <div class="feature-card-shade" aria-hidden="true"></div>
                         <div class="feature-card-pop">
                             <span class="feature-card-pop-title">#SeeHowWeDidIt</span>
@@ -131,27 +136,10 @@
                             </p>
                         </div>
                     </div>
-                </a>
-                <a href="#graduates-grid-section" class="feature-card-link">
-                    <div class="feature-card">
-                        <img src="./assets/Cover_26.png" alt="The graduates" class="feature-card-cover">
-                        <div class="feature-card-shade" aria-hidden="true"></div>
-                        <div class="feature-card-pop">
-                            <span class="feature-card-pop-title">The Graduates</span>
-                            <p class="feature-card-pop-desc">Meet the 43 faces behind the graduating batch of NUS Industrial Design 2026.</p>
-                        </div>
-                    </div>
-                </a>
-                <a href="showcase.html" class="feature-card-link">
-                    <div class="feature-card">
-                        <img src="./assets/poster.jpg" alt="The showcase" class="feature-card-cover">
-                        <div class="feature-card-shade" aria-hidden="true"></div>
-                        <div class="feature-card-pop">
-                            <span class="feature-card-pop-title">The Showcase</span>
-                            <p class="feature-card-pop-desc">Our journey culminated in a physical graduation show which showcases the graduating cohort's projects, process, and work. We invite you to join us in celebrating the end of this chapter.</p>
-                        </div>
-                    </div>
-                </a>
+                <!-- </a> -->
+                <div class="feature-card-photos">
+                    <img id="featureCardSlideshow" src="./loadingPhotos/DSCF0375.JPG" alt="" class="feature-card-photos-img">
+                </div>
             </section>
 
             <!-- Graduates Grid Section -->

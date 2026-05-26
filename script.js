@@ -6,24 +6,36 @@
 // ==================== CONFIGURATION ====================
 const MINIMUM_LOADING_TIME = 2000; // 2 seconds minimum display time
 const LOADING_PHOTO_CYCLE_MS = 500;
+const FEATURE_CARD_SLIDESHOW_MS = 1000; // Same interval as teaser.html
 
 // ==================== LOADING PHOTOS ====================
 const loadingPhotos = [
-    'assets/loadingPhotos/DSCF0375.JPG',
-    'assets/loadingPhotos/DSCF0384.JPG',
-    'assets/loadingPhotos/DSCF0403.JPG',
-    'assets/loadingPhotos/IMG_2428.jpg',
-    'assets/loadingPhotos/PXL_20260108_044359167.MP.jpg',
-    'assets/loadingPhotos/PXL_20260108_044505748.MP.jpg',
-    'assets/loadingPhotos/PXL_20260108_044735494.MP.jpg',
-    'assets/loadingPhotos/Screenshot 2026-02-26 154921.png',
-  ];
+    'loadingPhotos/DSCF0375.JPG',
+    'loadingPhotos/DSCF0384.JPG',
+    'loadingPhotos/DSCF0403.JPG',
+    'loadingPhotos/IMG_2428.jpg',
+    'loadingPhotos/IMG_2736.jpg',
+    'loadingPhotos/IMG_2739.jpg',
+    'loadingPhotos/IMG_9734.jpg',
+    'loadingPhotos/IMG_9773.jpg',
+    'loadingPhotos/IMG_9827.jpg',
+    'loadingPhotos/photo_2025-12-12_17-57-37.jpg',
+    'loadingPhotos/photo_2025-12-18_17-40-52.jpg',
+    'loadingPhotos/photo_2025-12-18_17-40-53.jpg',
+    'loadingPhotos/photo_2026-01-14_15-43-44.jpg',
+    'loadingPhotos/PXL_20260108_044359167.MP.jpg',
+    'loadingPhotos/PXL_20260108_044505748.MP.jpg',
+    'loadingPhotos/PXL_20260108_044735494.MP.jpg',
+    'loadingPhotos/PXL_20260314_091902696.MP.jpg',
+    'loadingPhotos/Screenshot 2026-02-26 154921.png',
+];
 
 // ==================== STATE ====================
 let currentPhotoIndex = 0;
 let photoInterval = null;
 let flipCardBgInterval = null;
 let flipCardBgPhotoIndex = 0;
+let featureCardSlideshowTimer = null;
 let pageLoaded = false;
 let minimumTimePassed = false;
 
@@ -72,6 +84,32 @@ function applyLoadingPhotoToFlipCard(img, index) {
     img.style.opacity = '';
     img.style.transform = '';
     img.src = loadingPhotos[index];
+}
+
+/**
+ * 4:3 feature card: instant swap through loadingPhotos (same as teaser.html).
+ */
+function applyLoadingPhotoInstant(img, index) {
+    if (!img) return;
+    img.src = loadingPhotos[index];
+}
+
+/**
+ * Start slideshow on the single 4:3 feature card.
+ */
+function initFeatureCardSlideshow() {
+    const img = document.getElementById('featureCardSlideshow');
+    if (!img || loadingPhotos.length === 0) return;
+
+    let index = 0;
+    applyLoadingPhotoInstant(img, index);
+
+    if (loadingPhotos.length <= 1) return;
+
+    featureCardSlideshowTimer = setInterval(() => {
+        index = (index + 1) % loadingPhotos.length;
+        applyLoadingPhotoInstant(img, index);
+    }, FEATURE_CARD_SLIDESHOW_MS);
 }
 
 /**
@@ -225,6 +263,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Start loading animation
     initLoadingAnimation();
+
+    // 4:3 feature card: cycle loadingPhotos (teaser-style instant swap)
+    initFeatureCardSlideshow();
     
     // Initialize page transition
     initPageTransition();
