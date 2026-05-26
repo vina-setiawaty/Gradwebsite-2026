@@ -451,7 +451,7 @@ const DESIGNER_DATA = [
       "title": "P-Threads",
       "platformName": "Bound to Bond",
       "year": "2024",
-      "supervisor": "Yen Ching-Chiuan",
+      "supervisor": "Dr. Yen Ching-Chiuan",
       "teammates": [
         "Sharon Lee Si Ying"
       ],
@@ -497,7 +497,7 @@ const DESIGNER_DATA = [
       "title": "Shizuku",
       "platformName": "Improving Everyday Life",
       "year": "2024",
-      "supervisor": "Christian",
+      "supervisor": "Christian Boucharenc",
       "teammates": [
         "Seah Jun Hao Reynard"
       ],
@@ -828,7 +828,7 @@ const DESIGNER_DATA = [
       "title": "Resonaid",
       "platformName": "Design for Medicine",
       "year": "2025",
-      "supervisor": "Yen Ching-Chiuan",
+      "supervisor": "Dr. Yen Ching-Chiuan",
       "teammates": [
         "Beatrice Lum",
         "Lu Enze"
@@ -1018,7 +1018,7 @@ const DESIGNER_DATA = [
       "title": "(RE)PLACE",
       "platformName": "SPACE-PLACE-TRACE",
       "year": "2025",
-      "supervisor": "Timothy Hoo Yee Meng",
+      "supervisor": "Timothy Hoo",
       "teammates": [
         "Tay Yun Jun",
         "Jan Abigail Ampo Juarez"
@@ -1169,7 +1169,7 @@ const DESIGNER_DATA = [
       "title": "STOMO",
       "platformName": "Design for Medicine",
       "year": "2025",
-      "supervisor": "Yen Ching Chiuan",
+      "supervisor": "Dr. Yen Ching-Chiuan",
       "teammates": [
         "Loh Wan Sing",
         "Wee Kai Bin"
@@ -1203,7 +1203,7 @@ const DESIGNER_DATA = [
       "title": "Osoi",
       "platformNameThesis": "Family of Forms",
       "year": "2024",
-      "supervisor": "Christian",
+      "supervisor": "Christian Boucharenc",
       "teammates": [],
       "writeUp": "Inspired by the art of tea-making, Osoi embodies verticality, tension, and mass in a quiet, reflective ceremony. Each piece evokes intentional slowness, where vertical lines draw focus, gentle curves create subtle movement, and mass grounding each vessel. Osoi invites a pause, celebrating tea as an art of simplicity and presence in its sculptural grace.",
       "images": [
@@ -1218,7 +1218,7 @@ const DESIGNER_DATA = [
       "title": "Klov",
       "platformName": "Native Colours",
       "year": "2023",
-      "supervisor": "Tiffany",
+      "supervisor": "Tiffany Loy",
       "teammates": [
         "Sophia Chin"
       ],
@@ -1249,7 +1249,7 @@ const DESIGNER_DATA = [
       "title": "In this Place, I feel",
       "platformNameThesis": "Visualizing the City",
       "year": "2024/2025",
-      "supervisor": "Lim Qi Xuan",
+      "supervisor": "Qimmy Lim",
       "teammates": [],
       "writeUp": "Across Singapore, every street, every corner holds a story—of childhood laughter, lifelong friendships, and quiet moments of reflection. These places shape us, anchoring our emotions to the physical world, whether in the warmth of a familiar home or somewhere new to us. In this project, we explore the psychological stories behind where people choose to spend their last location at and why so. Do they seek comfort in the familiar, or embrace the unknown for one last adventure?",
       "images": [
@@ -1649,7 +1649,7 @@ const DESIGNER_DATA = [
       "title": "Back To Campus",
       "platformName": "Space-Place-Trace",
       "year": "2025",
-      "supervisor": "Timothy Hoo Yee Meng",
+      "supervisor": "Timothy Hoo",
       "teammates": [
         "Wee Jie Basil",
         "Yip Jia Xin Connie"
@@ -1694,7 +1694,7 @@ const DESIGNER_DATA = [
       "title": "ANEMONI",
       "platformName": "Bound to Bond",
       "year": "2024",
-      "supervisor": "Yen Ching Chiuan",
+      "supervisor": "Dr. Yen Ching-Chiuan",
       "teammates": [
         "Sophia Chin"
       ],
