@@ -1753,6 +1753,7 @@ body.main-nav-menu-open {
     line-height: var(--leading-snug);
     /* text-transform: uppercase; */
     text-align: center;
+    height: 1.5rem;
 }
 
 /* ==================== DESIGNER PAGE ==================== */
