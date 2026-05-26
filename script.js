@@ -252,6 +252,106 @@ function initPageTransition() {
     }, 5000);
 }
 
+// ==================== MOBILE SCROLL-REVEAL (hover substitute) ====================
+
+const CLASS_PHOTO_SCROLL_THRESHOLD_PX = 50;
+const SCROLL_REVEAL_ACTIVE_CLASS = 'is-scroll-active';
+
+const scrollRevealMobileMq = window.matchMedia('(max-width: 768px)');
+const scrollRevealCoarseMq = window.matchMedia('(hover: none) and (pointer: coarse)');
+
+let classPhotoScrollRevealTeardown = null;
+let featureCardScrollRevealTeardown = null;
+
+function shouldUseScrollReveal() {
+    return scrollRevealMobileMq.matches || scrollRevealCoarseMq.matches;
+}
+
+function isElementInViewport(el) {
+    const rect = el.getBoundingClientRect();
+    return rect.bottom > 0 && rect.top < window.innerHeight;
+}
+
+function updateClassPhotoScrollReveal(container) {
+    const active =
+        window.scrollY >= CLASS_PHOTO_SCROLL_THRESHOLD_PX && isElementInViewport(container);
+    container.classList.toggle(SCROLL_REVEAL_ACTIVE_CLASS, active);
+}
+
+function setupClassPhotoScrollReveal(container) {
+    const onUpdate = () => updateClassPhotoScrollReveal(container);
+
+    window.addEventListener('scroll', onUpdate, { passive: true });
+    window.addEventListener('resize', onUpdate, { passive: true });
+    onUpdate();
+
+    return () => {
+        window.removeEventListener('scroll', onUpdate);
+        window.removeEventListener('resize', onUpdate);
+        container.classList.remove(SCROLL_REVEAL_ACTIVE_CLASS);
+    };
+}
+
+function setupFeatureCardScrollReveal(card) {
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                card.classList.toggle(SCROLL_REVEAL_ACTIVE_CLASS, entry.isIntersecting);
+            });
+        },
+        {
+            root: null,
+            rootMargin: '0px 0px -60% 0px',
+            threshold: 0.25,
+        }
+    );
+
+    observer.observe(card);
+
+    return () => {
+        observer.disconnect();
+        card.classList.remove(SCROLL_REVEAL_ACTIVE_CLASS);
+    };
+}
+
+function teardownScrollRevealInteractions() {
+    if (classPhotoScrollRevealTeardown) {
+        classPhotoScrollRevealTeardown();
+        classPhotoScrollRevealTeardown = null;
+    }
+    if (featureCardScrollRevealTeardown) {
+        featureCardScrollRevealTeardown();
+        featureCardScrollRevealTeardown = null;
+    }
+}
+
+function initScrollRevealInteractions() {
+    teardownScrollRevealInteractions();
+
+    if (!shouldUseScrollReveal()) return;
+
+    const classPhotoContainer = document.querySelector('.class-photo-container');
+    const featureCard = document.querySelector('.feature-card-link');
+
+    if (classPhotoContainer) {
+        classPhotoScrollRevealTeardown = setupClassPhotoScrollReveal(classPhotoContainer);
+    }
+    if (featureCard) {
+        featureCardScrollRevealTeardown = setupFeatureCardScrollReveal(featureCard);
+    }
+}
+
+function initScrollRevealMediaListeners() {
+    const onChange = () => initScrollRevealInteractions();
+    if (typeof scrollRevealMobileMq.addEventListener === 'function') {
+        scrollRevealMobileMq.addEventListener('change', onChange);
+        scrollRevealCoarseMq.addEventListener('change', onChange);
+    } else {
+        scrollRevealMobileMq.addListener(onChange);
+        scrollRevealCoarseMq.addListener(onChange);
+    }
+}
+
 // ==================== INITIALIZATION ====================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -269,4 +369,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize page transition
     initPageTransition();
+
+    // Mobile: scroll-driven hover substitute for class photo + feature card
+    initScrollRevealInteractions();
+    initScrollRevealMediaListeners();
 });

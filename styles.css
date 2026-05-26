@@ -142,6 +142,7 @@ body {
     min-height: 100svh;
     position: relative;
     overflow-x: hidden;
+    /* overflow-y: scroll; */
 }
 
 /* ==================== CANVAS BACKGROUND ==================== */
@@ -914,11 +915,13 @@ body.main-nav-menu-open {
     opacity: 0;
 }
 
-.class-photo-container:hover .class-photo-normal {
+.class-photo-container:hover .class-photo-normal,
+.class-photo-container.is-scroll-active .class-photo-normal {
     opacity: 0;
 }
 
-.class-photo-container:hover .class-photo-hover {
+.class-photo-container:hover .class-photo-hover,
+.class-photo-container.is-scroll-active .class-photo-hover {
     opacity: 1;
 }
 
@@ -1116,18 +1119,21 @@ body.main-nav-menu-open {
 }
 
 .feature-card-link:hover .feature-card-shade,
-.feature-card-link:focus-visible .feature-card-shade {
+.feature-card-link:focus-visible .feature-card-shade,
+.feature-card-link.is-scroll-active .feature-card-shade {
     opacity: 1;
 }
 
 .feature-card-link:hover .feature-card-pop,
-.feature-card-link:focus-visible .feature-card-pop {
+.feature-card-link:focus-visible .feature-card-pop,
+.feature-card-link.is-scroll-active .feature-card-pop {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
 }
 
 .feature-card-link:hover .feature-card,
-.feature-card-link:focus-visible .feature-card {
+.feature-card-link:focus-visible .feature-card,
+.feature-card-link.is-scroll-active.feature-card {
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
 }
 
@@ -1138,7 +1144,8 @@ body.main-nav-menu-open {
     }
 
     .feature-card-link:hover .feature-card-pop,
-    .feature-card-link:focus-visible .feature-card-pop {
+    .feature-card-link:focus-visible .feature-card-pop,
+    .feature-card-link.is-scroll-active .feature-card-pop {
         transform: translate(-50%, -50%);
     }
 
@@ -1193,7 +1200,7 @@ body.main-nav-menu-open {
 }
 
 .sponsors-marquee {
-    /* overflow: hidden; */
+    overflow: hidden;
     width: 100%;
     max-width: 1920px;
     /* width: 1920px; */
@@ -2476,6 +2483,9 @@ body.main-nav-menu-open {
         height: auto;
         object-fit: contain;
     }
+    .project-description {
+        max-width: 100%;
+    }
 
     .other-designers-section .section-title {
         font-size: var(--text-h4);
@@ -2582,6 +2592,10 @@ body.main-nav-menu-open {
     }
 
     .section-placeholder-text {
+        font-size: var(--text-h3);
+    }
+
+    .section-heading {
         font-size: var(--text-h3);
     }
 
@@ -2731,7 +2745,7 @@ body.main-nav-menu-open {
 .showcase-intro-text {
     font-size: var(--text-m);
     line-height: 1.8;
-    color: var(--color-text-secondary);
+    /* color: var(--color-text-secondary); */
 }
 
 .showcase-intro-hashtag {
