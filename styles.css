@@ -1546,6 +1546,10 @@ body.main-nav-menu-open {
     vertical-align: -0.06em;
 }
 
+.graduates-heading-grad span {
+    letter-spacing: -0.08em;
+}
+
 .graduates-section-caption {
     margin: 0;
     font-size: var(--text-m);
