@@ -89,7 +89,7 @@
     --color-text: var(--purple-4);              /* Headings, nav, names, prominent UI text */
     --color-text-body: var(--purple-4);           /* Body copy, paragraphs, descriptions */
     --color-text-secondary: var(--grey-2);      /* Muted labels, captions, supporting text */
-    --color-text-light: var(--white);           /* Text on dark/image backgrounds */
+    --color-text-light: var(--purple-1);           /* Text on dark/image backgrounds */
     --color-text-light-muted: rgba(255, 255, 255, 0.75); /* Muted text on dark backgrounds (inputs) */
     --color-text-placeholder: rgba(0, 0, 0, 0.3);       /* Empty-state placeholder text */
     --color-accent: var(--purple-3);            /* Accent headings, CTAs, brand highlights */
@@ -1070,6 +1070,88 @@ body.main-nav-menu-open {
     object-fit: cover;
     object-position: center center;
     display: block;
+    transform: scale(1);
+    transition: transform 0.45s ease;
+}
+
+.feature-card-photos:hover .feature-card-photos-img {
+    transform: scale(1.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .feature-card-photos-img {
+        transition: none;
+    }
+
+    .feature-card-photos:hover .feature-card-photos-img {
+        transform: scale(1);
+    }
+}
+
+.feature-card-photos::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 30%;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--purple-4) 85%, transparent) 0%,
+        transparent 100%
+    );
+}
+
+.feature-card-photos::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 50%;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        color-mix(in srgb, var(--purple-4) 85%, transparent) 100%
+    );
+}
+
+.feature-card-photos-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    padding: var(--space-8);
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.feature-card-photos-overlay-title {
+    position: absolute;
+    top: var(--space-8);
+    left: var(--space-8);
+    font-size: var(--text-h4);
+    font-weight: 600;
+    color: var(--color-text-light);
+    line-height: 1;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
+.feature-card-photos-overlay-desc {
+    position: absolute;
+    right: var(--space-8);
+    bottom: var(--space-8);
+    max-width: 28rem;
+    margin: 0;
+    font-size: var(--text-m);
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--color-text-light);
+    text-align: right;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 .feature-card-shade {
@@ -1619,6 +1701,34 @@ body.main-nav-menu-open {
     height: 100%;
     object-fit: cover;
     object-position: center top;
+    display: block;
+}
+
+.graduate-photo-frame--hoverable .graduate-headshot--project {
+    top: 100%;
+    height: 50%;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 50%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 50%);
+    transition: top 0.35s ease;
+}
+
+.graduate-photo-frame--hoverable:hover .graduate-headshot--project {
+    top: 50%;
+}
+
+.graduate-name--project {
+    display: none;
+}
+
+.graduate-name--default {
+    display: block;
+}
+
+.graduate-photo-frame--hoverable:hover + .graduate-info .graduate-name--default {
+    display: none;
+}
+
+.graduate-photo-frame--hoverable:hover + .graduate-info .graduate-name--project {
     display: block;
 }
 
@@ -2371,6 +2481,21 @@ body.main-nav-menu-open {
         aspect-ratio: 4 / 3;
     }
 
+    .feature-card-photos-overlay {
+        padding: var(--space-6);
+    }
+
+    .feature-card-photos-overlay-title {
+        top: var(--space-6);
+        left: var(--space-6);
+    }
+
+    .feature-card-photos-overlay-desc {
+        right: var(--space-6);
+        bottom: var(--space-6);
+        max-width: min(18rem, 55%);
+    }
+
     .section-placeholder-text {
         font-size: var(--text-h3);
     }
@@ -2615,6 +2740,14 @@ body.main-nav-menu-open {
 
     .feature-card-pop-desc {
         font-size: var(--text-xs);
+    }
+
+    .feature-card-photos-overlay-title {
+        font-size: var(--text-m);
+    }
+
+    .feature-card-photos-overlay-desc {
+        font-size: var(--text-m);
     }
 
     .section-placeholder-text {

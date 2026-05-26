@@ -50,6 +50,15 @@ function applyNewTabIfOffSite(anchor, href) {
 }
 
 /** Optional explicit card URL from data; otherwise designer profile. */
+function getProjectAFirstImageSrc(graduate) {
+    if (!graduate || typeof graduate !== 'object') return '';
+    const projectA = graduate.projectA;
+    if (!projectA || !Array.isArray(projectA.images)) return '';
+    const first = projectA.images.map((s) => String(s).trim()).find(Boolean);
+    if (!first) return '';
+    return `./projectImages/${encodeURIComponent(first)}`;
+}
+
 function getGraduateCardHref(graduate, fullName) {
     if (graduate && typeof graduate === 'object') {
         const keys = ['cardHref', 'cardUrl', 'externalUrl'];
@@ -64,12 +73,20 @@ function getGraduateCardHref(graduate, fullName) {
 function createGraduateCard(graduate, index) {
     // Handle both object format { fullName: "...", "headshot-image": "..." } and string format
     const fullName = typeof graduate === 'object' ? graduate.preferredFullName : graduate;
+    const projectATitle =
+        typeof graduate === 'object' && graduate.projectA?.title != null
+            ? String(graduate.projectA.title).trim()
+            : '';
     const filename =
         typeof graduate === 'object' && graduate['headshot-image'] != null
             ? String(graduate['headshot-image']).trim()
             : '';
     const headshotRaw = filename ? `./headshotImages/${filename}` : '';
     const hasHeadshot = headshotRaw.length > 0;
+    const projectImageRaw =
+        typeof graduate === 'object' ? getProjectAFirstImageSrc(graduate) : '';
+    const hasProjectHover = hasHeadshot && projectImageRaw.length > 0;
+    const shouldSwapNameOnHover = hasProjectHover && projectATitle.length > 0;
 
     const card = document.createElement('a');
     const cardHref = getGraduateCardHref(graduate, fullName);
@@ -77,14 +94,33 @@ function createGraduateCard(graduate, index) {
     applyNewTabIfOffSite(card, cardHref);
     card.className = 'graduate-card';
 
-    const photoHtml = hasHeadshot
-        ? `<div class="graduate-photo-frame"><img class="graduate-headshot" src="${escapeHtml(headshotRaw)}" alt="${escapeHtml(fullName)}" loading="lazy" decoding="async"></div>`
-        : `<div class="graduate-photo-frame graduate-photo-frame--empty"><span>PHOTO</span></div>`;
+    let photoHtml;
+    if (hasHeadshot && hasProjectHover) {
+        const projectTitle =
+            typeof graduate === 'object' && graduate.projectA?.title
+                ? String(graduate.projectA.title).trim()
+                : 'Project';
+        photoHtml = `<div class="graduate-photo-frame graduate-photo-frame--hoverable">
+            <img class="graduate-headshot graduate-headshot--default" src="${escapeHtml(headshotRaw)}" alt="${escapeHtml(fullName)}" loading="lazy" decoding="async">
+            <img class="graduate-headshot graduate-headshot--project" src="${escapeHtml(projectImageRaw)}" alt="${escapeHtml(fullName)} — ${escapeHtml(projectTitle)}" loading="lazy" decoding="async">
+        </div>`;
+    } else if (hasHeadshot) {
+        photoHtml = `<div class="graduate-photo-frame"><img class="graduate-headshot" src="${escapeHtml(headshotRaw)}" alt="${escapeHtml(fullName)}" loading="lazy" decoding="async"></div>`;
+    } else {
+        photoHtml = `<div class="graduate-photo-frame graduate-photo-frame--empty"><span>PHOTO</span></div>`;
+    }
 
     card.innerHTML = `
         ${photoHtml}
         <div class="graduate-info">
-            <span class="graduate-name">${escapeHtml(fullName)}</span>
+            <span class="graduate-name graduate-name--default">${escapeHtml(fullName)}</span>
+            ${
+                shouldSwapNameOnHover
+                    ? `<span class="graduate-name graduate-name--project">${escapeHtml(
+                          projectATitle
+                      )}</span>`
+                    : ''
+            }
         </div>
     `;
 

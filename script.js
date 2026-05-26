@@ -54,6 +54,7 @@ let photoInterval = null;
 let flipCardBgInterval = null;
 let flipCardBgPhotoIndex = 0;
 let featureCardSlideshowTimer = null;
+let featureCardSlideshowIndex = 0;
 let pageLoaded = false;
 let minimumTimePassed = false;
 
@@ -112,22 +113,42 @@ function applyLoadingPhotoInstant(img, index) {
     img.src = loadingPhotos[index];
 }
 
+function stopFeatureCardSlideshow() {
+    if (featureCardSlideshowTimer != null) {
+        clearInterval(featureCardSlideshowTimer);
+        featureCardSlideshowTimer = null;
+    }
+}
+
+function startFeatureCardSlideshow(img) {
+    if (!img || loadingPhotos.length <= 1) return;
+    stopFeatureCardSlideshow();
+    featureCardSlideshowTimer = setInterval(() => {
+        featureCardSlideshowIndex =
+            (featureCardSlideshowIndex + 1) % loadingPhotos.length;
+        applyLoadingPhotoInstant(img, featureCardSlideshowIndex);
+    }, FEATURE_CARD_SLIDESHOW_MS);
+}
+
 /**
- * Start slideshow on the single 4:3 feature card.
+ * Start slideshow on the single 4:3 feature card; pauses while hovering the photos card.
  */
 function initFeatureCardSlideshow() {
     const img = document.getElementById('featureCardSlideshow');
+    const photosCard = document.querySelector('.feature-card-photos');
     if (!img || loadingPhotos.length === 0) return;
 
-    let index = 0;
-    applyLoadingPhotoInstant(img, index);
+    featureCardSlideshowIndex = 0;
+    applyLoadingPhotoInstant(img, featureCardSlideshowIndex);
 
     if (loadingPhotos.length <= 1) return;
 
-    featureCardSlideshowTimer = setInterval(() => {
-        index = (index + 1) % loadingPhotos.length;
-        applyLoadingPhotoInstant(img, index);
-    }, FEATURE_CARD_SLIDESHOW_MS);
+    startFeatureCardSlideshow(img);
+
+    if (photosCard) {
+        photosCard.addEventListener('mouseenter', stopFeatureCardSlideshow);
+        photosCard.addEventListener('mouseleave', () => startFeatureCardSlideshow(img));
+    }
 }
 
 /**
