@@ -2493,7 +2493,7 @@ body.main-nav-menu-open {
     .feature-card-photos-overlay-desc {
         right: var(--space-6);
         bottom: var(--space-6);
-        max-width: min(18rem, 55%);
+        max-width: max(18rem, 70%);
     }
 
     .section-placeholder-text {
@@ -2747,7 +2747,7 @@ body.main-nav-menu-open {
     }
 
     .feature-card-photos-overlay-desc {
-        font-size: var(--text-m);
+        font-size: var(--text-s);
     }
 
     .section-placeholder-text {
