@@ -651,13 +651,22 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 100;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     max-width: 1920px;
     margin: 0 auto;
     width: 100%;
+    box-sizing: border-box;
+}
+
+/* Reserve space below fixed navbar (page-wrapper + index main-content layouts) */
+.page-wrapper > main,
+.main-content > main {
+    padding-top: var(--navbar-scroll-offset);
 }
 
 .main-navbar.scrolled {
@@ -1200,7 +1209,7 @@ body.main-nav-menu-open {
 }
 
 .sponsors-marquee {
-    overflow: hidden;
+    /* overflow: hidden; */
     width: 100%;
     max-width: 1920px;
     /* width: 1920px; */
@@ -1528,7 +1537,7 @@ body.main-nav-menu-open {
     margin: 0;
     font-size: var(--text-m);
     line-height: 1.55;
-    color: var(--color-text-secondary);
+    color: var(--color-text-body);
     font-weight: 400;
 }
 

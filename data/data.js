@@ -195,7 +195,7 @@ const DESIGNER_DATA = [
     "personalDescription": "I am passionate about product and service design, especially when it comes to user research and understanding people on a deeper level. I find the most satisfaction in creating solutions that genuinely alleviate pain points while elevating overall experience. Designing is a journey, and it grows as I collaborate with others and learn more about myself. I'm driven by moments when I help people uncover needs they didn't even realize they had.",
     "projectA": {
       "title": "INYO",
-      "platformNameThesis": "ceramic circuits",
+      "platformNameThesis": "Ceramic Circuits",
       "year": "2023",
       "supervisor": "Clement Zheng",
       "teammates": [
@@ -436,7 +436,7 @@ const DESIGNER_DATA = [
     "personalDescription": "I discover design through interrogating the relationships between humans, materials, and the cultural and systemic frameworks that shape them. I am drawn to the complexity embedded in our interactions with the material world, with a particular inclination towards textile materials and digital fabrication systems.",
     "projectA": {
       "title": "Transformative Wool Textiles",
-      "platformNameThesis": "Drawing /= drawing",
+      "platformNameThesis": "Drawing ≠ drawing",
       "year": "2025",
       "supervisor": "Grace Tan",
       "teammates": [],
