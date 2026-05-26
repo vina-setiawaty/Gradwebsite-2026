@@ -1796,6 +1796,10 @@ body.main-nav-menu-open {
     margin-bottom: var(--space-6);
 }
 
+.designer-projects-header .graduates-section-heading {
+    margin: 0;
+}
+
 .designer-project {
     display: grid;
     grid-template-columns: minmax(0, 3fr) minmax(0, 7fr);
@@ -1825,13 +1829,14 @@ body.main-nav-menu-open {
     font-family: var(--font-primary);
     font-size: clamp(var(--text-h3), 2.2vw, var(--text-h2));
     font-weight: 700;
-    letter-spacing: 0.06em;
+    /* letter-spacing: 0.06em; */
     line-height: var(--leading-snug);
     text-transform: uppercase;
     color: var(--color-text);
 }
 
 .project-title-prefix {
+    display:none;
     font-family: var(--font-display);
     color: var(--purple-3);
     font-size: 1.5em;
@@ -2378,8 +2383,8 @@ body.main-nav-menu-open {
     }
 
     .designer-column.designer-column-left {
-        --designer-name-size: calc(var(--text-h3) * 1.25);
-        --designer-hello-size: calc(var(--text-h4) * 1.1);
+        --designer-name-size: calc(var(--text-h1) * 1.25);
+        --designer-hello-size: calc(var(--text-h3) * 1.25);
     }
 
     .designer-layout {
@@ -2571,11 +2576,6 @@ body.main-nav-menu-open {
         font-size: var(--text-xs);
     }
 
-    .designer-column.designer-column-left {
-        --designer-name-size: calc(var(--text-h4) * 1.25);
-        --designer-hello-size: calc(var(--text-m) * 1.25);
-    }
-
     .designer-bio-text {
         font-size: var(--text-m);
         line-height: 1.6;
@@ -2679,6 +2679,7 @@ body.main-nav-menu-open {
     border-radius: 0;
     padding: 0;
     box-shadow: none;
+    width: 100%;
     min-width: 0;
     container-type: inline-size;
     container-name: event-details;
@@ -2700,7 +2701,8 @@ body.main-nav-menu-open {
     align-items: center;
 }
 
-@container event-details (max-width: 18rem) {
+/* Stack label above value when the card is too narrow for side-by-side layout */
+@container event-details (max-width: 20rem) {
     .event-details-list {
         grid-template-columns: minmax(0, 1fr);
     }
@@ -2723,10 +2725,11 @@ body.main-nav-menu-open {
 }
 
 .event-detail-icon {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     display: block;
     flex-shrink: 0;
+    color: var(--color-accent);
 }
 
 .event-detail-label {
@@ -2743,6 +2746,7 @@ body.main-nav-menu-open {
     font-size: var(--text-m);
     line-height: 1.7;
     color: var(--color-text);
+    margin-left: calc(24px + var(--space-3));
 }
 
 .event-detail-value br {
@@ -2851,10 +2855,11 @@ body.main-nav-menu-open {
     }
 
     .event-details-card {
-        max-width: 420px;
+        width: 100%;
         margin: 0 auto;
         padding-top: var(--space-8);
         border-top: 1px solid rgba(41, 18, 76, 0.14);
+        margin-top: -8px;
     }
 
     .getting-there-grid {

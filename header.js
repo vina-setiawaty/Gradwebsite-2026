@@ -175,7 +175,7 @@ const FOOTER_SHARE_BODY = `We warmly invite you to join us at the DID Graduation
 
 #SeeHowWeDidIt.
 
-2026 Division of Industrial Design Graduation Show — Coming Soon. Check it out!`.trim();
+2026 Division of Industrial Design Graduation Show — Check it out!`.trim();
 
 function initFooterShareMenu(footer) {
     const wrap = footer.querySelector('.footer-share-wrap');
