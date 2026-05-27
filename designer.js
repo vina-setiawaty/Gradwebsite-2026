@@ -1,5 +1,8 @@
 // Designer Page JavaScript
-// Requires: data/data.js to be loaded first
+// Requires: data/data.js, graduates.js (createGraduateCard) to be loaded first
+
+const OTHER_DESIGNERS_DESKTOP_COUNT = 6;
+const OTHER_DESIGNERS_MOBILE_MQL = '(max-width: 768px)';
 
 let allGraduates = [];
 let currentDesignerIndex = -1;
@@ -248,26 +251,72 @@ function toTitleCase(str) {
     ).join(' ');
 }
 
+function getNextDesigners(count) {
+    const n = allGraduates.length;
+    if (n === 0 || currentDesignerIndex < 0) return [];
+    const out = [];
+    for (let i = 1; i <= count && i < n; i++) {
+        out.push(allGraduates[(currentDesignerIndex + i) % n]);
+    }
+    return out;
+}
+
+function isOtherDesignersMobileView() {
+    return window.matchMedia(OTHER_DESIGNERS_MOBILE_MQL).matches;
+}
+
+function getPrevDesigner() {
+    const n = allGraduates.length;
+    if (n <= 1 || currentDesignerIndex < 0) return null;
+    return allGraduates[(currentDesignerIndex - 1 + n) % n];
+}
+
+/** Desktop: next N in list order. Mobile: previous + next around current profile. */
+function getOtherDesignersToShow() {
+    const n = allGraduates.length;
+    if (n === 0 || currentDesignerIndex < 0) return [];
+
+    if (isOtherDesignersMobileView()) {
+        if (n === 1) return [];
+        if (n === 2) {
+            return [allGraduates[(currentDesignerIndex + 1) % n]];
+        }
+        return [getPrevDesigner(), allGraduates[(currentDesignerIndex + 1) % n]];
+    }
+
+    return getNextDesigners(OTHER_DESIGNERS_DESKTOP_COUNT);
+}
+
+let otherDesignersMqlBound = false;
+
+function setupOtherDesignersResponsive() {
+    if (otherDesignersMqlBound) return;
+    otherDesignersMqlBound = true;
+    const mql = window.matchMedia(OTHER_DESIGNERS_MOBILE_MQL);
+    const onChange = () => loadOtherDesigners();
+    if (typeof mql.addEventListener === 'function') {
+        mql.addEventListener('change', onChange);
+    } else if (typeof mql.addListener === 'function') {
+        mql.addListener(onChange);
+    }
+}
+
 function loadOtherDesigners() {
     const container = document.getElementById('otherDesignersList');
     if (!container) return;
-    
+
+    setupOtherDesignersResponsive();
+
     container.innerHTML = '';
-    
-    // Get all designers (including current one)
-    allGraduates.forEach((graduate, index) => {
+
+    if (typeof createGraduateCard !== 'function') return;
+
+    const designersToShow = getOtherDesignersToShow();
+    designersToShow.forEach((graduate, index) => {
+        const card = createGraduateCard(graduate, index, { cardClass: 'other-designer-card' });
         const fullName = getFullName(graduate);
-        const link = document.createElement('a');
-        link.href = `designer.html?name=${encodeURIComponent(fullName)}`;
-        link.className = 'other-designer-link';
-
-        // Highlight current designer
-        if (index === currentDesignerIndex) {
-            link.classList.add('current');
-        }
-
-        link.textContent = getDisplayName(graduate);
-        container.appendChild(link);
+        card.href = `designer.html?name=${encodeURIComponent(fullName)}`;
+        container.appendChild(card);
     });
 }
 

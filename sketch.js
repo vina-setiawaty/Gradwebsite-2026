@@ -51,6 +51,9 @@ let selectedChoice = null;
 // Gallery modal state
 let showGallery = false;
 let galleryViewChar = null;
+let galleryScrollY = 0;
+let galleryTouchStart = null;
+let galleryDidScroll = false;
 
 // Restored from sessionStorage when user already completed the quiz this session
 let storedQuizTool = null;
@@ -77,26 +80,8 @@ const CHARACTERS = {
 };
 
 const QUIZ_TOOL_SESSION_KEY = "gradshow2026_quizTool";
-const SITE_VISITED_KEY = "gradshow2026_siteVisited";
-const LOADING_SEEN_KEY = "gradshow2026_loadingSeen";
 
-let gradSiteVisitLabel = "Visit gradshow site  ↗";
-
-function hasVisitedGradSite() {
-  try {
-    if (localStorage.getItem(SITE_VISITED_KEY) === "1") return true;
-    if (sessionStorage.getItem(LOADING_SEEN_KEY) === "1") return true;
-  } catch (e) {
-    // Private mode / storage disabled
-  }
-  return false;
-}
-
-function initGradSiteVisitLabel() {
-  if (hasVisitedGradSite()) {
-    gradSiteVisitLabel = "Back to Gradsite  ↗";
-  }
-}
+const gradSiteVisitLabel = "Visit the Gradsite  ↗";
 
 function isValidQuizTool(tool) {
   return tool && Object.prototype.hasOwnProperty.call(CHARACTERS, tool);
@@ -310,7 +295,6 @@ function setup() {
     }
   ];
 
-  initGradSiteVisitLabel();
   restoreQuizResultIfSaved();
 }
 
@@ -403,25 +387,30 @@ function drawStartScreen() {
   const lineHeight = 1.5;
 
   push();
-  textAlign(LEFT);
+  textAlign(CENTER);
 
   textSize(18);
   textStyle(BOLD);
   fill("#7A00DB"); // Purple-600
-  let txt1 = "Every design gradshow is more than just final pieces on display.";
+  let txt1 = "Every design gradshow is more than just the works on display.";
   text(txt1, cx, currentY, cw);
   let lines1 = calculateLines(txt1, cw, 18);
   currentY += (18 * lineHeight * lines1) + 15;
 
+  
+
+  
+  
+ 
   textSize(16);
   textStyle(NORMAL);
   fill("#1A0F22"); // Ink-900 dark text
-  let txt2 = "It's different people, different strengths, different ways of working.";
+  let txt2 = "It's the designers and their unique strengths and ways of working. ";
   text(txt2, cx, currentY, cw);
   let lines2 = calculateLines(txt2, cw, 16);
   currentY += (16 * lineHeight * lines2) + 30;
 
-  let txt3 = "Some people plan. Some people improvise. Some perfect. Some bring the vibes. Before you head down to the DID Graduation Show, let's find out… ";
+  let txt3 = " Some plan, some improvise. Some are perfectionist, and some just go with vibes. Before heading down to the DID graduation show, let's find out… ";
   text(txt3, cx, currentY, cw);
   let lines3 = calculateLines(txt3, cw, 16);
   currentY += (16 * lineHeight * lines3) + 15;
@@ -500,18 +489,21 @@ function drawQuiz() {
   drawQuestionScreen(QUESTIONS[currentIdx]);
 }
 
+function finishCalculating() {
+  appState = "result";
+  saveQuizToolToSession();
+}
+
 function drawCalculatingScreen() {
-  const cw = contentWidth();
-  const cx = contentX();
+  if (millis() - time >= wait) {
+    finishCalculating();
+    return;
+  }
 
   textSize(22); // Heading size
   fill("#1A0F22");
   textStyle(BOLD);
-  if (millis() - time >= wait) {
-    text("Done!", width / 2, height / 2 - 40);
-  } else {
-    text("Calculating your results…", width / 2, height / 2 - 40);
-  }
+  text("Calculating your results…", width / 2, height / 2 - 40);
   textStyle(NORMAL);
 
   textSize(15);
@@ -521,14 +513,7 @@ function drawCalculatingScreen() {
     lastSwap = millis();
   }
 
-  if (millis() - time <= wait) {
-    text(calc[idx], width / 2, height / 2);
-  }
-
-  const btnY = height - pad - btnH;
-  if (millis() - time >= wait) {
-    drawButton(cx, btnY, cw, btnH, "Reveal Result", isTouching(cx, btnY, cw, btnH));
-  }
+  text(calc[idx], width / 2, height / 2);
 }
 
 function drawResultScreen() {
@@ -552,7 +537,7 @@ function drawResultScreen() {
   }
 }
 
-// Result buttons: row1 visit (full), row2 retake|seeAll, row3 share (full)
+// Result buttons: row1 share (full), row2 gradsite (full), row3 retake|seeAll
 function getResultButtonLayout() {
   const isLandscape = width > height;
   const btnGapVert = isLandscape
@@ -576,10 +561,10 @@ function getResultButtonLayout() {
     const btn3Y = btn2Y + btnHL + btnGapVert;
 
     return {
-      visit: { x: rightX, y: btn1Y, w: rightW, h: btnHL },
-      retake: { x: rightX, y: btn2Y, w: halfW, h: btnHL },
-      seeAll: { x: rightX + halfW + btnGapHoriz, y: btn2Y, w: halfW, h: btnHL },
-      share: { x: rightX, y: btn3Y, w: rightW, h: btnHL },
+      share: { x: rightX, y: btn1Y, w: rightW, h: btnHL },
+      visit: { x: rightX, y: btn2Y, w: rightW, h: btnHL },
+      retake: { x: rightX, y: btn3Y, w: halfW, h: btnHL },
+      seeAll: { x: rightX + halfW + btnGapHoriz, y: btn3Y, w: halfW, h: btnHL },
       firstButtonY: btn1Y,
     };
   }
@@ -593,24 +578,24 @@ function getResultButtonLayout() {
   const btn1Y = btn2Y - btnH - btnGapVert;
 
   return {
-    visit: { x: cx, y: btn1Y, w: cw, h: btnH },
-    retake: { x: cx, y: btn2Y, w: halfW, h: btnH },
-    seeAll: { x: cx + halfW + btnGapHoriz, y: btn2Y, w: halfW, h: btnH },
-    share: { x: cx, y: btn3Y, w: cw, h: btnH },
+    share: { x: cx, y: btn1Y, w: cw, h: btnH },
+    visit: { x: cx, y: btn2Y, w: cw, h: btnH },
+    retake: { x: cx, y: btn3Y, w: halfW, h: btnH },
+    seeAll: { x: cx + halfW + btnGapHoriz, y: btn3Y, w: halfW, h: btnH },
     firstButtonY: btn1Y,
   };
 }
 
 function drawResultActionButtons() {
   const B = getResultButtonLayout();
+  drawButton(B.share.x, B.share.y, B.share.w, B.share.h, "Share my result  ↗",
+    isTouching(B.share.x, B.share.y, B.share.w, B.share.h));
   drawButton(B.visit.x, B.visit.y, B.visit.w, B.visit.h, gradSiteVisitLabel,
     isTouching(B.visit.x, B.visit.y, B.visit.w, B.visit.h));
   drawSecondaryButton(B.retake.x, B.retake.y, B.retake.w, B.retake.h, "Retake the quiz",
     isTouching(B.retake.x, B.retake.y, B.retake.w, B.retake.h));
-  drawSecondaryButton(B.seeAll.x, B.seeAll.y, B.seeAll.w, B.seeAll.h, "See all 12 tools",
+  drawSecondaryButton(B.seeAll.x, B.seeAll.y, B.seeAll.w, B.seeAll.h, "View all 12 tools",
     isTouching(B.seeAll.x, B.seeAll.y, B.seeAll.w, B.seeAll.h));
-  drawSecondaryButton(B.share.x, B.share.y, B.share.w, B.share.h, "Share my result  ↗",
-    isTouching(B.share.x, B.share.y, B.share.w, B.share.h));
 }
 
 function handleResultActionTap(px, py) {
@@ -626,6 +611,7 @@ function handleResultActionTap(px, py) {
   if (hit(px, py, B.seeAll.x, B.seeAll.y, B.seeAll.w, B.seeAll.h)) {
     showGallery = true;
     galleryViewChar = null;
+    galleryScrollY = 0;
     return true;
   }
   if (hit(px, py, B.share.x, B.share.y, B.share.w, B.share.h)) {
@@ -697,7 +683,9 @@ function drawResultScreenPortrait(character, res) {
 
 /* ---------------- GALLERY MODAL ---------------- */
 
-// Fixed 3×4 tools grid — same modal and thumb sizes on all viewports
+const GALLERY_SCROLLBAR = { barW: 6, pad: 8 };
+
+// Fixed 3×4 tools grid — scrolls when content exceeds viewport height
 function getGalleryGridLayout() {
   const gridPad = 12;
   const cols = 3;
@@ -705,9 +693,19 @@ function getGalleryGridLayout() {
   const headerH = 60;
   const thumbW = 104;
   const thumbH = thumbW * 1.33;
-  const modalW = gridPad * (cols + 1) + cols * thumbW;
+  const baseModalW = gridPad * (cols + 1) + cols * thumbW;
   const gridH = rows * thumbH + (rows - 1) * gridPad;
-  const modalH = headerH + gridH + gridPad * 2;
+  const contentH = gridH + gridPad * 2;
+  const idealModalH = headerH + contentH;
+  const maxModalH = height - 40;
+  const modalH = min(idealModalH, maxModalH);
+  const scrollAreaH = modalH - headerH;
+  const scrollable = contentH > scrollAreaH;
+  const scrollBarExtraW = scrollable
+    ? GALLERY_SCROLLBAR.pad + GALLERY_SCROLLBAR.barW + GALLERY_SCROLLBAR.pad
+    : 0;
+  const modalW = baseModalW + scrollBarExtraW;
+  const maxScroll = max(0, contentH - scrollAreaH);
   const modalX = (width - modalW) / 2;
   const modalY = max(20, (height - modalH) / 2);
 
@@ -716,15 +714,64 @@ function getGalleryGridLayout() {
     modalY,
     modalW,
     modalH,
+    headerH,
     gridPad,
     cols,
     rows,
     thumbW,
     thumbH,
-    gridStartY: modalY + headerH,
+    gridH,
+    contentH,
+    scrollAreaH,
+    scrollable,
+    scrollBarExtraW,
+    maxScroll,
     closeSize: 40,
   };
 }
+
+function clampGalleryScroll(G) {
+  galleryScrollY = constrain(galleryScrollY, 0, G.maxScroll);
+}
+
+function getGalleryThumbRect(G, index) {
+  const col = index % G.cols;
+  const row = floor(index / G.cols);
+  const viewportTop = G.modalY + G.headerH;
+  const thumbX = G.modalX + G.gridPad + col * (G.thumbW + G.gridPad);
+  const thumbY = viewportTop + G.gridPad + row * (G.thumbH + G.gridPad) - galleryScrollY;
+  return { x: thumbX, y: thumbY, w: G.thumbW, h: G.thumbH };
+}
+
+function isInGalleryViewport(G, y, h) {
+  const viewportTop = G.modalY + G.headerH;
+  const viewportBottom = viewportTop + G.scrollAreaH;
+  return y + h > viewportTop && y < viewportBottom;
+}
+
+function drawGalleryScrollbar(G) {
+  if (!G.scrollable) return;
+
+  const { barW, pad } = GALLERY_SCROLLBAR;
+  const viewportTop = G.modalY + G.headerH;
+  const trackX = G.modalX + G.modalW - barW - pad;
+  const trackY = viewportTop + pad;
+  const trackH = G.scrollAreaH - pad * 2;
+  const thumbH = max(28, trackH * (G.scrollAreaH / G.contentH));
+  const thumbTravel = trackH - thumbH;
+  const thumbY = G.maxScroll > 0
+    ? trackY + (galleryScrollY / G.maxScroll) * thumbTravel
+    : trackY;
+
+  noStroke();
+  fill("#E8DDF0");
+  rect(trackX, trackY, barW, trackH, barW / 2);
+
+  fill("#9B7FB8");
+  rect(trackX, thumbY, barW, thumbH, barW / 2);
+}
+
+const GALLERY_TOOLS = ["hammer", "calipers", "vr", "mouse", "mat", "glue", "sewing", "tape", "notepad", "coffee", "ruler", "thumb"];
 
 function drawGalleryModal() {
   // Semi-transparent backdrop (lighter, matches design)
@@ -745,68 +792,78 @@ function drawGalleryModal() {
 }
 
 function drawGalleryGrid(G) {
-  const { modalX: x, modalY: y, modalW: w, modalH: h } = G;
+  clampGalleryScroll(G);
 
-  // Cream modal background with dark border
-  fill("#FAF6F0"); // Cream
+  const { modalX: x, modalY: y, modalW: w, modalH: h, headerH, scrollAreaH } = G;
+  const viewportTop = y + headerH;
+
+  // Purple-2 modal background with dark border
+  fill("#FDF7FF"); // Purple-1
   stroke("#1A0F22"); // Ink-900 border
   strokeWeight(2);
   rect(x, y, w, h, 24);
-  
-  // Close button (X)
+
+  // Close button (X) — fixed in header
   noStroke();
   const closeX = x + w - G.closeSize - 10;
   const closeY = y + 10;
-  
+
   if (isTouching(closeX, closeY, G.closeSize, G.closeSize)) {
     fill("#F4ECFB"); // Purple-100
     circle(closeX + G.closeSize / 2, closeY + G.closeSize / 2, G.closeSize);
   }
-  
+
   fill("#1A0F22"); // Ink-900
   textSize(28);
   textStyle(NORMAL);
   textAlign(CENTER, CENTER);
   text("×", closeX + G.closeSize / 2, closeY + G.closeSize / 2);
-  
-  const { gridStartY, gridPad, cols, rows, thumbW, thumbH } = G;
-  
-  const tools = ["hammer", "calipers", "vr", "mouse", "mat", "glue", "sewing", "tape", "notepad", "coffee", "ruler", "thumb"];
-  
-  for (let i = 0; i < tools.length; i++) {
-    const col = i % cols;
-    const row = Math.floor(i / cols);
-    const thumbX = x + gridPad + col * (thumbW + gridPad);
-    const thumbY = gridStartY + row * (thumbH + gridPad);
-    
-    // Thumbnail image
-    const thumb = RESULT_IMAGES[tools[i] + "_thumb"];
-    if (thumb) {
+
+  // Scrollable grid area
+  push();
+  drawingContext.save();
+  drawingContext.beginPath();
+  const clipW = w - 2 - G.scrollBarExtraW;
+  drawingContext.rect(x + 1, viewportTop, clipW, scrollAreaH);
+  drawingContext.clip();
+
+  for (let i = 0; i < GALLERY_TOOLS.length; i++) {
+    const tool = GALLERY_TOOLS[i];
+    const thumb = getGalleryThumbRect(G, i);
+    const { x: thumbX, y: thumbY, w: thumbW, h: thumbH } = thumb;
+
+    const img = RESULT_IMAGES[tool + "_thumb"];
+    if (img) {
       imageMode(CORNER);
-      image(thumb, thumbX, thumbY, thumbW, thumbH);
+      image(img, thumbX, thumbY, thumbW, thumbH);
     } else {
-      // Placeholder
       fill(240);
       noStroke();
       rect(thumbX, thumbY, thumbW, thumbH, 12);
       fill(150);
       textSize(12);
-      text(tools[i], thumbX + thumbW/2, thumbY + thumbH/2);
+      textAlign(CENTER, CENTER);
+      text(tool, thumbX + thumbW / 2, thumbY + thumbH / 2);
     }
-    
-    // Hover effect - dark ink border
-    if (isTouching(thumbX, thumbY, thumbW, thumbH)) {
+
+    if (isInGalleryViewport(G, thumbY, thumbH) &&
+        isTouching(thumbX, thumbY, thumbW, thumbH)) {
       noFill();
       stroke("#1A0F22"); // Ink-900
       strokeWeight(3);
       rect(thumbX, thumbY, thumbW, thumbH, 12);
     }
   }
+
+  drawingContext.restore();
+  pop();
+
+  drawGalleryScrollbar(G);
 }
 
 function drawGalleryCharacterView(x, y, w, h) {
-  // Cream modal background with dark border
-  fill("#FAF6F0"); // Cream
+  // Purple-2 modal background with dark border
+  fill("#FDF7FF"); // Purple-1
   stroke("#1A0F22"); // Ink-900
   strokeWeight(2);
   rect(x, y, w, h, 24);
@@ -862,27 +919,24 @@ function handleGalleryTap(px, py) {
   }
   
   const G = getGalleryGridLayout();
-  const { modalX, modalY, modalW, gridStartY, gridPad, cols, thumbW, thumbH } = G;
+  const { modalX, modalY, modalW } = G;
 
   // Close button (X)
   const closeX = modalX + modalW - G.closeSize - 10;
   const closeY = modalY + 10;
-  
+
   if (hit(px, py, closeX, closeY, G.closeSize, G.closeSize)) {
     showGallery = false;
+    galleryScrollY = 0;
     return;
   }
-  
-  const tools = ["hammer", "calipers", "vr", "mouse", "mat", "glue", "sewing", "tape", "notepad", "coffee", "ruler", "thumb"];
-  
-  for (let i = 0; i < tools.length; i++) {
-    const col = i % cols;
-    const row = Math.floor(i / cols);
-    const thumbX = modalX + gridPad + col * (thumbW + gridPad);
-    const thumbY = gridStartY + row * (thumbH + gridPad);
-    
-    if (hit(px, py, thumbX, thumbY, thumbW, thumbH)) {
-      galleryViewChar = tools[i];
+
+  for (let i = 0; i < GALLERY_TOOLS.length; i++) {
+    const thumb = getGalleryThumbRect(G, i);
+    if (!isInGalleryViewport(G, thumb.y, thumb.h)) continue;
+
+    if (hit(px, py, thumb.x, thumb.y, thumb.w, thumb.h)) {
+      galleryViewChar = GALLERY_TOOLS[i];
       return;
     }
   }
@@ -893,12 +947,55 @@ function mousePressed() {
   return false;
 }
 
+function mouseWheel(event) {
+  if (!showGallery || galleryViewChar) return true;
+
+  const G = getGalleryGridLayout();
+  if (!G.scrollable) return true;
+
+  galleryScrollY = constrain(galleryScrollY + event.deltaY * 0.5, 0, G.maxScroll);
+  return false;
+}
+
 function touchStarted() {
   const t = (touches && touches.length) ? touches[0] : null;
-  const px = t ? t.x : mouseX;
-  const py = t ? t.y : mouseY;
+  if (!t) return false;
 
-  handleTap(px, py);
+  if (showGallery && !galleryViewChar) {
+    const G = getGalleryGridLayout();
+    if (G.scrollable) {
+      galleryTouchStart = { x: t.x, y: t.y, scrollY: galleryScrollY };
+      galleryDidScroll = false;
+      return false;
+    }
+  }
+
+  handleTap(t.x, t.y);
+  return false;
+}
+
+function touchMoved() {
+  if (!showGallery || galleryViewChar || !galleryTouchStart) return false;
+
+  const t = (touches && touches.length) ? touches[0] : null;
+  if (!t) return false;
+
+  const dy = t.y - galleryTouchStart.y;
+  if (abs(dy) > 8 || galleryDidScroll) {
+    galleryDidScroll = true;
+    const G = getGalleryGridLayout();
+    galleryScrollY = constrain(galleryTouchStart.scrollY - dy, 0, G.maxScroll);
+  }
+  return false;
+}
+
+function touchEnded() {
+  if (showGallery && galleryTouchStart && !galleryDidScroll) {
+    handleGalleryTap(galleryTouchStart.x, galleryTouchStart.y);
+  }
+
+  galleryTouchStart = null;
+  galleryDidScroll = false;
   return false;
 }
 
@@ -914,15 +1011,6 @@ function handleTap(px, py) {
       appState = "preparing";
       time = millis();
       idx = 0;
-    }
-    return;
-  }
-
-  if (appState === "calculating") {
-    const btnY = height - pad - btnH;
-    if (millis() - time >= wait && hit(px, py, cx, btnY, cw, btnH)) {
-      appState = "result";
-      saveQuizToolToSession();
     }
     return;
   }
@@ -986,6 +1074,7 @@ function restartQuiz() {
   selectedChoice = null;
   showGallery = false;
   galleryViewChar = null;
+  galleryScrollY = 0;
   locked = false;
   appState = "start";
   questionAlpha = 255;
@@ -1347,9 +1436,10 @@ function drawQuestionScreen(q) {
 
   // ---------- DRAW CONFIRM ----------
   const canConfirm = selectedChoice !== null;
+  const confirmLabel = currentIdx === QUESTIONS.length - 1 ? "Submit" : "Next";
   const confirmFrameX = L.isLandscape ? (L.confirmX - 20) : L.confirmX;
   const confirmFrameW = L.isLandscape ? (L.confirmW + 40) : L.confirmW;
-  drawConfirmButton(confirmFrameX, L.confirmY, confirmFrameW, btnH, "Confirm  →",
+  drawConfirmButton(confirmFrameX, L.confirmY, confirmFrameW, btnH, confirmLabel,
     isTouching(L.confirmX, L.confirmY, L.confirmW, btnH), canConfirm, questionAlpha);
 
   pop();
@@ -1482,16 +1572,15 @@ function drawChoiceButton(x, y, w, h, label, hot, isSelected, alpha) {
   const textStartX = actualBX + 14 + circleD + 12;
   const textEndX = actualBX + bw - 16;
   const textAreaW = textEndX - textStartX;
-  const textCenterX = (textStartX + textEndX) / 2;
-  
+
   const lines = wrapText(label, textAreaW);
   const lineHeight = 20;
   const totalTextH = lines.length * lineHeight;
   const startY = actualBY + h / 2 - totalTextH / 2 + lineHeight / 2;
-  
-  textAlign(CENTER, CENTER);
+
+  textAlign(LEFT, CENTER);
   for (let i = 0; i < lines.length; i++) {
-    text(lines[i], textCenterX, startY + i * lineHeight);
+    text(lines[i], textStartX, startY + i * lineHeight);
   }
   textStyle(NORMAL);
 }

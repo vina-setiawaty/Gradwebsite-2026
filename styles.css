@@ -1120,7 +1120,7 @@ body.main-nav-menu-open {
     }
 }
 
-.feature-card-photos::before {
+/* .feature-card-photos::before {
     content: '';
     position: absolute;
     left: 0;
@@ -1134,7 +1134,7 @@ body.main-nav-menu-open {
         color-mix(in srgb, var(--purple-4) 85%, transparent) 0%,
         transparent 100%
     );
-}
+} */
 
 .feature-card-photos::after {
     content: '';
@@ -1273,7 +1273,165 @@ body.main-nav-menu-open {
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
 }
 
+/* Quiz feature card: no hover, focus reveal, or scroll-reveal substitute */
+.feature-card-link--static .feature-card {
+    cursor: default;
+}
+
+.feature-card-link--static:hover .feature-card-shade,
+.feature-card-link--static:focus-visible .feature-card-shade,
+.feature-card-link--static.is-scroll-active .feature-card-shade,
+.feature-card-link--static:hover .feature-card-pop,
+.feature-card-link--static:focus-visible .feature-card-pop,
+.feature-card-link--static.is-scroll-active .feature-card-pop {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.92);
+}
+
+.feature-card-link--static:hover .feature-card,
+.feature-card-link--static:focus-visible .feature-card,
+.feature-card-link--static.is-scroll-active.feature-card {
+    box-shadow: none;
+}
+
+.feature-card-link--static.has-quiz-tool:hover .feature-card-tool-result,
+.feature-card-link--static.has-quiz-tool:focus-visible .feature-card-tool-result,
+.feature-card-link--static.has-quiz-tool.is-scroll-active .feature-card-tool-result {
+    opacity: 0;
+    transform: scale(0.98);
+}
+
+.feature-card-link--static.has-quiz-tool:hover .feature-card-cover,
+.feature-card-link--static.has-quiz-tool:focus-visible .feature-card-cover,
+.feature-card-link--static.has-quiz-tool.is-scroll-active .feature-card-cover {
+    opacity: 1;
+    transform: none;
+}
+
+/* ==================== GRADQUIZ FLOATING WIDGET ==================== */
+
+.gradquiz-widget {
+    position: fixed;
+    right: max(var(--space-6), env(safe-area-inset-right));
+    bottom: max(var(--space-6), env(safe-area-inset-bottom));
+    z-index: 1050;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    outline-offset: 4px;
+}
+
+.gradquiz-widget__orb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.75rem;
+    height: 3.75rem;
+    border-radius: 50%;
+    background: var(--purple-2);
+    box-shadow:
+        0 8px 24px rgba(41, 18, 76, 0.22),
+        0 2px 0 rgba(255, 255, 255, 0.35) inset;
+    transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.gradquiz-widget__icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+}
+
+.gradquiz-widget__pop {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + var(--space-3));
+    z-index: 1;
+    width: min(18rem, calc(100vw - 2 * var(--space-6)));
+    padding: var(--space-4) var(--space-5);
+    text-align: center;
+    border-radius: 16px;
+    background: linear-gradient(
+        155deg,
+        rgba(80, 44, 133, 0.2) 0%,
+        rgba(60, 30, 110, 0.14) 45%,
+        rgba(80, 44, 133, 0.18) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(22px) saturate(1.25);
+    -webkit-backdrop-filter: blur(22px) saturate(1.25);
+    box-shadow:
+        0 18px 42px rgba(0, 0, 0, 0.38),
+        0 2px 0 rgba(255, 255, 255, 0.1) inset;
+    opacity: 0;
+    transform: translateY(8px) scale(0.92);
+    transition: opacity 0.38s ease, transform 0.38s ease;
+    pointer-events: none;
+}
+
+.gradquiz-widget__pop-title {
+    display: block;
+    font-size: var(--text-m);
+    font-weight: 600;
+    color: var(--color-text-light);
+    line-height: var(--leading-snug);
+    margin-bottom: var(--space-2);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
+.gradquiz-widget__pop-desc {
+    margin: 0;
+    font-size: var(--text-s);
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--color-text-light);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    white-space: pre-line;
+}
+
+.gradquiz-widget:hover .gradquiz-widget__orb,
+.gradquiz-widget:focus-visible .gradquiz-widget__orb {
+    box-shadow:
+        0 12px 32px rgba(41, 18, 76, 0.28),
+        0 2px 0 rgba(255, 255, 255, 0.35) inset;
+    transform: translateY(-2px);
+}
+
+.gradquiz-widget:hover .gradquiz-widget__pop,
+.gradquiz-widget:focus-within .gradquiz-widget__pop {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+@media (max-width: 768px) {
+    .gradquiz-widget__orb {
+        width: 3.25rem;
+        height: 3.25rem;
+    }
+
+    .gradquiz-widget__pop {
+        width: min(16rem, calc(100vw - 2 * var(--space-6)));
+        padding: var(--space-3) var(--space-4);
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
+    .gradquiz-widget__orb,
+    .gradquiz-widget__pop {
+        transition: none;
+    }
+
+    .gradquiz-widget:hover .gradquiz-widget__orb,
+    .gradquiz-widget:focus-visible .gradquiz-widget__orb {
+        transform: none;
+    }
+
+    .gradquiz-widget:hover .gradquiz-widget__pop,
+    .gradquiz-widget:focus-within .gradquiz-widget__pop {
+        transform: none;
+    }
+
     .feature-card-shade,
     .feature-card-pop,
     .feature-card-cover,
@@ -1349,6 +1507,10 @@ body.main-nav-menu-open {
     min-height: 0;
 }
 
+.sponsors-section > .section-heading {
+    margin-bottom: var(--space-6);
+}
+
 .sponsors-marquee {
     /* overflow: hidden; */
     width: 100%;
@@ -1376,7 +1538,7 @@ body.main-nav-menu-open {
     /* max-width: min(260px, 38vw); */
     object-fit: contain;
     flex-shrink: 0;
-    height: clamp(72px, 11vw, 128px);
+    height: clamp(72px, 11vw, 84px);
     max-width: min(520px, 44vw);
 }
 
@@ -1844,6 +2006,10 @@ body.main-nav-menu-open {
     margin-bottom: var(--space-16);
 }
 
+.designer-page .designer-profile-section {
+    margin-top: var(--space-8);
+}
+
 .designer-layout {
     display: grid;
     grid-template-columns: minmax(0, 3fr) minmax(0, 7fr);
@@ -1854,7 +2020,7 @@ body.main-nav-menu-open {
 .designer-column {
     display: flex;
     flex-direction: column;
-    gap: var(--space-16);
+    gap: var(--space-4);
 }
 
 .designer-column.designer-column-left {
@@ -2292,6 +2458,68 @@ body.main-nav-menu-open {
     color: var(--color-text-light);
 }
 
+/* Designer profile — Other Designers (separate from index #graduatesGrid) */
+.designer-page .other-designers-section {
+    text-align: unset;
+}
+
+.other-designers-grid {
+    --other-designers-cols: 6;
+    --other-designers-gap: var(--space-8);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--other-designers-gap);
+    width: 100%;
+    line-height: normal;
+    margin-bottom: var(--space-8);
+}
+
+.other-designer-card {
+    flex: 0 1
+        calc(
+            (100% - (var(--other-designers-cols) - 1) * var(--other-designers-gap)) /
+                var(--other-designers-cols)
+        );
+    max-width: calc(
+        (100% - (var(--other-designers-cols) - 1) * var(--other-designers-gap)) /
+            var(--other-designers-cols)
+    );
+    min-width: 6.75rem;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.other-designer-card:hover {
+    transform: translateY(-4px);
+}
+
+@media (max-width: 768px) {
+    /* Two equal columns inside .other-designers-section page margins (no viewport bleed) */
+    .designer-page .other-designers-grid {
+        --other-designers-cols: 2;
+        --other-designers-gap: var(--space-6);
+        width: 100%;
+        flex-wrap: nowrap;
+        justify-content: stretch;
+        gap: var(--other-designers-gap);
+    }
+
+    .designer-page .other-designer-card {
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: none;
+    }
+
+    .designer-page .other-designer-card:only-child {
+        flex: 1 1 100%;
+    }
+}
+
 .view-all-btn {
     display: inline-flex;
     align-items: center;
@@ -2332,6 +2560,10 @@ body.main-nav-menu-open {
 @media (max-width: 1280px) and (min-width: 1025px) {
     .graduates-grid {
         --graduates-cols: 5;
+    }
+
+    .other-designers-grid {
+        --other-designers-cols: 5;
     }
 }
 
@@ -2375,6 +2607,11 @@ body.main-nav-menu-open {
     .graduates-grid {
         --graduates-cols: 4;
         --graduates-gap: var(--space-6);
+    }
+
+    .other-designers-grid {
+        --other-designers-cols: 4;
+        --other-designers-gap: var(--space-6);
     }
 
     .designer-column.designer-column-left {
@@ -2446,7 +2683,7 @@ body.main-nav-menu-open {
         left: 0;
         right: 0;
         flex-direction: column;
-        align-items: stretch;
+        align-items: center;
         gap: var(--space-4);
         padding: var(--space-8) var(--page-px);
         background-color: var(--color-surface);
@@ -2462,6 +2699,8 @@ body.main-nav-menu-open {
         font-size: var(--text-m);
         display: flex;
         align-items: center;
+        justify-content: center;
+        text-align: center;
         width: 100%;
         box-sizing: border-box;
         padding: var(--space-3) 0;
@@ -2702,7 +2941,7 @@ body.main-nav-menu-open {
     }
 
     .designer-column {
-        gap: var(--space-8);
+        gap: var(--space-4);
     }
 
     .designer-layout {
@@ -2977,7 +3216,7 @@ body.main-nav-menu-open {
 
 .showcase-main-grid {
     display: grid;
-    grid-template-columns: minmax(0, 2fr) 1px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
     column-gap: clamp(var(--space-6), 4vw, var(--space-12));
     row-gap: 0;
     align-items: stretch;

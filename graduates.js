@@ -84,7 +84,9 @@ function getGraduateCardHref(graduate, fullName) {
     return `designer.html?name=${encodeURIComponent(fullName)}`;
 }
 
-function createGraduateCard(graduate, index) {
+function createGraduateCard(graduate, index, options) {
+    const cardClass =
+        options && options.cardClass ? String(options.cardClass) : 'graduate-card';
     // Handle both object format { fullName: "...", "headshot-image": "..." } and string format
     const fullName = typeof graduate === 'object' ? graduate.preferredFullName : graduate;
     const projectATitle =
@@ -106,7 +108,7 @@ function createGraduateCard(graduate, index) {
     const cardHref = getGraduateCardHref(graduate, fullName);
     card.href = cardHref;
     applyNewTabIfOffSite(card, cardHref);
-    card.className = 'graduate-card';
+    card.className = cardClass;
 
     let photoHtml;
     if (hasHeadshot && hasProjectHover) {

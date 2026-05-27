@@ -439,5 +439,20 @@ document.addEventListener('DOMContentLoaded', function() {
     initHomePageGraduatesNavSpy();
     
     // Initialize navbar scroll effect
-    initNavbarScroll(); 
+    initNavbarScroll();
+
+    loadGradQuizWidget();
 });
+
+function loadGradQuizWidget() {
+    if (/gradquiz\.html/i.test(window.location.pathname)) return;
+    if (document.querySelector('script[data-gradquiz-widget]')) return;
+
+    const script = document.createElement('script');
+    script.src = 'gradquiz-widget.js';
+    script.dataset.gradquizWidget = '1';
+    script.onload = function () {
+        if (typeof initGradQuizWidget === 'function') initGradQuizWidget();
+    };
+    document.body.appendChild(script);
+}

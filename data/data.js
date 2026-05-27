@@ -400,7 +400,7 @@ const DESIGNER_DATA = [
         "btc1.png",
         "btc2.png",
         "btc3.png",
-        "btc4.jpg",
+        "btc4.JPG",
         "btc5.png"
       ]
     },
@@ -838,7 +838,7 @@ const DESIGNER_DATA = [
       "images": [
         "ResonAid_1.png",
         "ResonAid_2.jpg",
-        "ResonAid_3.jpg",
+        "ResonAid_3.JPG",
         "ResonAid_4.jpg"
       ]
     },

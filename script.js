@@ -13,18 +13,18 @@ const QUIZ_TOOL_SESSION_KEY = 'gradshow2026_quizTool';
 
 /** Tool id → result image (matches sketch.js / quiz_assets) */
 const QUIZ_TOOL_IMAGES = {
-    hammer: 'quiz_assets/Hammer.png',
-    calipers: 'quiz_assets/Calipers.png',
-    vr: 'quiz_assets/VR.png',
-    mouse: 'quiz_assets/Mouse.png',
-    mat: 'quiz_assets/CuttingMat.png',
-    glue: 'quiz_assets/GlueStick.png',
-    sewing: 'quiz_assets/Sewing.png',
-    tape: 'quiz_assets/Tape.png',
-    notepad: 'quiz_assets/Notepad.png',
-    coffee: 'quiz_assets/Coffee.png',
-    ruler: 'quiz_assets/Ruler.png',
-    thumb: 'quiz_assets/Thumb.png',
+    hammer: 'quiz_assets/hammer_thumbnail.png',
+    calipers: 'quiz_assets/calipers_thumbnail.png',
+    vr: 'quiz_assets/vr_thumbnail.png',
+    mouse: 'quiz_assets/mouse_thumbnail.png',
+    mat: 'quiz_assets/mat_thumbnail.png',
+    glue: 'quiz_assets/glue_thumbnail.png',
+    sewing: 'quiz_assets/sewing_thumbnail.png',
+    tape: 'quiz_assets/tape_thumbnail.png',
+    notepad: 'quiz_assets/notepad_thumbnail.png',
+    coffee: 'quiz_assets/coffee_thumbnail.png',
+    ruler: 'quiz_assets/ruler_thumbnail.png',
+    thumb: 'quiz_assets/thumb_thumbnail.png',
 };
 
 const QUIZ_TOOL_LABELS = {
@@ -271,6 +271,12 @@ function getValidQuizToolFromSession() {
 function initFeatureCardQuizToolHover() {
     const card = document.querySelector('.feature-card-link');
     const resultImg = card?.querySelector('.feature-card-tool-result');
+
+    if (card?.classList.contains('feature-card-link--static')) {
+        if (resultImg) resultImg.remove();
+        return;
+    }
+
     const tool = getValidQuizToolFromSession();
 
     if (!card || !resultImg || !tool) {
@@ -580,7 +586,7 @@ function initScrollRevealInteractions() {
     if (classPhotoContainer) {
         classPhotoScrollRevealTeardown = setupClassPhotoScrollReveal(classPhotoContainer);
     }
-    if (featureCard) {
+    if (featureCard && !featureCard.classList.contains('feature-card-link--static')) {
         featureCardScrollRevealTeardown = setupFeatureCardScrollReveal(featureCard);
     }
 }
