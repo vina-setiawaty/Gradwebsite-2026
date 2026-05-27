@@ -1382,7 +1382,8 @@ const DESIGNER_DATA = [
     "websitePortfolioUrl": "https://drive.google.com/drive/folders/1-FOGCUYLC1wC8CopoISh2cyrWKjgwQOl?usp=sharing",
     "behanceUrl": "",
     "instagramUrl": "https://www.instagram.com/yong_qing_/",
-    "otherUrl": "https://cde.nus.edu.sg/news/industrial-design-scores-at-if-design-student-award-2025/"
+    "otherUrl": "https://cde.nus.edu.sg/news/industrial-design-scores-at-if-design-student-award-2025/",
+    "otherUrl2": "https://cde.nus.edu.sg/news/light-brain-an-exchange-studio-project-with-global-impact/"
   },
   {
     "fullName": "SHAHEED IBNU MOHAMED HASSAN",

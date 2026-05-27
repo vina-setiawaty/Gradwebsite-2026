@@ -177,6 +177,30 @@ function displayDesignerInfo(name) {
     setupSocialLink('behanceLink', designerRecord ? designerRecord.behanceUrl : '');
     setupSocialLink('instagramLink', designerRecord ? designerRecord.instagramUrl : '');
 
+    // Additional designer links from otherUrl / otherUrl2
+    const socialContainer = document.querySelector('.designer-social');
+    if (socialContainer) {
+        // Clear any previously rendered extra links when switching designers
+        const extraLinks = socialContainer.querySelectorAll('.designer-extra-link');
+        extraLinks.forEach(link => link.remove());
+
+        if (designerRecord && designerRecord.otherUrl) {
+            const raw = String(designerRecord.otherUrl).trim();
+            if (raw) {
+                const link = createDesignerExtraLink(normalizeUrl(raw), 'Additional link');
+                socialContainer.appendChild(link);
+            }
+        }
+
+        if (designerRecord && Object.prototype.hasOwnProperty.call(designerRecord, 'otherUrl2')) {
+            const raw2 = designerRecord.otherUrl2 == null ? '' : String(designerRecord.otherUrl2).trim();
+            if (raw2) {
+                const link2 = createDesignerExtraLink(normalizeUrl(raw2), 'Additional link');
+                socialContainer.appendChild(link2);
+            }
+        }
+    }
+
     renderDesignerHeadshot(designerRecord);
 
     // Projects and images
@@ -274,6 +298,23 @@ function setupSocialLink(elementId, url) {
     } else {
         linkEl.style.display = 'none';
     }
+}
+
+function createDesignerExtraLink(href, ariaLabel) {
+    const a = document.createElement('a');
+    a.className = 'social-link designer-extra-link';
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.setAttribute('aria-label', ariaLabel || 'External link');
+
+    // Inline SVG uses currentColor so it matches existing icon color/hover styles
+    a.innerHTML = ''
+        + '<svg width="36" height="36" viewBox="0 0 35.5556 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
+        + '  <path d="M10.6667 32V30.2222L14.2222 26.6667H3.55556C2.57778 26.6667 1.74074 26.3185 1.04444 25.6222C0.348148 24.9259 0 24.0889 0 23.1111V3.55556C0 2.57778 0.348148 1.74074 1.04444 1.04444C1.74074 0.348148 2.57778 0 3.55556 0H32C32.9778 0 33.8148 0.348148 34.5111 1.04444C35.2074 1.74074 35.5556 2.57778 35.5556 3.55556V23.1111C35.5556 24.0889 35.2074 24.9259 34.5111 25.6222C33.8148 26.3185 32.9778 26.6667 32 26.6667H21.3333L24.8889 30.2222V32H10.6667ZM3.55556 17.7778H32V3.55556H3.55556V17.7778Z" fill="currentColor"></path>'
+        + '</svg>';
+
+    return a;
 }
 
 function normalizeUrl(url) {
