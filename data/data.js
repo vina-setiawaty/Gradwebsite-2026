@@ -1879,7 +1879,7 @@ const DESIGNER_DATA = [
     "projectA": {
       "title": "First Hand",
       "platformNameThesis": "Thesis",
-      "year": "2026",
+      "year": "2025/2026",
       "supervisor": "Gabriel Lipkowitz",
       "teammates": [],
       "writeUp": "First Hand is an embodied anatomy learning application in spatial computing. Anatomical structures are overlaid onto the learner's own hand, and a reference hand presenting ape hand deformity provides the clinical context. Through conversing with an LLM-powered tutor, learners are guided to reason through the causal chain from nerve injury to visible deformity.",
@@ -1894,7 +1894,7 @@ const DESIGNER_DATA = [
     "projectB": {
       "title": "Cubic Rhythms",
       "platformName": "Everything is Playable",
-      "year": "2024",
+      "year": "2024/2025",
       "supervisor": "Donn Koh",
       "teammates": [
         "Wee Jie Basil"
