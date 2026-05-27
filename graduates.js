@@ -54,9 +54,23 @@ function getProjectAFirstImageSrc(graduate) {
     if (!graduate || typeof graduate !== 'object') return '';
     const projectA = graduate.projectA;
     if (!projectA || !Array.isArray(projectA.images)) return '';
-    const first = projectA.images.map((s) => String(s).trim()).find(Boolean);
-    if (!first) return '';
-    return `./projectImages/${encodeURIComponent(first)}`;
+    const images = projectA.images.map((s) => String(s).trim()).filter(Boolean);
+    if (!images.length) return '';
+
+    let pickIndex = 0;
+    const configured = graduate.cardProjectPeekImageIndex;
+    if (
+        configured != null &&
+        Number.isFinite(Number(configured)) &&
+        Number(configured) >= 0 &&
+        Number(configured) < images.length
+    ) {
+        pickIndex = Math.floor(Number(configured));
+    }
+
+    const picked = images[pickIndex];
+    if (!picked) return '';
+    return `./projectImages/${encodeURIComponent(picked)}`;
 }
 
 function getGraduateCardHref(graduate, fullName) {
@@ -100,9 +114,13 @@ function createGraduateCard(graduate, index) {
             typeof graduate === 'object' && graduate.projectA?.title
                 ? String(graduate.projectA.title).trim()
                 : 'Project';
+        const projectPeekPosClass =
+            typeof graduate === 'object' && graduate.cardProjectPeekAlignBottom === true
+                ? ' graduate-headshot--project-pos-bottom'
+                : '';
         photoHtml = `<div class="graduate-photo-frame graduate-photo-frame--hoverable">
             <img class="graduate-headshot graduate-headshot--default" src="${escapeHtml(headshotRaw)}" alt="${escapeHtml(fullName)}" loading="lazy" decoding="async">
-            <img class="graduate-headshot graduate-headshot--project" src="${escapeHtml(projectImageRaw)}" alt="${escapeHtml(fullName)} — ${escapeHtml(projectTitle)}" loading="lazy" decoding="async">
+            <img class="graduate-headshot graduate-headshot--project${projectPeekPosClass}" src="${escapeHtml(projectImageRaw)}" alt="${escapeHtml(fullName)} — ${escapeHtml(projectTitle)}" loading="lazy" decoding="async">
         </div>`;
     } else if (hasHeadshot) {
         photoHtml = `<div class="graduate-photo-frame"><img class="graduate-headshot" src="${escapeHtml(headshotRaw)}" alt="${escapeHtml(fullName)}" loading="lazy" decoding="async"></div>`;

@@ -156,9 +156,9 @@ const DESIGNER_DATA = [
       "teammates": [],
       "writeUp": "The quality of our autobiographical memories is not about how it materialises; it is what we make sense of within ourselves. By shifting from captured visuals to in-the-moment listening, Sono defamiliarizes us from how we expect information-collection technology to be involved and utilised within the process of memory making.",
       "images": [
-        "Sono_1.jpeg",
         "Sono_2.jpg",
-        "Sono_3.jpg"
+        "Sono_3.jpg",
+        "Sono_1.jpeg"
       ]
     },
     "projectB": {
@@ -241,6 +241,7 @@ const DESIGNER_DATA = [
   {
     "fullName": "CLEMENT KOH YUEN JIE",
     "headshot-image": "Clement_Headshot_Edited.jpg",
+    "cardProjectPeekAlignBottom": true,
     "preferredFullName": "Clement Koh",
     "preferredFirstName": "Clement",
     "personalDescription": "A curious UX designer driven by discovery, ingenuity and moments of intrigue. My work spans both physical and digital mediums, where I craft unique experiences that feel intuitive yet unexpected. I am motivated by change, and I design with the intent to create work that adapts, resonates, and endures.",
@@ -1537,6 +1538,7 @@ const DESIGNER_DATA = [
   {
     "fullName": "TAN LE EN, ASHLEY",
     "headshot-image": "Ashley_FINAL.jpg",
+    "cardProjectPeekImageIndex": 2,
     "preferredFullName": "Ashley Tan",
     "preferredFirstName": "Ashley",
     "personalDescription": "Helloo, I'm Ashley! Design to me tends to somewhere between understanding perspectives, problem solving, and making something that resonates. Between digital products, user research, and visual communication, I strive for my work to be curious, discursive, and always a little bit fun ;-",
