@@ -67,9 +67,11 @@
                             </p>
                         </div>
                         <button
+                            id="showcase-map-open"
                             class="view-all-btn showcase-map-btn"
                             type="button"
-                            onclick="document.getElementById('showcase-map-heading')?.scrollIntoView({ behavior: 'smooth', block: 'start' })"
+                            aria-haspopup="dialog"
+                            aria-controls="exhibition-map-lightbox"
                         >
                             View Exhibition Map
                             <img src="./assets/arrowDown.svg" alt="" class="arrow-icon arrow-icon--ne" width="16" height="16">
@@ -196,16 +198,16 @@
                 <div class="sponsors-marquee">
                     <div class="sponsors-track">
                         <div class="sponsors-logos">
-                            <img class="sponsor-marquee-logo" src="./assets/sponsors/Vector-3.png" alt="">
-                            <img class="sponsor-marquee-logo" src="./assets/sponsors/geneoLongLogo.svg" alt="Geneo">
-                            <img class="sponsor-marquee-logo" src="./assets/sponsors/Vector-2.png" alt="">
-                            <img class="sponsor-marquee-logo" src="./assets/sponsors/Vector.png" alt="">
+                            <img class="sponsor-marquee-logo" src="./sponsors/Vector-3.png" alt="">
+                            <img class="sponsor-marquee-logo" src="./sponsors/geneoLongLogo.svg" alt="Geneo">
+                            <img class="sponsor-marquee-logo" src="./sponsors/Vector-2.png" alt="">
+                            <img class="sponsor-marquee-logo" src="./sponsors/Vector.png" alt="">
                         </div>
                         <div class="sponsors-logos sponsors-logos--duplicate" aria-hidden="true">
-                            <img class="sponsor-marquee-logo" src="./assets/sponsors/Vector-3.png" alt="">
-                            <img class="sponsor-marquee-logo" src="./assets/sponsors/geneoLongLogo.svg" alt="">
-                            <img class="sponsor-marquee-logo" src="./assets/sponsors/Vector-2.png" alt="">
-                            <img class="sponsor-marquee-logo" src="./assets/sponsors/Vector.png" alt="">
+                            <img class="sponsor-marquee-logo" src="./sponsors/Vector-3.png" alt="">
+                            <img class="sponsor-marquee-logo" src="./sponsors/geneoLongLogo.svg" alt="">
+                            <img class="sponsor-marquee-logo" src="./sponsors/Vector-2.png" alt="">
+                            <img class="sponsor-marquee-logo" src="./sponsors/Vector.png" alt="">
                         </div>
                     </div>
                 </div>
@@ -216,8 +218,33 @@
         <div id="footer-placeholder"></div>
     </div>
 
+    <div
+        id="exhibition-map-lightbox"
+        class="exhibition-map-lightbox"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Exhibition map"
+        hidden
+    >
+        <button type="button" class="main-nav-toggle exhibition-map-lightbox__close" aria-label="Close exhibition map">
+            <span class="main-nav-toggle-icon" aria-hidden="true">
+                <span class="main-nav-toggle-bar"></span>
+                <span class="main-nav-toggle-bar"></span>
+                <span class="main-nav-toggle-bar"></span>
+            </span>
+        </button>
+        <div class="exhibition-map-lightbox__content">
+            <img
+                src="./assets/exhibition_map.jpg"
+                alt="Exhibition floor plan"
+                class="exhibition-map-lightbox__image"
+            >
+        </div>
+    </div>
+
     <script src="canvas.js"></script>
     <script src="header.js"></script>
+    <script src="showcase.js"></script>
 </body>
 </html>
 

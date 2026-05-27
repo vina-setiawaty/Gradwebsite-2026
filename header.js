@@ -365,8 +365,12 @@ function initHomePageGraduatesNavSpy() {
         const inGraduates =
             rect.top <= navH + graduatesActivateLeadPx && rect.bottom > navH + 32;
 
-        homeLink.classList.toggle('active', !inGraduates);
         gradLink.classList.toggle('active', inGraduates);
+        if (homeLink.style.display !== 'none') {
+            homeLink.classList.toggle('active', !inGraduates);
+        } else {
+            homeLink.classList.remove('active');
+        }
     }
 
     function onScrollOrResize() {
@@ -431,6 +435,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initFooter();
 
     initAllMobileNavs();
+
+    initHomePageGraduatesNavSpy();
     
     // Initialize navbar scroll effect
     initNavbarScroll(); 

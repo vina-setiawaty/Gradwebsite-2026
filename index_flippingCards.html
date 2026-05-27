@@ -10,7 +10,8 @@
     <script>
         (function () {
             try {
-                if (sessionStorage.getItem('gradshow2026_loadingSeen') === '1') {
+                if (localStorage.getItem('gradshow2026_siteVisited') === '1' ||
+                    sessionStorage.getItem('gradshow2026_loadingSeen') === '1') {
                     document.documentElement.classList.add('skip-loading');
                 }
             } catch (e) {}

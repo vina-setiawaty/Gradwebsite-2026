@@ -10,7 +10,8 @@
     <script>
         (function () {
             try {
-                if (sessionStorage.getItem('gradshow2026_loadingSeen') === '1') {
+                if (localStorage.getItem('gradshow2026_siteVisited') === '1' ||
+                    sessionStorage.getItem('gradshow2026_loadingSeen') === '1') {
                     document.documentElement.classList.add('skip-loading');
                 }
             } catch (e) {}
@@ -132,24 +133,26 @@
 
             <!-- Feature Cards Section -->
             <section class="feature-cards-section">
-                <!-- <a href="index.html" class="feature-card-link"> -->
-                    <div class="feature-card feature-card-link">
+                <a href="gradquiz.html" class="feature-card-link">
+                    <div class="feature-card">
                         <picture>
                             <source media="(max-width: 768px)" srcset="./assets/SeeHowWeDidIt_horizontal.png">
                             <img src="./assets/Cover_Cohort.png" alt="The Grad Show 2026" class="feature-card-cover">
                         </picture>
+                        <!-- Quiz tool result (shown on hover when session has gradshow2026_quizTool) -->
+                        <img class="feature-card-tool-result" alt="" hidden>
                         <div class="feature-card-shade" aria-hidden="true"></div>
                         <div class="feature-card-pop">
-                            <span class="feature-card-pop-title">#SeeHowWeDidIt</span>
-                            <p class="feature-card-pop-desc">The theme for this year's graduation invites everyone to celebrate the collective effort and the design processes that powered this graduating batch to the end of their journey. 
+                            <span class="feature-card-pop-title">Try our tool quiz!</span>
+                            <p class="feature-card-pop-desc">Our daily choices defined who we are now. Answer a quiz based on a day in our life and find out your representative tool!
                             </p>
                         </div>
                     </div>
-                <!-- </a> -->
+                </a>
                 <div class="feature-card-photos">
-                    <img id="featureCardSlideshow" src="./loadingPhotos/DSCF0375.JPG" alt="" class="feature-card-photos-img">
+                    <img id="featureCardSlideshow" src="./loadingPhotosOri/IMG_2736.jpg" alt="" class="feature-card-photos-img">
                     <div class="feature-card-photos-overlay">
-                        <span class="feature-card-photos-overlay-title">#SeeHowWeDidIt</span>
+                        <img src="./assets/seehowwedidit.svg" alt="#SeeHowWeDidIt" class="feature-card-photos-overlay-title">
                         <p class="feature-card-photos-overlay-desc">The theme for this year's graduation invites everyone to celebrate the collective effort and the design processes that powered this graduating batch to the end of their journey.</p>
                     </div>
                 </div>
