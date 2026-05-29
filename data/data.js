@@ -64,10 +64,9 @@ const DESIGNER_DATA = [
       "writeUp": "Glowie is a bedside companion that softly transforms a child’s health data into calming light. By learning daily rhythms and reflecting subtle changes through gentle glows, it encourages body awareness without fear. Glowie helps parents respond with empathy, turning complex information into quiet reassurance and shared understanding.",
       "images": [
         "Glowie_1.png",
-        "Glowie_2.png",
-        "Glowie_3.png",
-        "Glowie_4.png"
-      ]
+        "glowie_2.jpg"
+      ],
+      "videoUrl": "https://www.youtube.com/embed/WUOEbZPl6RQ?si=bTPp6x8P4t02VPVy"
     },
     "projectB": {
       "title": "BrightBridge",
