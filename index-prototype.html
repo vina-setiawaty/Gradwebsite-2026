@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 DID Grad Show — prototype (card hover)</title>
+    <link rel="icon" type="image/png" href="assets/logo_26.png">
+    <style>
+        /* =============================================================================
+           Self-contained prototype: fonts + tokens + layout subset (no styles.css).
+           Graduate cards: hover anywhere on the card → full project image + project name.
+           Data: external data/data.js (DESIGNER_DATA) — same source as the main site.
+           ============================================================================= */
+        @font-face {
+            font-family: 'Helvetica';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Helvetica'), url('helvetica-255-webfont/Helvetica.woff') format('woff');
+        }
+        @font-face {
+            font-family: 'Helvetica';
+            font-style: normal;
+            font-weight: 700;
+            src: local('Helvetica Bold'), url('helvetica-255-webfont/Helvetica-Bold.woff') format('woff');
+        }
+        @font-face {
+            font-family: 'Gradshow';
+            font-style: normal;
+            font-weight: 400;
+            src: url('Gradshow_Font/26GradshowFont_22jan2026-Regular.ttf') format('truetype'),
+                 url('Gradshow_Font/26GradshowFont_22jan2026-Regular.otf') format('opentype');
+        }
+
+        :root {
+            --font-primary: 'Helvetica', 'Helvetica Neue', sans-serif;
+            --font-display: 'Gradshow', 'Helvetica', sans-serif;
+            --text-h2: 3rem;
+            --text-h3: 2rem;
+            --text-h4: 1.5rem;
+            --text-m: 1rem;
+            --text-s: 0.875rem;
+            --text-xs: 0.75rem;
+            --leading-snug: 1.3;
+            --leading-normal: 1.5;
+            --purple-1: #FDF7FF;
+            --purple-2: #D1BADA;
+            --purple-3: #7A00DB;
+            --purple-4: #29124C;
+            --white: #FFFFFF;
+            --grey-1: #E2E0E4;
+            --grey-2: #686178;
+            --color-bg: #f0f0f0;
+            --color-surface: var(--white);
+            --color-text: var(--purple-4);
+            --color-text-body: var(--purple-4);
+            --color-text-secondary: var(--grey-2);
+            --color-text-light: var(--purple-1);
+            --color-text-placeholder: rgba(0, 0, 0, 0.3);
+            --color-accent: var(--purple-3);
+            --color-border: rgba(0, 0, 0, 0.08);
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-10: 2.5rem;
+            --space-12: 3rem;
+            --space-16: 4rem;
+            --space-20: 5rem;
+            --page-px: var(--space-20);
+            --navbar-scroll-offset: calc(var(--space-8) + 40px + 0.35rem);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-primary);
+            font-size: var(--text-m);
+            line-height: var(--leading-normal);
+            background-color: var(--color-bg);
+            color: var(--color-text-body);
+            min-height: 100vh;
+            min-height: 100svh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body.main-nav-menu-open { overflow: hidden; }
+
+        .main-navbar {
+            background-color: transparent;
+            padding: var(--space-4) var(--page-px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            max-width: 1920px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .main-nav-logo a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 0;
+        }
+
+        .logo-year { height: 40px; width: auto; object-fit: contain; }
+        .logo-text { height: 38px; width: auto; object-fit: contain; margin-left: var(--space-1); }
+        .logo-vertical {
+            display: none;
+            max-height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .main-nav-links { display: flex; gap: var(--space-12); }
+
+        .main-nav-link {
+            color: var(--color-text);
+            text-decoration: none;
+            font-size: var(--text-m);
+            transition: opacity 0.3s ease;
+        }
+        .main-nav-link:hover { opacity: 0.7; }
+        .main-nav-link.active {
+            font-weight: 600;
+            text-decoration: underline;
+            text-decoration-color: var(--purple-3);
+            text-underline-offset: 4px;
+            text-decoration-thickness: 2px;
+        }
+
+        .main-nav-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            margin: 0;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            flex-shrink: 0;
+            color: var(--color-text);
+        }
+
+        .main-nav-toggle-icon {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            width: 24px;
+        }
+
+        .main-nav-toggle-bar {
+            display: block;
+            height: 2px;
+            width: 100%;
+            background-color: currentColor;
+            border-radius: 1px;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        .main-content {
+            opacity: 1;
+            visibility: visible;
+            min-height: 100vh;
+            min-height: 100svh;
+        }
+
+        .main-page {
+            display: flex;
+            flex-direction: column;
+            max-width: 1560px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .main-content > main { padding-top: var(--navbar-scroll-offset); }
+
+        /* Hero */
+        .hero-banner {
+            padding: var(--space-8) var(--page-px) 0;
+            margin-bottom: var(--space-16);
+        }
+
+        .hero-image-container {
+            position: relative;
+            width: 100%;
+            min-height: 150px;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 44px 25px 20px;
+        }
+
+        .hero-image {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.45) 100%);
+            z-index: 1;
+        }
+
+        .hero-left-info {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+            flex: 1;
+            max-width: 65%;
+        }
+
+        .hero-venue-info { display: flex; align-items: center; gap: var(--space-2); }
+
+        .hero-geneo-logo {
+            height: 64px;
+            width: auto;
+            filter: brightness(0) invert(1);
+        }
+
+        .hero-event-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2) var(--space-6);
+            color: var(--color-text-light);
+            font-size: var(--text-h4);
+        }
+
+        .hero-date {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: baseline;
+            color: var(--purple-1);
+            flex-shrink: 0;
+        }
+
+        .hero-date-day {
+            font-size: clamp(var(--text-h3), 7vw, 5.5rem);
+            font-weight: 400;
+            line-height: 0.7;
+        }
+
+        .hero-date-range {
+            font-size: clamp(var(--text-h4), 3.5vw, var(--text-h2));
+            font-weight: 400;
+            margin-left: var(--space-1);
+        }
+
+        .hero-date-month {
+            font-size: clamp(var(--text-h4), 3.5vw, var(--text-h2));
+            font-weight: 400;
+            margin-left: var(--space-2);
+        }
+
+        /* Class photo */
+        .class-photo-section {
+            padding: 0 var(--page-px);
+            margin-bottom: var(--space-16);
+        }
+
+        .class-photo-container {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .class-photo {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        .class-photo-hover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+
+        .class-photo-normal { opacity: 1; }
+
+        .class-photo-container:hover .class-photo-normal { opacity: 0; }
+        .class-photo-container:hover .class-photo-hover { opacity: 1; }
+
+        /* Feature cards */
+        .feature-cards-section {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            align-items: stretch;
+            gap: var(--space-8);
+            padding: 0 var(--page-px);
+            margin-bottom: var(--space-16);
+        }
+
+        .feature-card {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .feature-card > picture { display: block; width: 100%; height: 100%; }
+
+        .feature-card-cover {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: opacity 0.38s ease, transform 0.38s ease;
+        }
+
+        .feature-card-shade {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.52);
+            opacity: 0;
+            transition: opacity 0.38s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .feature-card-pop {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 2;
+            width: min(88%, 22rem);
+            padding: var(--space-4) var(--space-6);
+            text-align: center;
+            border-radius: 16px;
+            background: linear-gradient(
+                155deg,
+                rgba(80, 44, 133, 0.2) 0%,
+                rgba(60, 30, 110, 0.14) 45%,
+                rgba(80, 44, 133, 0.18) 100%
+            );
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            backdrop-filter: blur(22px) saturate(1.25);
+            -webkit-backdrop-filter: blur(22px) saturate(1.25);
+            box-shadow: 0 18px 42px rgba(0, 0, 0, 0.38);
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.92);
+            transition: opacity 0.38s ease, transform 0.38s ease;
+            pointer-events: none;
+        }
+
+        .feature-card-pop-title {
+            display: block;
+            font-size: var(--text-h4);
+            font-weight: 600;
+            color: var(--color-text-light);
+            line-height: var(--leading-snug);
+            margin-bottom: var(--space-2);
+        }
+
+        .feature-card-pop-desc {
+            margin: 0;
+            font-size: var(--text-s);
+            color: var(--color-text-light);
+            line-height: 1.45;
+            white-space: pre-line;
+        }
+
+        .feature-card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .feature-card-link:hover .feature-card-shade,
+        .feature-card-link:focus-visible .feature-card-shade { opacity: 1; }
+
+        .feature-card-link:hover .feature-card-pop,
+        .feature-card-link:focus-visible .feature-card-pop {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .feature-card-photos {
+            position: relative;
+            min-height: 0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .feature-card-photos-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.45s ease;
+        }
+
+        .feature-card-photos:hover .feature-card-photos-img { transform: scale(1.06); }
+
+        .feature-card-photos::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 50%;
+            pointer-events: none;
+            z-index: 1;
+            background: linear-gradient(
+                to bottom,
+                transparent 0%,
+                color-mix(in srgb, var(--purple-4) 85%, transparent) 100%
+            );
+        }
+
+        .feature-card-photos-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            padding: var(--space-8);
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+
+        .feature-card-photos-overlay-desc {
+            position: absolute;
+            right: var(--space-8);
+            bottom: var(--space-8);
+            max-width: 28rem;
+            margin: 0;
+            font-size: var(--text-m);
+            color: var(--color-text-light);
+            text-align: right;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Graduates */
+        .graduates-grid-section {
+            padding: 0 var(--page-px);
+            margin-bottom: var(--space-16);
+        }
+
+        #graduates-grid-section { scroll-margin-top: var(--navbar-scroll-offset); }
+
+        .graduates-section-intro { margin-bottom: var(--space-10); max-width: 36rem; }
+
+        .graduates-section-heading {
+            margin: 0 0 var(--space-4);
+            font-size: var(--text-h2);
+            font-weight: 600;
+            color: var(--color-text);
+            line-height: 1.12;
+        }
+
+        .graduates-heading-grad {
+            font-family: var(--font-display);
+            font-weight: 400;
+            color: var(--color-accent);
+            font-size: 1.35em;
+            line-height: 1;
+            vertical-align: -0.06em;
+        }
+
+        .graduates-heading-grad span { letter-spacing: -0.08em; }
+
+        .graduates-grid {
+            --graduates-cols: 6;
+            --graduates-gap: var(--space-8);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: var(--graduates-gap);
+        }
+
+        .graduate-card {
+            flex: 0 1 calc((100% - (var(--graduates-cols) - 1) * var(--graduates-gap)) / var(--graduates-cols));
+            max-width: calc((100% - (var(--graduates-cols) - 1) * var(--graduates-gap)) / var(--graduates-cols));
+            min-width: 6.75rem;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .graduate-card:hover,
+        .graduate-card:focus-within { transform: translateY(-4px); }
+
+        .graduate-photo-frame {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: var(--space-2);
+            background-color: var(--grey-1);
+        }
+
+        .graduate-photo-frame--hoverable::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
+        }
+
+        .graduate-photo-frame--empty {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .graduate-photo-frame--empty span {
+            font-size: var(--text-m);
+            color: var(--color-text-placeholder);
+        }
+
+        .graduate-photo-frame > .graduate-headshot {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+        }
+
+        /* Prototype: full-bleed crossfade (any hover on the card, not only the photo) */
+        .graduate-photo-frame--hoverable .graduate-headshot--default,
+        .graduate-photo-frame--hoverable .graduate-headshot--project {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: opacity 0.35s ease;
+            -webkit-mask-image: none;
+            mask-image: none;
+        }
+
+        .graduate-photo-frame--hoverable .graduate-headshot--default {
+            z-index: 0;
+            opacity: 1;
+            object-position: center top;
+        }
+
+        .graduate-photo-frame--hoverable .graduate-headshot--project {
+            z-index: 1;
+            opacity: 0;
+            object-position: center top;
+        }
+
+        .graduate-photo-frame--hoverable .graduate-headshot--project.graduate-headshot--project-pos-bottom {
+            object-position: center bottom;
+        }
+
+        .graduate-card:hover .graduate-photo-frame--hoverable::after,
+        .graduate-card:focus-within .graduate-photo-frame--hoverable::after { opacity: 1; }
+
+        .graduate-card:hover .graduate-photo-frame--hoverable .graduate-headshot--default,
+        .graduate-card:focus-within .graduate-photo-frame--hoverable .graduate-headshot--default {
+            opacity: 0;
+        }
+
+        .graduate-card:hover .graduate-photo-frame--hoverable .graduate-headshot--project,
+        .graduate-card:focus-within .graduate-photo-frame--hoverable .graduate-headshot--project {
+            opacity: 1;
+        }
+
+        .graduate-name--project { display: none; }
+
+        .graduate-name--default { display: block; }
+
+        .graduate-card:hover .graduate-name--default,
+        .graduate-card:focus-within .graduate-name--default { display: none; }
+
+        .graduate-card:hover .graduate-name--project,
+        .graduate-card:focus-within .graduate-name--project { display: block; }
+
+        .graduate-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            align-items: center;
+        }
+
+        .graduate-name {
+            font-size: var(--text-m);
+            font-weight: 500;
+            color: var(--color-text);
+            line-height: var(--leading-snug);
+            text-align: center;
+            min-height: 1.5rem;
+            max-width: 100%;
+        }
+
+        /* Footer (simplified — no share dropdown) */
+        .main-footer {
+            background-color: var(--purple-3);
+            padding: var(--space-8) var(--page-px) 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            max-width: 1920px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+            margin-bottom: auto;
+        }
+
+        .footer-link {
+            color: var(--color-text-light);
+            text-decoration: none;
+            font-size: var(--text-m);
+        }
+
+        .footer-icons { display: flex; gap: var(--space-4); align-items: center; }
+
+        .footer-icons .social-link { color: var(--color-text-light); }
+
+        .footer-icons .social-link svg { width: 24px; height: 24px; }
+
+        .footer-logo img { height: 140px; width: auto; display: block; }
+
+        .prototype-banner {
+            margin: var(--space-4) var(--page-px);
+            padding: var(--space-3) var(--space-4);
+            background: rgba(122, 0, 219, 0.12);
+            border: 1px solid rgba(122, 0, 219, 0.25);
+            border-radius: 8px;
+            color: var(--purple-4);
+            font-size: var(--text-s);
+            max-width: 1560px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (max-width: 1280px) and (min-width: 1025px) {
+            .graduates-grid { --graduates-cols: 5; }
+        }
+
+        @media (max-width: 1024px) {
+            :root { --page-px: var(--space-10); }
+            .graduates-grid {
+                --graduates-cols: 4;
+                --graduates-gap: var(--space-6);
+            }
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --page-px: var(--space-6);
+                --navbar-scroll-offset: calc(var(--space-4) * 2 + 48px);
+            }
+
+            .logo-year, .logo-text { display: none; }
+            .logo-vertical { display: block; }
+
+            .main-nav-toggle { display: flex; }
+
+            .main-nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                gap: var(--space-4);
+                padding: var(--space-8) var(--page-px);
+                background-color: var(--color-surface);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+                border-top: 1px solid var(--color-border);
+            }
+
+            .main-navbar.main-nav-open .main-nav-links { display: flex; }
+
+            .main-navbar.main-nav-open .main-nav-toggle-bar:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+            .main-navbar.main-nav-open .main-nav-toggle-bar:nth-child(2) { opacity: 0; }
+            .main-navbar.main-nav-open .main-nav-toggle-bar:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .hero-banner { padding: var(--space-4) var(--page-px) 0; margin-bottom: var(--space-8); }
+            .class-photo-section { margin-bottom: var(--space-8); }
+
+            .feature-cards-section {
+                grid-template-columns: 1fr;
+                gap: var(--space-8);
+                margin-bottom: var(--space-8);
+            }
+
+            .feature-card { aspect-ratio: unset; height: auto; }
+            .feature-card > picture { height: auto; }
+            .feature-card-cover { width: 100%; height: auto; object-fit: unset; }
+
+            .feature-card-photos {
+                width: 100%;
+                aspect-ratio: 4 / 3;
+            }
+
+            .graduates-grid-section { margin-bottom: var(--space-8); }
+            .graduates-grid {
+                --graduates-cols: 3;
+                --graduates-gap: var(--space-6);
+            }
+
+            .main-navbar.scrolled {
+                background-color: var(--color-surface);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root { --page-px: var(--space-4); }
+            .graduates-section-heading { font-size: var(--text-h3); }
+            .graduates-grid {
+                --graduates-cols: 2;
+                --graduates-gap: var(--space-6);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .graduate-headshot--default,
+            .graduate-headshot--project,
+            .graduate-card,
+            .feature-card-photos-img { transition: none; }
+            .feature-card-photos:hover .feature-card-photos-img { transform: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="main-navbar" id="protoNav" aria-label="Main">
+        <div class="main-nav-logo">
+            <a href="index.html">
+                <img src="./assets/logoGroup2.svg" alt="2026" class="logo-year">
+                <img src="./assets/logoGroup1.svg" alt="Division of Industrial Design Graduation Show" class="logo-text">
+                <img src="./assets/logo2026Vertical.png" alt="2026 DID Graduation Show" class="logo-vertical">
+            </a>
+        </div>
+        <button type="button" class="main-nav-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="main-nav-menu-proto">
+            <span class="main-nav-toggle-icon" aria-hidden="true">
+                <span class="main-nav-toggle-bar"></span>
+                <span class="main-nav-toggle-bar"></span>
+                <span class="main-nav-toggle-bar"></span>
+            </span>
+        </button>
+        <div class="main-nav-links" id="main-nav-menu-proto">
+            <a href="index.html#graduates-grid-section" class="main-nav-link">Graduates</a>
+            <a href="showcase.html" class="main-nav-link">Showcase</a>
+            <a href="https://cde.nus.edu.sg/did/" class="main-nav-link" target="_blank" rel="noopener noreferrer">About DID</a>
+        </div>
+    </nav>
+
+    <div id="mainContent" class="main-content">
+        <p class="prototype-banner" role="note">
+            Prototype file: inline CSS/JS only. Hover a graduate card (photo or name) to show the full project image and project title.
+            Designer list still loads from <code>data/data.js</code> (unchanged).
+        </p>
+        <main class="main-page">
+            <section class="hero-banner">
+                <div class="hero-image-container">
+                    <img src="./assets/heroBanner.png" alt="Venue" class="hero-image">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-left-info">
+                        <div class="hero-venue-info">
+                            <img src="./assets/geneoLongLogo.svg" alt="Geneo" class="hero-geneo-logo">
+                        </div>
+                        <div class="hero-event-details">
+                            <span class="hero-venue">Singapore Science Park 1</span>
+                            <span class="hero-time">|</span>
+                            <span class="hero-time">10AM - 8PM</span>
+                        </div>
+                    </div>
+                    <div class="hero-date">
+                        <span class="hero-date-day">11</span>
+                        <span class="hero-date-range">- 15</span>
+                        <span class="hero-date-month">June 2026</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="class-photo-section">
+                <div class="class-photo-container">
+                    <img src="./assets/Cohort_Normal.png" alt="Class Photo" class="class-photo class-photo-normal">
+                    <img src="./assets/Cohort_26.png" alt="Class Photo Hover" class="class-photo class-photo-hover">
+                </div>
+            </section>
+
+            <section class="feature-cards-section">
+                <a href="gradquiz.html" class="feature-card-link">
+                    <div class="feature-card">
+                        <picture>
+                            <source media="(max-width: 768px)" srcset="./assets/SeeHowWeDidIt_horizontal.png">
+                            <img src="./assets/Cover_Cohort.png" alt="The Grad Show 2026" class="feature-card-cover">
+                        </picture>
+                        <div class="feature-card-shade" aria-hidden="true"></div>
+                        <div class="feature-card-pop">
+                            <span class="feature-card-pop-title">Try our tool quiz!</span>
+                            <p class="feature-card-pop-desc">Our daily choices defined who we are now. Click here to try a quiz based on a day in our life and find out your representative tool!</p>
+                        </div>
+                    </div>
+                </a>
+                <div class="feature-card-photos">
+                    <img id="featureCardSlideshow" src="./loadingPhotosOri/IMG_2736.jpg" alt="" class="feature-card-photos-img">
+                    <div class="feature-card-photos-overlay">
+                        <p class="feature-card-photos-overlay-desc">The theme this year celebrates the collective effort and design processes that powered the 2026 batch through their design journey in DID</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="graduates-grid-section" id="graduates-grid-section">
+                <header class="graduates-section-intro">
+                    <h2 class="graduates-section-heading">
+                        THE <span class="graduates-heading-grad">GRADUA<span>TES</span></span>
+                    </h2>
+                </header>
+                <div id="graduatesGrid" class="graduates-grid"></div>
+            </section>
+        </main>
+
+        <footer class="main-footer">
+            <div class="footer-links">
+                <a href="index.html#graduates-grid-section" class="footer-link">Graduates</a>
+                <a href="showcase.html" class="footer-link">Showcase</a>
+                <div class="footer-icons">
+                    <a href="https://maps.app.goo.gl/fa3Wj8d9EWuB1vJaA" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Location">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </a>
+                    <a href="https://www.instagram.com/nusdidshow.26?igsh=c3B4ZnZnZHF2bGI0" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-logo">
+                <img src="./assets/logo2026HorizontalHALF.png" alt="2026">
+            </div>
+        </footer>
+    </div>
+
+    <script src="data/data.js"></script>
+    <script>
+        (function () {
+            function escapeHtml(str) {
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;');
+            }
+
+            function isOffSiteHref(href) {
+                if (!href || typeof href !== 'string') return false;
+                var trimmed = href.trim();
+                if (!trimmed || /^mailto:|^tel:|^javascript:/i.test(trimmed)) return false;
+                try {
+                    var resolved = new URL(trimmed, window.location.href);
+                    return resolved.origin !== window.location.origin;
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            function applyNewTabIfOffSite(anchor, href) {
+                if (!anchor || !href) return;
+                if (isOffSiteHref(href)) {
+                    anchor.target = '_blank';
+                    anchor.rel = 'noopener noreferrer';
+                }
+            }
+
+            function getProjectAFirstImageSrc(graduate) {
+                if (!graduate || typeof graduate !== 'object') return '';
+                var projectA = graduate.projectA;
+                if (!projectA || !Array.isArray(projectA.images)) return '';
+                var images = projectA.images.map(function (s) { return String(s).trim(); }).filter(Boolean);
+                if (!images.length) return '';
+                var pickIndex = 0;
+                var configured = graduate.cardProjectPeekImageIndex;
+                if (
+                    configured != null &&
+                    Number.isFinite(Number(configured)) &&
+                    Number(configured) >= 0 &&
+                    Number(configured) < images.length
+                ) {
+                    pickIndex = Math.floor(Number(configured));
+                }
+                var picked = images[pickIndex];
+                if (!picked) return '';
+                return './projectImages/' + encodeURIComponent(picked);
+            }
+
+            function getGraduateCardHref(graduate, fullName) {
+                if (graduate && typeof graduate === 'object') {
+                    var keys = ['cardHref', 'cardUrl', 'externalUrl'];
+                    for (var i = 0; i < keys.length; i++) {
+                        var v = graduate[keys[i]];
+                        if (v != null && String(v).trim()) return String(v).trim();
+                    }
+                }
+                return 'designer.html?name=' + encodeURIComponent(fullName);
+            }
+
+            function createGraduateCard(graduate, index) {
+                var fullName = typeof graduate === 'object' ? graduate.preferredFullName : graduate;
+                var projectATitle =
+                    typeof graduate === 'object' && graduate.projectA && graduate.projectA.title != null
+                        ? String(graduate.projectA.title).trim()
+                        : '';
+                var filename =
+                    typeof graduate === 'object' && graduate['headshot-image'] != null
+                        ? String(graduate['headshot-image']).trim()
+                        : '';
+                var headshotRaw = filename ? './headshotImages/' + filename : '';
+                var hasHeadshot = headshotRaw.length > 0;
+                var projectImageRaw =
+                    typeof graduate === 'object' ? getProjectAFirstImageSrc(graduate) : '';
+                var hasProjectHover = hasHeadshot && projectImageRaw.length > 0;
+                var shouldSwapNameOnHover = hasProjectHover && projectATitle.length > 0;
+
+                var card = document.createElement('a');
+                var cardHref = getGraduateCardHref(graduate, fullName);
+                card.href = cardHref;
+                applyNewTabIfOffSite(card, cardHref);
+                card.className = 'graduate-card';
+
+                var photoHtml;
+                if (hasHeadshot && hasProjectHover) {
+                    var projectTitle =
+                        typeof graduate === 'object' && graduate.projectA && graduate.projectA.title
+                            ? String(graduate.projectA.title).trim()
+                            : 'Project';
+                    var projectPeekPosClass =
+                        typeof graduate === 'object' && graduate.cardProjectPeekAlignBottom === true
+                            ? ' graduate-headshot--project-pos-bottom'
+                            : '';
+                    photoHtml =
+                        '<div class="graduate-photo-frame graduate-photo-frame--hoverable">' +
+                        '<img class="graduate-headshot graduate-headshot--default" src="' +
+                        escapeHtml(headshotRaw) +
+                        '" alt="' +
+                        escapeHtml(fullName) +
+                        '" loading="lazy" decoding="async">' +
+                        '<img class="graduate-headshot graduate-headshot--project' +
+                        projectPeekPosClass +
+                        '" src="' +
+                        escapeHtml(projectImageRaw) +
+                        '" alt="' +
+                        escapeHtml(fullName) +
+                        ' — ' +
+                        escapeHtml(projectTitle) +
+                        '" loading="lazy" decoding="async">' +
+                        '</div>';
+                } else if (hasHeadshot) {
+                    photoHtml =
+                        '<div class="graduate-photo-frame"><img class="graduate-headshot" src="' +
+                        escapeHtml(headshotRaw) +
+                        '" alt="' +
+                        escapeHtml(fullName) +
+                        '" loading="lazy" decoding="async"></div>';
+                } else {
+                    photoHtml =
+                        '<div class="graduate-photo-frame graduate-photo-frame--empty"><span>PHOTO</span></div>';
+                }
+
+                card.innerHTML =
+                    photoHtml +
+                    '<div class="graduate-info">' +
+                    '<span class="graduate-name graduate-name--default">' +
+                    escapeHtml(fullName) +
+                    '</span>' +
+                    (shouldSwapNameOnHover
+                        ? '<span class="graduate-name graduate-name--project">' +
+                          escapeHtml(projectATitle) +
+                          '</span>'
+                        : '') +
+                    '</div>';
+
+                return card;
+            }
+
+            function renderGraduateCards(graduates) {
+                var grid = document.getElementById('graduatesGrid');
+                if (!grid) return;
+                grid.innerHTML = '';
+                if (!Array.isArray(graduates)) return;
+                graduates.forEach(function (graduate, index) {
+                    grid.appendChild(createGraduateCard(graduate, index));
+                });
+            }
+
+            function initMobileNav(nav) {
+                var toggle = nav.querySelector('.main-nav-toggle');
+                var menu = nav.querySelector('.main-nav-links');
+                if (!toggle || !menu) return;
+
+                var mobileMq = window.matchMedia('(max-width: 768px)');
+
+                function setOpen(open) {
+                    var isMobile = mobileMq.matches;
+                    nav.classList.toggle('main-nav-open', open);
+                    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    toggle.setAttribute(
+                        'aria-label',
+                        open ? 'Close navigation menu' : 'Open navigation menu'
+                    );
+                    if (isMobile && open) {
+                        document.body.classList.add('main-nav-menu-open');
+                    } else {
+                        document.body.classList.remove('main-nav-menu-open');
+                    }
+                }
+
+                toggle.addEventListener('click', function () {
+                    setOpen(!nav.classList.contains('main-nav-open'));
+                });
+
+                menu.querySelectorAll('a[href]').forEach(function (link) {
+                    link.addEventListener('click', function () {
+                        if (mobileMq.matches) setOpen(false);
+                    });
+                });
+
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && nav.classList.contains('main-nav-open')) setOpen(false);
+                });
+
+                mobileMq.addEventListener('change', function (e) {
+                    if (!e.matches) setOpen(false);
+                });
+            }
+
+            function initNavScroll(nav) {
+                function onScroll() {
+                    nav.classList.toggle('scrolled', window.scrollY > 8);
+                }
+                onScroll();
+                window.addEventListener('scroll', onScroll, { passive: true });
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var nav = document.getElementById('protoNav');
+                if (nav) {
+                    initMobileNav(nav);
+                    initNavScroll(nav);
+                }
+                if (typeof DESIGNER_DATA !== 'undefined') {
+                    renderGraduateCards(DESIGNER_DATA);
+                } else {
+                    var grid = document.getElementById('graduatesGrid');
+                    if (grid) {
+                        grid.innerHTML =
+                            '<p class="graduate-name">Could not load DESIGNER_DATA. Ensure data/data.js is available.</p>';
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+
+</html>

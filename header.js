@@ -365,8 +365,12 @@ function initHomePageGraduatesNavSpy() {
         const inGraduates =
             rect.top <= navH + graduatesActivateLeadPx && rect.bottom > navH + 32;
 
-        homeLink.classList.toggle('active', !inGraduates);
         gradLink.classList.toggle('active', inGraduates);
+        if (homeLink.style.display !== 'none') {
+            homeLink.classList.toggle('active', !inGraduates);
+        } else {
+            homeLink.classList.remove('active');
+        }
     }
 
     function onScrollOrResize() {
@@ -431,7 +435,24 @@ document.addEventListener('DOMContentLoaded', function() {
     initFooter();
 
     initAllMobileNavs();
+
+    initHomePageGraduatesNavSpy();
     
     // Initialize navbar scroll effect
-    initNavbarScroll(); 
+    initNavbarScroll();
+
+    loadGradQuizWidget();
 });
+
+function loadGradQuizWidget() {
+    if (/gradquiz\.html/i.test(window.location.pathname)) return;
+    if (document.querySelector('script[data-gradquiz-widget]')) return;
+
+    const script = document.createElement('script');
+    script.src = 'gradquiz-widget.js';
+    script.dataset.gradquizWidget = '1';
+    script.onload = function () {
+        if (typeof initGradQuizWidget === 'function') initGradQuizWidget();
+    };
+    document.body.appendChild(script);
+}

@@ -7,6 +7,123 @@
 const MINIMUM_LOADING_TIME = 2000; // 2 seconds minimum display time
 const LOADING_PHOTO_CYCLE_MS = 500;
 const FEATURE_CARD_SLIDESHOW_MS = 1000; // Same interval as teaser.html
+const SITE_VISITED_KEY = 'gradshow2026_siteVisited';
+const LOADING_SEEN_KEY = 'gradshow2026_loadingSeen';
+const QUIZ_TOOL_SESSION_KEY = 'gradshow2026_quizTool';
+
+/** Tool id → result image (matches sketch.js / quiz_assets) */
+const QUIZ_TOOL_IMAGES = {
+    hammer: 'quiz_assets/hammer_thumbnail.png',
+    calipers: 'quiz_assets/calipers_thumbnail.png',
+    vr: 'quiz_assets/vr_thumbnail.png',
+    mouse: 'quiz_assets/mouse_thumbnail.png',
+    mat: 'quiz_assets/mat_thumbnail.png',
+    glue: 'quiz_assets/glue_thumbnail.png',
+    sewing: 'quiz_assets/sewing_thumbnail.png',
+    tape: 'quiz_assets/tape_thumbnail.png',
+    notepad: 'quiz_assets/notepad_thumbnail.png',
+    coffee: 'quiz_assets/coffee_thumbnail.png',
+    ruler: 'quiz_assets/ruler_thumbnail.png',
+    thumb: 'quiz_assets/thumb_thumbnail.png',
+};
+
+const QUIZ_TOOL_LABELS = {
+    hammer: 'Hammer',
+    calipers: 'Calipers',
+    vr: 'VR Headset',
+    mouse: 'Mouse',
+    mat: 'Cutting Mat',
+    glue: 'Glue Stick',
+    sewing: 'Sewing Kit',
+    tape: 'Duct Tape',
+    notepad: 'Notepad',
+    coffee: 'Coffee',
+    ruler: 'Ruler',
+    thumb: 'USB Drive',
+};
+
+/** Tool id (sessionStorage key) → feature card hover copy */
+const QUIZ_TOOL_COPY = {
+    ruler: {
+        greeting: 'Hello, Ruler!',
+        message:
+            "The team's backbone — keeping everything straight, on track, and on time. Doesn't feel like you? Feel free to retake the quiz here!",
+    },
+    thumb: {
+        greeting: 'Hello, Thumbdrive!',
+        message:
+            "The quiet connector who keeps everyone on the same page. Doesn't feel like you? Feel free to retake the quiz here!",
+    },
+    coffee: {
+        greeting: 'Hello, Coffee!',
+        message:
+            'You show up, you fuel the team, and you do it again. Doesn\'t feel like you? Feel free to retake the quiz here!',
+    },
+    notepad: {
+        greeting: 'Hello, Notepad!',
+        message:
+            'The one who captures every idea before it slips away. Doesn\'t feel like you? Feel free to retake the quiz here!',
+    },
+    mat: {
+        greeting: 'Hello, Cutting Mat!',
+        message:
+            'Scratched, scored, and sliced — yet still the steadiest one standing. Doesn\'t feel like you? Feel free to retake the quiz here!',
+    },
+    glue: {
+        greeting: 'Hello, Glue Stick!',
+        message:
+            'Crisis? No panic — just solutions that hold everything together. Doesn\'t feel like you? Feel free to retake the quiz here!',
+    },
+    sewing: {
+        greeting: 'Hello, Sewing Kit!',
+        message:
+            'Calm, composed, and threading needles no one else dares to touch. Doesn\'t feel like you? Feel free to retake the quiz here!',
+    },
+    tape: {
+        greeting: 'Hello, Duct Tape!',
+        message:
+            "Messy? Maybe. But it works, and that's what counts. Doesn't feel like you? Feel free to retake the quiz here!",
+    },
+    hammer: {
+        greeting: 'Hello, Hammer!',
+        message:
+            "Done deliberating — time to commit, build, and make some noise. Doesn't feel like you? Feel free to retake the quiz here!",
+    },
+    calipers: {
+        greeting: 'Hello, Calipers!',
+        message:
+            "Because 0.1mm matters, and you're the only one who checks. Doesn't feel like you? Feel free to retake the quiz here!",
+    },
+    vr: {
+        greeting: 'Hello, Dreamer!',
+        message:
+            'Building whole new worlds — the vision is yours, endlessly. Doesn\'t feel like you? Feel free to retake the quiz here!',
+    },
+    mouse: {
+        greeting: 'Hello, Mouse!',
+        message:
+            "Fast, precise, and always three steps ahead of everyone else. Doesn't feel like you? Feel free to retake the quiz here!",
+    },
+};
+
+function hasVisitedSiteBefore() {
+    try {
+        if (localStorage.getItem(SITE_VISITED_KEY) === '1') return true;
+        if (sessionStorage.getItem(LOADING_SEEN_KEY) === '1') return true;
+    } catch {
+        /* private mode / blocked storage */
+    }
+    return false;
+}
+
+function markSiteVisited() {
+    try {
+        localStorage.setItem(SITE_VISITED_KEY, '1');
+        sessionStorage.setItem(LOADING_SEEN_KEY, '1');
+    } catch {
+        /* private mode / blocked storage */
+    }
+}
 
 // ==================== LOADING PHOTOS ====================
 const loadingPhotos = [
@@ -30,12 +147,34 @@ const loadingPhotos = [
     'loadingPhotos/Screenshot 2026-02-26 154921.png',
 ];
 
+const featureCardPhotos = [
+    'loadingPhotosOri/IMG_2736.jpg',
+    'loadingPhotosOri/PXL_20260108_044505748.MP.jpg',
+    'loadingPhotosOri/photo_2025-12-18_17-40-52.jpg',
+    'loadingPhotosOri/DSCF0403.JPG',
+    'loadingPhotosOri/IMG_9773.jpg',
+    'loadingPhotosOri/photo_2026-01-14_15-43-44.jpg',
+    'loadingPhotosOri/DSCF0383.JPG',
+    'loadingPhotosOri/IMG_2428.jpg',
+    'loadingPhotosOri/PXL_20260108_044735494.MP.jpg',
+    'loadingPhotosOri/photo_2025-12-12_17-57-37.jpg',
+    'loadingPhotosOri/IMG_9734.jpg',
+    'loadingPhotosOri/PXL_20260314_091902696.MP.jpg',
+    'loadingPhotosOri/IMG_2739.jpg',
+    'loadingPhotosOri/DSCF0375.JPG',
+    'loadingPhotosOri/photo_2025-12-18_17-40-53.jpg',
+    'loadingPhotosOri/IMG_9827.jpg',
+    'loadingPhotosOri/PXL_20260108_044359167.MP.jpg',
+];
+
 // ==================== STATE ====================
 let currentPhotoIndex = 0;
+let loadingScreenPhotoIndex = 0;
 let photoInterval = null;
 let flipCardBgInterval = null;
 let flipCardBgPhotoIndex = 0;
 let featureCardSlideshowTimer = null;
+let featureCardSlideshowIndex = 0;
 let pageLoaded = false;
 let minimumTimePassed = false;
 
@@ -52,7 +191,7 @@ let mainContent = null;
  * Preload gallery images so swaps can decode quickly.
  */
 function preloadImages() {
-    loadingPhotos.forEach(src => {
+    [...loadingPhotos, ...featureCardPhotos].forEach(src => {
         const img = new Image();
         img.src = src;
     });
@@ -87,41 +226,125 @@ function applyLoadingPhotoToFlipCard(img, index) {
 }
 
 /**
- * 4:3 feature card: instant swap through loadingPhotos (same as teaser.html).
+ * 4:3 feature card: instant swap through loadingPhotosOri.
  */
 function applyLoadingPhotoInstant(img, index) {
     if (!img) return;
-    img.src = loadingPhotos[index];
+    img.src = featureCardPhotos[index];
 }
 
-/**
- * Start slideshow on the single 4:3 feature card.
- */
-function initFeatureCardSlideshow() {
-    const img = document.getElementById('featureCardSlideshow');
-    if (!img || loadingPhotos.length === 0) return;
+function stopFeatureCardSlideshow() {
+    if (featureCardSlideshowTimer != null) {
+        clearInterval(featureCardSlideshowTimer);
+        featureCardSlideshowTimer = null;
+    }
+}
 
-    let index = 0;
-    applyLoadingPhotoInstant(img, index);
-
-    if (loadingPhotos.length <= 1) return;
-
+function startFeatureCardSlideshow(img) {
+    if (!img || featureCardPhotos.length <= 1) return;
+    stopFeatureCardSlideshow();
     featureCardSlideshowTimer = setInterval(() => {
-        index = (index + 1) % loadingPhotos.length;
-        applyLoadingPhotoInstant(img, index);
+        featureCardSlideshowIndex =
+            (featureCardSlideshowIndex + 1) % featureCardPhotos.length;
+        applyLoadingPhotoInstant(img, featureCardSlideshowIndex);
     }, FEATURE_CARD_SLIDESHOW_MS);
 }
 
 /**
- * Advance slideshow index and update loading screen + flip-card back (if present).
+ * Start slideshow on the single 4:3 feature card; pauses while hovering the photos card.
+ */
+function getValidQuizToolFromSession() {
+    try {
+        const tool = sessionStorage.getItem(QUIZ_TOOL_SESSION_KEY);
+        if (tool && Object.prototype.hasOwnProperty.call(QUIZ_TOOL_IMAGES, tool)) {
+            return tool;
+        }
+    } catch {
+        /* private mode / blocked storage */
+    }
+    return null;
+}
+
+/**
+ * If the user completed the tool quiz this session, hover reveals their result image on the quiz feature card.
+ */
+function initFeatureCardQuizToolHover() {
+    const card = document.querySelector('.feature-card-link');
+    const resultImg = card?.querySelector('.feature-card-tool-result');
+
+    if (card?.classList.contains('feature-card-link--static')) {
+        if (resultImg) resultImg.remove();
+        return;
+    }
+
+    const tool = getValidQuizToolFromSession();
+
+    if (!card || !resultImg || !tool) {
+        if (resultImg) resultImg.remove();
+        return;
+    }
+
+    const src = QUIZ_TOOL_IMAGES[tool];
+    const copy = QUIZ_TOOL_COPY[tool];
+    resultImg.src = src;
+    resultImg.alt = `Your tool: ${QUIZ_TOOL_LABELS[tool]}`;
+    resultImg.hidden = false;
+    card.classList.add('has-quiz-tool');
+
+    const titleEl = card.querySelector('.feature-card-pop-title');
+    const descEl = card.querySelector('.feature-card-pop-desc');
+    if (copy && titleEl) titleEl.textContent = copy.greeting;
+    if (copy && descEl) descEl.textContent = copy.message;
+
+    const preload = new Image();
+    preload.src = src;
+}
+
+function initFeatureCardSlideshow() {
+    const img = document.getElementById('featureCardSlideshow');
+    const photosCard = document.querySelector('.feature-card-photos');
+    if (!img || featureCardPhotos.length === 0) return;
+
+    featureCardSlideshowIndex = 0;
+    applyLoadingPhotoInstant(img, featureCardSlideshowIndex);
+
+    if (featureCardPhotos.length <= 1) return;
+
+    startFeatureCardSlideshow(img);
+
+    if (photosCard) {
+        photosCard.addEventListener('mouseenter', stopFeatureCardSlideshow);
+        photosCard.addEventListener('mouseleave', () => {
+            featureCardSlideshowIndex =
+                (featureCardSlideshowIndex + 1) % featureCardPhotos.length;
+            applyLoadingPhotoInstant(img, featureCardSlideshowIndex);
+            startFeatureCardSlideshow(img);
+        });
+    }
+}
+
+/**
+ * Random index for loading overlay only (avoid repeating the current image).
+ */
+function getRandomLoadingPhotoIndex(excludeIndex) {
+    if (loadingPhotos.length <= 1) return 0;
+    let next;
+    do {
+        next = Math.floor(Math.random() * loadingPhotos.length);
+    } while (next === excludeIndex);
+    return next;
+}
+
+/**
+ * Advance loading overlay (random) and flip-card back during load (sequential, if present).
  */
 function changePhoto() {
-    currentPhotoIndex = (currentPhotoIndex + 1) % loadingPhotos.length;
-
     if (loadingImage) {
-        applyLoadingPhotoToLoadingScreen(loadingImage, currentPhotoIndex);
+        loadingScreenPhotoIndex = getRandomLoadingPhotoIndex(loadingScreenPhotoIndex);
+        applyLoadingPhotoToLoadingScreen(loadingImage, loadingScreenPhotoIndex);
     }
     if (flipCardBackBgImage) {
+        currentPhotoIndex = (currentPhotoIndex + 1) % loadingPhotos.length;
         applyLoadingPhotoToFlipCard(flipCardBackBgImage, currentPhotoIndex);
     }
 }
@@ -153,6 +376,10 @@ function initLoadingAnimation() {
     preloadImages();
     if (loadingImage) {
         loadingImage.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+        if (loadingPhotos.length > 0) {
+            loadingScreenPhotoIndex = Math.floor(Math.random() * loadingPhotos.length);
+            loadingImage.src = loadingPhotos[loadingScreenPhotoIndex];
+        }
     }
     if (flipCardBackBgImage) {
         flipCardBackBgImage.style.transition = 'none';
@@ -176,9 +403,32 @@ function scrollToHashTargetAfterReveal() {
 }
 
 /**
+ * Return visit in same tab: overlay already hidden via html.skip-loading; show main immediately.
+ */
+function skipLoadingAndShowMain() {
+    if (photoInterval) {
+        clearInterval(photoInterval);
+        photoInterval = null;
+    }
+
+    if (loadingOverlay) {
+        loadingOverlay.classList.add('fade-out');
+    }
+
+    if (mainContent) {
+        mainContent.classList.add('visible');
+    }
+
+    startFlipCardBackSlideshowAfterReveal();
+    requestAnimationFrame(() => scrollToHashTargetAfterReveal());
+}
+
+/**
  * Reveal the main content and hide the loading overlay
  */
 function revealMainContent() {
+    markSiteVisited();
+
     if (photoInterval) {
         clearInterval(photoInterval);
         photoInterval = null;
@@ -252,6 +502,106 @@ function initPageTransition() {
     }, 5000);
 }
 
+// ==================== MOBILE SCROLL-REVEAL (hover substitute) ====================
+
+const CLASS_PHOTO_SCROLL_THRESHOLD_PX = 50;
+const SCROLL_REVEAL_ACTIVE_CLASS = 'is-scroll-active';
+
+const scrollRevealMobileMq = window.matchMedia('(max-width: 768px)');
+const scrollRevealCoarseMq = window.matchMedia('(hover: none) and (pointer: coarse)');
+
+let classPhotoScrollRevealTeardown = null;
+let featureCardScrollRevealTeardown = null;
+
+function shouldUseScrollReveal() {
+    return scrollRevealMobileMq.matches || scrollRevealCoarseMq.matches;
+}
+
+function isElementInViewport(el) {
+    const rect = el.getBoundingClientRect();
+    return rect.bottom > 0 && rect.top < window.innerHeight;
+}
+
+function updateClassPhotoScrollReveal(container) {
+    const active =
+        window.scrollY >= CLASS_PHOTO_SCROLL_THRESHOLD_PX && isElementInViewport(container);
+    container.classList.toggle(SCROLL_REVEAL_ACTIVE_CLASS, active);
+}
+
+function setupClassPhotoScrollReveal(container) {
+    const onUpdate = () => updateClassPhotoScrollReveal(container);
+
+    window.addEventListener('scroll', onUpdate, { passive: true });
+    window.addEventListener('resize', onUpdate, { passive: true });
+    onUpdate();
+
+    return () => {
+        window.removeEventListener('scroll', onUpdate);
+        window.removeEventListener('resize', onUpdate);
+        container.classList.remove(SCROLL_REVEAL_ACTIVE_CLASS);
+    };
+}
+
+function setupFeatureCardScrollReveal(card) {
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                card.classList.toggle(SCROLL_REVEAL_ACTIVE_CLASS, entry.isIntersecting);
+            });
+        },
+        {
+            root: null,
+            rootMargin: '0px 0px -60% 0px',
+            threshold: 0.25,
+        }
+    );
+
+    observer.observe(card);
+
+    return () => {
+        observer.disconnect();
+        card.classList.remove(SCROLL_REVEAL_ACTIVE_CLASS);
+    };
+}
+
+function teardownScrollRevealInteractions() {
+    if (classPhotoScrollRevealTeardown) {
+        classPhotoScrollRevealTeardown();
+        classPhotoScrollRevealTeardown = null;
+    }
+    if (featureCardScrollRevealTeardown) {
+        featureCardScrollRevealTeardown();
+        featureCardScrollRevealTeardown = null;
+    }
+}
+
+function initScrollRevealInteractions() {
+    teardownScrollRevealInteractions();
+
+    if (!shouldUseScrollReveal()) return;
+
+    const classPhotoContainer = document.querySelector('.class-photo-container');
+    const featureCard = document.querySelector('.feature-card-link');
+
+    if (classPhotoContainer) {
+        classPhotoScrollRevealTeardown = setupClassPhotoScrollReveal(classPhotoContainer);
+    }
+    if (featureCard && !featureCard.classList.contains('feature-card-link--static')) {
+        featureCardScrollRevealTeardown = setupFeatureCardScrollReveal(featureCard);
+    }
+}
+
+function initScrollRevealMediaListeners() {
+    const onChange = () => initScrollRevealInteractions();
+    if (typeof scrollRevealMobileMq.addEventListener === 'function') {
+        scrollRevealMobileMq.addEventListener('change', onChange);
+        scrollRevealCoarseMq.addEventListener('change', onChange);
+    } else {
+        scrollRevealMobileMq.addListener(onChange);
+        scrollRevealCoarseMq.addListener(onChange);
+    }
+}
+
 // ==================== INITIALIZATION ====================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -260,13 +610,19 @@ document.addEventListener('DOMContentLoaded', () => {
     flipCardBackBgImage = document.getElementById('flipCardBackBgImage');
     loadingOverlay = document.getElementById('loadingOverlay');
     mainContent = document.getElementById('mainContent');
-    
-    // Start loading animation
-    initLoadingAnimation();
 
-    // 4:3 feature card: cycle loadingPhotos (teaser-style instant swap)
+    preloadImages();
+    initFeatureCardQuizToolHover();
     initFeatureCardSlideshow();
-    
-    // Initialize page transition
-    initPageTransition();
+
+    if (hasVisitedSiteBefore()) {
+        skipLoadingAndShowMain();
+    } else {
+        initLoadingAnimation();
+        initPageTransition();
+    }
+
+    // Mobile: scroll-driven hover substitute for class photo + feature card
+    initScrollRevealInteractions();
+    initScrollRevealMediaListeners();
 });

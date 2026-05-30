@@ -1,5 +1,8 @@
 // Designer Page JavaScript
-// Requires: data/data.js to be loaded first
+// Requires: data/data.js, graduates.js (createGraduateCard) to be loaded first
+
+const OTHER_DESIGNERS_DESKTOP_COUNT = 6;
+const OTHER_DESIGNERS_MOBILE_MQL = '(max-width: 768px)';
 
 let allGraduates = [];
 let currentDesignerIndex = -1;
@@ -177,6 +180,30 @@ function displayDesignerInfo(name) {
     setupSocialLink('behanceLink', designerRecord ? designerRecord.behanceUrl : '');
     setupSocialLink('instagramLink', designerRecord ? designerRecord.instagramUrl : '');
 
+    // Additional designer links from otherUrl / otherUrl2
+    const socialContainer = document.querySelector('.designer-social');
+    if (socialContainer) {
+        // Clear any previously rendered extra links when switching designers
+        const extraLinks = socialContainer.querySelectorAll('.designer-extra-link');
+        extraLinks.forEach(link => link.remove());
+
+        if (designerRecord && designerRecord.otherUrl) {
+            const raw = String(designerRecord.otherUrl).trim();
+            if (raw) {
+                const link = createDesignerExtraLink(normalizeUrl(raw), 'Additional link');
+                socialContainer.appendChild(link);
+            }
+        }
+
+        if (designerRecord && Object.prototype.hasOwnProperty.call(designerRecord, 'otherUrl2')) {
+            const raw2 = designerRecord.otherUrl2 == null ? '' : String(designerRecord.otherUrl2).trim();
+            if (raw2) {
+                const link2 = createDesignerExtraLink(normalizeUrl(raw2), 'Additional link');
+                socialContainer.appendChild(link2);
+            }
+        }
+    }
+
     renderDesignerHeadshot(designerRecord);
 
     // Projects and images
@@ -224,26 +251,72 @@ function toTitleCase(str) {
     ).join(' ');
 }
 
+function getNextDesigners(count) {
+    const n = allGraduates.length;
+    if (n === 0 || currentDesignerIndex < 0) return [];
+    const out = [];
+    for (let i = 1; i <= count && i < n; i++) {
+        out.push(allGraduates[(currentDesignerIndex + i) % n]);
+    }
+    return out;
+}
+
+function isOtherDesignersMobileView() {
+    return window.matchMedia(OTHER_DESIGNERS_MOBILE_MQL).matches;
+}
+
+function getPrevDesigner() {
+    const n = allGraduates.length;
+    if (n <= 1 || currentDesignerIndex < 0) return null;
+    return allGraduates[(currentDesignerIndex - 1 + n) % n];
+}
+
+/** Desktop: next N in list order. Mobile: previous + next around current profile. */
+function getOtherDesignersToShow() {
+    const n = allGraduates.length;
+    if (n === 0 || currentDesignerIndex < 0) return [];
+
+    if (isOtherDesignersMobileView()) {
+        if (n === 1) return [];
+        if (n === 2) {
+            return [allGraduates[(currentDesignerIndex + 1) % n]];
+        }
+        return [getPrevDesigner(), allGraduates[(currentDesignerIndex + 1) % n]];
+    }
+
+    return getNextDesigners(OTHER_DESIGNERS_DESKTOP_COUNT);
+}
+
+let otherDesignersMqlBound = false;
+
+function setupOtherDesignersResponsive() {
+    if (otherDesignersMqlBound) return;
+    otherDesignersMqlBound = true;
+    const mql = window.matchMedia(OTHER_DESIGNERS_MOBILE_MQL);
+    const onChange = () => loadOtherDesigners();
+    if (typeof mql.addEventListener === 'function') {
+        mql.addEventListener('change', onChange);
+    } else if (typeof mql.addListener === 'function') {
+        mql.addListener(onChange);
+    }
+}
+
 function loadOtherDesigners() {
     const container = document.getElementById('otherDesignersList');
     if (!container) return;
-    
+
+    setupOtherDesignersResponsive();
+
     container.innerHTML = '';
-    
-    // Get all designers (including current one)
-    allGraduates.forEach((graduate, index) => {
+
+    if (typeof createGraduateCard !== 'function') return;
+
+    const designersToShow = getOtherDesignersToShow();
+    designersToShow.forEach((graduate, index) => {
+        const card = createGraduateCard(graduate, index, { cardClass: 'other-designer-card' });
         const fullName = getFullName(graduate);
-        const link = document.createElement('a');
-        link.href = `designer.html?name=${encodeURIComponent(fullName)}`;
-        link.className = 'other-designer-link';
-
-        // Highlight current designer
-        if (index === currentDesignerIndex) {
-            link.classList.add('current');
-        }
-
-        link.textContent = getDisplayName(graduate);
-        container.appendChild(link);
+        card.href = `designer.html?name=${encodeURIComponent(fullName)}`;
+        container.appendChild(card);
     });
 }
 
@@ -274,6 +347,23 @@ function setupSocialLink(elementId, url) {
     } else {
         linkEl.style.display = 'none';
     }
+}
+
+function createDesignerExtraLink(href, ariaLabel) {
+    const a = document.createElement('a');
+    a.className = 'social-link designer-extra-link';
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.setAttribute('aria-label', ariaLabel || 'External link');
+
+    // Inline SVG uses currentColor so it matches existing icon color/hover styles
+    a.innerHTML = ''
+        + '<svg width="36" height="36" viewBox="0 0 35.5556 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
+        + '  <path d="M10.6667 32V30.2222L14.2222 26.6667H3.55556C2.57778 26.6667 1.74074 26.3185 1.04444 25.6222C0.348148 24.9259 0 24.0889 0 23.1111V3.55556C0 2.57778 0.348148 1.74074 1.04444 1.04444C1.74074 0.348148 2.57778 0 3.55556 0H32C32.9778 0 33.8148 0.348148 34.5111 1.04444C35.2074 1.74074 35.5556 2.57778 35.5556 3.55556V23.1111C35.5556 24.0889 35.2074 24.9259 34.5111 25.6222C33.8148 26.3185 32.9778 26.6667 32 26.6667H21.3333L24.8889 30.2222V32H10.6667ZM3.55556 17.7778H32V3.55556H3.55556V17.7778Z" fill="currentColor"></path>'
+        + '</svg>';
+
+    return a;
 }
 
 function normalizeUrl(url) {
@@ -435,10 +525,24 @@ function syncProjectVisualHeight(slot, track, frames, imgs) {
  * Sets each slot width on .project-frame-media (animated). Image fills that box
  * so the frame's grey background does not flash during max-width transitions.
  */
+function clearProjectStripInlineWidths(frames) {
+    frames.forEach(frame => {
+        const media = frame.querySelector('.project-frame-media');
+        const img = frame.querySelector('.project-frame-img');
+        if (media) media.style.removeProperty('max-width');
+        if (img) img.style.removeProperty('max-width');
+    });
+}
+
 function applyProjectStripWidths(track, frames, expandedIndex) {
     const imgs = frames.map(f => f.querySelector('.project-frame-img')).filter(Boolean);
     const n = imgs.length;
     if (!track || n === 0) return;
+
+    if (isProjectStripStackedLayout()) {
+        clearProjectStripInlineWidths(frames);
+        return;
+    }
 
     const rect = track.getBoundingClientRect();
     let h = rect.height;
@@ -554,12 +658,21 @@ function setupDesignerProjectSlider(slot) {
     function applyLayout() {
         syncProjectVisualHeight(slot, track, frames, imgs);
         void track.offsetHeight;
+        if (isProjectStripStackedLayout()) {
+            clearProjectStripInlineWidths(frames);
+            clearExpanded();
+            return;
+        }
         applyProjectStripWidths(track, frames, currentIndex);
     }
     const applyLayoutDebounced = debounce(applyLayout, 80);
 
     function onStripLayoutModeChange() {
-        applyLayoutDebounced();
+        if (isProjectStripStackedLayout()) {
+            applyLayoutDebounced();
+        } else {
+            applyExpandFrame(0, 'init');
+        }
     }
     PROJECT_STRIP_STACKED_MQ.addEventListener('change', onStripLayoutModeChange);
 
@@ -579,6 +692,7 @@ function setupDesignerProjectSlider(slot) {
     }
 
     function tryExpandFromPointerIdle() {
+        if (isProjectStripStackedLayout()) return;
         if (isWidthTransitioning) return;
         if (requirePointerMoveAfterExpand) return;
         if (lastPointerX < 0) return;
@@ -658,6 +772,7 @@ function setupDesignerProjectSlider(slot) {
     }
 
     function applyExpandFrame(i, source = 'pointer') {
+        if (isProjectStripStackedLayout()) return;
         activeTransitionBatchId += 1;
         const batchId = activeTransitionBatchId;
         isWidthTransitioning = true;
@@ -677,7 +792,11 @@ function setupDesignerProjectSlider(slot) {
         applyLayout();
     }
 
-    applyExpandFrame(0, 'init');
+    if (isProjectStripStackedLayout()) {
+        applyLayout();
+    } else {
+        applyExpandFrame(0, 'init');
+    }
 
     track._sliderCleanup = () => {
         PROJECT_STRIP_STACKED_MQ.removeEventListener('change', onStripLayoutModeChange);

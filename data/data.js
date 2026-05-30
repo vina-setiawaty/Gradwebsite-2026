@@ -64,10 +64,9 @@ const DESIGNER_DATA = [
       "writeUp": "Glowie is a bedside companion that softly transforms a child’s health data into calming light. By learning daily rhythms and reflecting subtle changes through gentle glows, it encourages body awareness without fear. Glowie helps parents respond with empathy, turning complex information into quiet reassurance and shared understanding.",
       "images": [
         "Glowie_1.png",
-        "Glowie_2.png",
-        "Glowie_3.png",
-        "Glowie_4.png"
-      ]
+        "glowie_2.jpg"
+      ],
+      "videoUrl": "https://www.youtube.com/embed/WUOEbZPl6RQ?si=bTPp6x8P4t02VPVy"
     },
     "projectB": {
       "title": "BrightBridge",
@@ -156,9 +155,9 @@ const DESIGNER_DATA = [
       "teammates": [],
       "writeUp": "The quality of our autobiographical memories is not about how it materialises; it is what we make sense of within ourselves. By shifting from captured visuals to in-the-moment listening, Sono defamiliarizes us from how we expect information-collection technology to be involved and utilised within the process of memory making.",
       "images": [
-        "Sono_1.jpeg",
         "Sono_2.jpg",
-        "Sono_3.jpg"
+        "Sono_3.jpg",
+        "Sono_1.jpeg"
       ]
     },
     "projectB": {
@@ -195,7 +194,7 @@ const DESIGNER_DATA = [
     "personalDescription": "I am passionate about product and service design, especially when it comes to user research and understanding people on a deeper level. I find the most satisfaction in creating solutions that genuinely alleviate pain points while elevating overall experience. Designing is a journey, and it grows as I collaborate with others and learn more about myself. I'm driven by moments when I help people uncover needs they didn't even realize they had.",
     "projectA": {
       "title": "INYO",
-      "platformNameThesis": "ceramic circuits",
+      "platformNameThesis": "Ceramic Circuits",
       "year": "2023",
       "supervisor": "Clement Zheng",
       "teammates": [
@@ -241,6 +240,7 @@ const DESIGNER_DATA = [
   {
     "fullName": "CLEMENT KOH YUEN JIE",
     "headshot-image": "Clement_Headshot_Edited.jpg",
+    "cardProjectPeekAlignBottom": true,
     "preferredFullName": "Clement Koh",
     "preferredFirstName": "Clement",
     "personalDescription": "A curious UX designer driven by discovery, ingenuity and moments of intrigue. My work spans both physical and digital mediums, where I craft unique experiences that feel intuitive yet unexpected. I am motivated by change, and I design with the intent to create work that adapts, resonates, and endures.",
@@ -399,7 +399,7 @@ const DESIGNER_DATA = [
         "btc1.png",
         "btc2.png",
         "btc3.png",
-        "btc4.jpg",
+        "btc4.JPG",
         "btc5.png"
       ]
     },
@@ -436,7 +436,7 @@ const DESIGNER_DATA = [
     "personalDescription": "I discover design through interrogating the relationships between humans, materials, and the cultural and systemic frameworks that shape them. I am drawn to the complexity embedded in our interactions with the material world, with a particular inclination towards textile materials and digital fabrication systems.",
     "projectA": {
       "title": "Transformative Wool Textiles",
-      "platformNameThesis": "Drawing /= drawing",
+      "platformNameThesis": "Drawing ≠ drawing",
       "year": "2025",
       "supervisor": "Grace Tan",
       "teammates": [],
@@ -451,7 +451,7 @@ const DESIGNER_DATA = [
       "title": "P-Threads",
       "platformName": "Bound to Bond",
       "year": "2024",
-      "supervisor": "Yen Ching-Chiuan",
+      "supervisor": "Dr. Yen Ching-Chiuan",
       "teammates": [
         "Sharon Lee Si Ying"
       ],
@@ -497,7 +497,7 @@ const DESIGNER_DATA = [
       "title": "Shizuku",
       "platformName": "Improving Everyday Life",
       "year": "2024",
-      "supervisor": "Christian",
+      "supervisor": "Christian Boucharenc",
       "teammates": [
         "Seah Jun Hao Reynard"
       ],
@@ -828,7 +828,7 @@ const DESIGNER_DATA = [
       "title": "Resonaid",
       "platformName": "Design for Medicine",
       "year": "2025",
-      "supervisor": "Yen Ching-Chiuan",
+      "supervisor": "Dr. Yen Ching-Chiuan",
       "teammates": [
         "Beatrice Lum",
         "Lu Enze"
@@ -837,7 +837,7 @@ const DESIGNER_DATA = [
       "images": [
         "ResonAid_1.png",
         "ResonAid_2.jpg",
-        "ResonAid_3.jpg",
+        "ResonAid_3.JPG",
         "ResonAid_4.jpg"
       ]
     },
@@ -1018,7 +1018,7 @@ const DESIGNER_DATA = [
       "title": "(RE)PLACE",
       "platformName": "SPACE-PLACE-TRACE",
       "year": "2025",
-      "supervisor": "Timothy Hoo Yee Meng",
+      "supervisor": "Timothy Hoo",
       "teammates": [
         "Tay Yun Jun",
         "Jan Abigail Ampo Juarez"
@@ -1169,7 +1169,7 @@ const DESIGNER_DATA = [
       "title": "STOMO",
       "platformName": "Design for Medicine",
       "year": "2025",
-      "supervisor": "Yen Ching Chiuan",
+      "supervisor": "Dr. Yen Ching-Chiuan",
       "teammates": [
         "Loh Wan Sing",
         "Wee Kai Bin"
@@ -1203,7 +1203,7 @@ const DESIGNER_DATA = [
       "title": "Osoi",
       "platformNameThesis": "Family of Forms",
       "year": "2024",
-      "supervisor": "Christian",
+      "supervisor": "Christian Boucharenc",
       "teammates": [],
       "writeUp": "Inspired by the art of tea-making, Osoi embodies verticality, tension, and mass in a quiet, reflective ceremony. Each piece evokes intentional slowness, where vertical lines draw focus, gentle curves create subtle movement, and mass grounding each vessel. Osoi invites a pause, celebrating tea as an art of simplicity and presence in its sculptural grace.",
       "images": [
@@ -1218,7 +1218,7 @@ const DESIGNER_DATA = [
       "title": "Klov",
       "platformName": "Native Colours",
       "year": "2023",
-      "supervisor": "Tiffany",
+      "supervisor": "Tiffany Loy",
       "teammates": [
         "Sophia Chin"
       ],
@@ -1249,7 +1249,7 @@ const DESIGNER_DATA = [
       "title": "In this Place, I feel",
       "platformNameThesis": "Visualizing the City",
       "year": "2024/2025",
-      "supervisor": "Lim Qi Xuan",
+      "supervisor": "Qimmy Lim",
       "teammates": [],
       "writeUp": "Across Singapore, every street, every corner holds a story—of childhood laughter, lifelong friendships, and quiet moments of reflection. These places shape us, anchoring our emotions to the physical world, whether in the warmth of a familiar home or somewhere new to us. In this project, we explore the psychological stories behind where people choose to spend their last location at and why so. Do they seek comfort in the familiar, or embrace the unknown for one last adventure?",
       "images": [
@@ -1382,7 +1382,8 @@ const DESIGNER_DATA = [
     "websitePortfolioUrl": "https://drive.google.com/drive/folders/1-FOGCUYLC1wC8CopoISh2cyrWKjgwQOl?usp=sharing",
     "behanceUrl": "",
     "instagramUrl": "https://www.instagram.com/yong_qing_/",
-    "otherUrl": "https://cde.nus.edu.sg/news/industrial-design-scores-at-if-design-student-award-2025/"
+    "otherUrl": "https://cde.nus.edu.sg/news/industrial-design-scores-at-if-design-student-award-2025/",
+    "otherUrl2": "https://cde.nus.edu.sg/news/light-brain-an-exchange-studio-project-with-global-impact/"
   },
   {
     "fullName": "SHAHEED IBNU MOHAMED HASSAN",
@@ -1536,6 +1537,7 @@ const DESIGNER_DATA = [
   {
     "fullName": "TAN LE EN, ASHLEY",
     "headshot-image": "Ashley_FINAL.jpg",
+    "cardProjectPeekImageIndex": 2,
     "preferredFullName": "Ashley Tan",
     "preferredFirstName": "Ashley",
     "personalDescription": "Helloo, I'm Ashley! Design to me tends to somewhere between understanding perspectives, problem solving, and making something that resonates. Between digital products, user research, and visual communication, I strive for my work to be curious, discursive, and always a little bit fun ;-",
@@ -1649,7 +1651,7 @@ const DESIGNER_DATA = [
       "title": "Back To Campus",
       "platformName": "Space-Place-Trace",
       "year": "2025",
-      "supervisor": "Timothy Hoo Yee Meng",
+      "supervisor": "Timothy Hoo",
       "teammates": [
         "Wee Jie Basil",
         "Yip Jia Xin Connie"
@@ -1694,7 +1696,7 @@ const DESIGNER_DATA = [
       "title": "ANEMONI",
       "platformName": "Bound to Bond",
       "year": "2024",
-      "supervisor": "Yen Ching Chiuan",
+      "supervisor": "Dr. Yen Ching-Chiuan",
       "teammates": [
         "Sophia Chin"
       ],
@@ -1878,7 +1880,7 @@ const DESIGNER_DATA = [
     "projectA": {
       "title": "First Hand",
       "platformNameThesis": "Thesis",
-      "year": "2026",
+      "year": "2025/2026",
       "supervisor": "Gabriel Lipkowitz",
       "teammates": [],
       "writeUp": "First Hand is an embodied anatomy learning application in spatial computing. Anatomical structures are overlaid onto the learner's own hand, and a reference hand presenting ape hand deformity provides the clinical context. Through conversing with an LLM-powered tutor, learners are guided to reason through the causal chain from nerve injury to visible deformity.",
@@ -1893,7 +1895,7 @@ const DESIGNER_DATA = [
     "projectB": {
       "title": "Cubic Rhythms",
       "platformName": "Everything is Playable",
-      "year": "2024",
+      "year": "2024/2025",
       "supervisor": "Donn Koh",
       "teammates": [
         "Wee Jie Basil"
@@ -2008,9 +2010,9 @@ const DESIGNER_DATA = [
     "industryTypeA": "UIUX Design, User Research, Experience Design",
     "specialisation": "",
     "industryTypeB": "User Research, Experience Design",
-    "email": "",
+    "email": "fwong432@gmail.com",
     "linkedinUrl": "",
-    "websitePortfolioUrl": "",
+    "websitePortfolioUrl": "https://feliciawong.myportfolio.com/",
     "behanceUrl": "",
     "instagramUrl": "",
     "otherUrl": ""
