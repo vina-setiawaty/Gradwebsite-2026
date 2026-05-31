@@ -504,7 +504,7 @@ function initPageTransition() {
 
 // ==================== MOBILE SCROLL-REVEAL (hover substitute) ====================
 
-const CLASS_PHOTO_SCROLL_THRESHOLD_PX = 50;
+const CLASS_PHOTO_SCROLL_THRESHOLD_PX = 20;
 const SCROLL_REVEAL_ACTIVE_CLASS = 'is-scroll-active';
 
 const scrollRevealMobileMq = window.matchMedia('(max-width: 768px)');

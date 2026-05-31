@@ -2746,7 +2746,7 @@ body.main-nav-menu-open {
     }
 
     .class-photo-section {
-        margin-top: var(--space-8);
+        margin-top: var(--space-16);
         margin-bottom: var(--space-16);
     }
 
