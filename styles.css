@@ -1601,11 +1601,11 @@ body.main-nav-menu-open {
     .sponsor-logo {
         flex: 0 1 calc(33.333% - var(--space-4));
         max-width: calc(33.333% - var(--space-4));
-        height: clamp(28px, 8vw, 44px);
+        height: clamp(28px, 10vw, 64px);
     }
 
     .sponsor-logo.ssp-logo {
-        height: clamp(34px, 9.5vw, 52px);
+        height: clamp(34px, 12vw, 72px);
     }
 }
 
@@ -1890,8 +1890,8 @@ body.main-nav-menu-open {
     flex-wrap: wrap;
     justify-content: flex-start;
     gap: var(--graduates-gap);
-    padding-top: var(--space-8);
-    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-4);
+    /* border-top: 1px solid var(--color-border); */
 }
 
 /* Graduate Card */
@@ -2891,9 +2891,11 @@ body.main-nav-menu-open {
     }
 
     .feature-card-photos-overlay-desc {
-        right: var(--space-6);
+        left: var(--space-6);
+        right: auto;
         bottom: var(--space-6);
         max-width: max(18rem, 70%);
+        text-align: left;
     }
 
     .section-placeholder-text {
