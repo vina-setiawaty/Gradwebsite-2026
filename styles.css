@@ -2818,6 +2818,7 @@ body.main-nav-menu-open {
 
     .other-designers-section {
         margin-bottom: var(--space-16);
+        margin-top: var(--space-16);
     }
 
     .feature-card {
