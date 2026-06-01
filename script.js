@@ -5,7 +5,7 @@
 
 // ==================== CONFIGURATION ====================
 const MINIMUM_LOADING_TIME = 2000; // 2 seconds minimum display time
-const MAX_LOADING_WAIT_MS = 20000; // Force reveal if assets are still loading
+const MAX_LOADING_WAIT_MS = 8000; // Force reveal if assets are still loading
 const LOADING_PHOTO_CYCLE_MS = 500;
 const FEATURE_CARD_SLIDESHOW_MS = 1000; // Same interval as teaser.html
 const SITE_VISITED_KEY = 'gradshow2026_siteVisited';
