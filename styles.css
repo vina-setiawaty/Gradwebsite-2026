@@ -1867,7 +1867,7 @@ body.main-nav-menu-open {
 .section-heading {
     margin: 0 0 var(--space-6);
     font-size: var(--text-h3);
-    text-transform: uppercase;
+    /* text-transform: uppercase; */
     /* letter-spacing: 0.16em; */
     color: var(--color-text);
 }
@@ -3182,7 +3182,7 @@ body.main-nav-menu-open {
     }
 
     .section-heading {
-        font-size: var(--text-h3);
+        font-size: var(--text-h4);
     }
 
     .bottom-card {
