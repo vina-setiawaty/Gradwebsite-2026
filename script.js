@@ -5,6 +5,7 @@
 
 // ==================== CONFIGURATION ====================
 const MINIMUM_LOADING_TIME = 2000; // 2 seconds minimum display time
+const MAX_LOADING_WAIT_MS = 20000; // Force reveal if assets are still loading
 const LOADING_PHOTO_CYCLE_MS = 500;
 const FEATURE_CARD_SLIDESHOW_MS = 1000; // Same interval as teaser.html
 const SITE_VISITED_KEY = 'gradshow2026_siteVisited';
@@ -177,6 +178,7 @@ let featureCardSlideshowTimer = null;
 let featureCardSlideshowIndex = 0;
 let pageLoaded = false;
 let minimumTimePassed = false;
+let graduateImagesLoaded = false;
 
 // ==================== DOM ELEMENTS ====================
 // These will be set after DOM is ready
@@ -470,9 +472,35 @@ function revealMainContent() {
  * Check if both conditions are met to reveal main content
  */
 function checkReadyToReveal() {
-    if (pageLoaded && minimumTimePassed) {
+    if (pageLoaded && minimumTimePassed && graduateImagesLoaded) {
         revealMainContent();
     }
+}
+
+/**
+ * Preload all graduate card photos before revealing the home page (index only).
+ */
+function initGraduateImagePreload() {
+    const grid = document.getElementById('graduatesGrid');
+    if (!grid) {
+        graduateImagesLoaded = true;
+        return;
+    }
+
+    if (
+        typeof DESIGNER_DATA === 'undefined' ||
+        typeof collectGraduateCardImageUrls !== 'function' ||
+        typeof preloadGraduateCardImages !== 'function'
+    ) {
+        graduateImagesLoaded = true;
+        return;
+    }
+
+    const urls = collectGraduateCardImageUrls(DESIGNER_DATA);
+    preloadGraduateCardImages(urls).then(() => {
+        graduateImagesLoaded = true;
+        checkReadyToReveal();
+    });
 }
 
 /**
@@ -491,15 +519,15 @@ function initPageTransition() {
         checkReadyToReveal();
     });
     
-    // Fallback: Force reveal after maximum wait time (5 seconds)
-    // This ensures the loading screen disappears even if some resources fail to load
+    // Fallback: force reveal if assets are slow or unavailable
     setTimeout(() => {
-        if (!pageLoaded) {
-            console.warn('Page load timeout - forcing reveal');
+        if (!pageLoaded || !graduateImagesLoaded) {
+            console.warn('Loading timeout - revealing main content');
             pageLoaded = true;
+            graduateImagesLoaded = true;
             checkReadyToReveal();
         }
-    }, 5000);
+    }, MAX_LOADING_WAIT_MS);
 }
 
 // ==================== MOBILE SCROLL-REVEAL (hover substitute) ====================
@@ -618,6 +646,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (hasVisitedSiteBefore()) {
         skipLoadingAndShowMain();
     } else {
+        initGraduateImagePreload();
         initLoadingAnimation();
         initPageTransition();
     }

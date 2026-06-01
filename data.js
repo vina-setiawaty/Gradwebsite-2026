@@ -560,7 +560,7 @@ const DESIGNER_DATA = [
     "industryTypeB": "UI/UX Design, User Research",
     "email": "janina.cs.alvarez@gmail.com",
     "linkedinUrl": "https://www.linkedin.com/in/janina-alvarez/",
-    "websitePortfolioUrl": "https://janinaalvarez.wordpress.com/",
+    "websitePortfolioUrl": "https://janinaalva.framer.website/",
     "behanceUrl": "",
     "instagramUrl": "",
     "otherUrl": ""

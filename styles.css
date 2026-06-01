@@ -661,6 +661,11 @@ html.skip-loading .main-content {
     transition: none;
 }
 
+html[data-page='designer'] .main-content.page-wrapper {
+    min-height: 100vh;
+    min-height: 100svh;
+}
+
 /* ==================== MAIN NAVBAR (Light Theme) ==================== */
 .main-navbar {
     background-color: transparent;

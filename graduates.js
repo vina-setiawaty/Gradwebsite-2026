@@ -1,20 +1,61 @@
 // Graduates Page JavaScript
 // Requires: data.js to be loaded first
 
-document.addEventListener('DOMContentLoaded', function() {
-    renderGraduateCards(DESIGNER_DATA);
+document.addEventListener('DOMContentLoaded', function () {
+    const shouldEagerLoad =
+        document.getElementById('loadingOverlay') &&
+        !document.documentElement.classList.contains('skip-loading');
+    renderGraduateCards(DESIGNER_DATA, { eagerImages: shouldEagerLoad });
 });
 
-function renderGraduateCards(graduates) {
+function renderGraduateCards(graduates, options) {
     const grid = document.getElementById('graduatesGrid');
     if (!grid) return;
 
+    const eagerImages = options && options.eagerImages === true;
     grid.innerHTML = '';
 
     graduates.forEach((graduate, index) => {
-        const card = createGraduateCard(graduate, index);
+        const card = createGraduateCard(graduate, index, { eagerImages });
         grid.appendChild(card);
     });
+}
+
+/** Headshot + project-peek URLs for every graduate card (used by index loading screen). */
+function collectGraduateCardImageUrls(graduates) {
+    if (!Array.isArray(graduates)) return [];
+
+    const urls = [];
+    graduates.forEach((graduate) => {
+        if (!graduate || typeof graduate !== 'object') return;
+
+        const filename =
+            graduate['headshot-image'] != null ? String(graduate['headshot-image']).trim() : '';
+        if (filename) urls.push(`./headshotImages/${filename}`);
+
+        const projectUrl = getProjectAFirstImageSrc(graduate);
+        if (projectUrl) urls.push(projectUrl);
+    });
+
+    return [...new Set(urls)];
+}
+
+/** Preload card images; resolves when all finish or fail (404 still counts as done). */
+function preloadGraduateCardImages(urls) {
+    const unique = [...new Set((urls || []).filter(Boolean))];
+    if (unique.length === 0) return Promise.resolve();
+
+    return Promise.all(
+        unique.map(
+            (src) =>
+                new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = resolve;
+                    img.onerror = resolve;
+                    img.src = src;
+                })
+        )
+    );
 }
 
 function escapeHtml(str) {
@@ -87,6 +128,8 @@ function getGraduateCardHref(graduate, fullName) {
 function createGraduateCard(graduate, index, options) {
     const cardClass =
         options && options.cardClass ? String(options.cardClass) : 'graduate-card';
+    const imageLoading =
+        options && options.eagerImages === true ? 'eager' : 'lazy';
     // Handle both object format { fullName: "...", "headshot-image": "..." } and string format
     const fullName = typeof graduate === 'object' ? graduate.preferredFullName : graduate;
     const projectATitle =
@@ -121,11 +164,11 @@ function createGraduateCard(graduate, index, options) {
                 ? ' graduate-headshot--project-pos-bottom'
                 : '';
         photoHtml = `<div class="graduate-photo-frame graduate-photo-frame--hoverable">
-            <img class="graduate-headshot graduate-headshot--default" src="${escapeHtml(headshotRaw)}" alt="${escapeHtml(fullName)}" loading="lazy" decoding="async">
-            <img class="graduate-headshot graduate-headshot--project${projectPeekPosClass}" src="${escapeHtml(projectImageRaw)}" alt="${escapeHtml(fullName)} — ${escapeHtml(projectTitle)}" loading="lazy" decoding="async">
+            <img class="graduate-headshot graduate-headshot--default" src="${escapeHtml(headshotRaw)}" alt="${escapeHtml(fullName)}" loading="${imageLoading}" decoding="async">
+            <img class="graduate-headshot graduate-headshot--project${projectPeekPosClass}" src="${escapeHtml(projectImageRaw)}" alt="${escapeHtml(fullName)} — ${escapeHtml(projectTitle)}" loading="${imageLoading}" decoding="async">
         </div>`;
     } else if (hasHeadshot) {
-        photoHtml = `<div class="graduate-photo-frame"><img class="graduate-headshot" src="${escapeHtml(headshotRaw)}" alt="${escapeHtml(fullName)}" loading="lazy" decoding="async"></div>`;
+        photoHtml = `<div class="graduate-photo-frame"><img class="graduate-headshot" src="${escapeHtml(headshotRaw)}" alt="${escapeHtml(fullName)}" loading="${imageLoading}" decoding="async"></div>`;
     } else {
         photoHtml = `<div class="graduate-photo-frame graduate-photo-frame--empty"><span>PHOTO</span></div>`;
     }

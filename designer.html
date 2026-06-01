@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page="designer">
 
 <head>
     <meta charset="UTF-8">
@@ -14,7 +14,19 @@
     <!-- Background Canvas -->
     <canvas id="backgroundCanvas"></canvas>
 
-    <div class="page-wrapper">
+    <!-- Loading overlay (same pattern as index.html) -->
+    <div id="designerLoadingOverlay" class="loading-overlay">
+        <div id="loading-header-placeholder" data-active=""></div>
+        <main class="loading-screen">
+            <div class="loading-container">
+                <div class="loading-image-wrapper">
+                    <img id="designerLoadingImage" src="./loadingPhotos/DSCF0375.JPG" alt="Loading">
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="mainContent" class="main-content page-wrapper">
         <!-- Header placeholder -->
         <div id="header-placeholder" data-active=""></div>
 
@@ -235,6 +247,7 @@
     <script src="data.js"></script>
     <script src="graduates.js"></script>
     <script src="designer.js"></script>
+    <script src="designer-loading.js"></script>
 </body>
 
 </html>
