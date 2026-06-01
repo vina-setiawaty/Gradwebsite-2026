@@ -230,13 +230,11 @@ body {
     height: 100%;
     object-fit: cover;
     filter: grayscale(100%) contrast(1.2);
-    animation: fadeInOut 0.8s ease-in-out;
 }
 
-@keyframes fadeInOut {
-    0% { opacity: 0; transform: scale(0.98); }
-    20% { opacity: 1; transform: scale(1); }
-    80%, 100% { opacity: 1; transform: scale(1); }
+/* Slideshow driven by script.js / designer-loading.js (not CSS keyframes) */
+.loading-image-wrapper img.loading-slideshow-active {
+    animation: none;
 }
 
 .coming-soon {

@@ -64,15 +64,35 @@ function changeDesignerLoadingPhoto() {
     applyDesignerLoadingPhoto(img, designerLoadingScreenPhotoIndex);
 }
 
+function preloadDesignerLoadingScreenPhotos() {
+    return Promise.all(
+        designerLoadingPhotos.map(
+            (src) =>
+                new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = resolve;
+                    img.onerror = resolve;
+                    img.src = src;
+                })
+        )
+    );
+}
+
 function initDesignerLoadingAnimation() {
     const img = document.getElementById('designerLoadingImage');
     if (!img || designerLoadingPhotos.length === 0) return;
 
+    img.classList.add('loading-slideshow-active');
     img.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
     designerLoadingScreenPhotoIndex = Math.floor(Math.random() * designerLoadingPhotos.length);
     img.src = designerLoadingPhotos[designerLoadingScreenPhotoIndex];
 
+    if (designerPhotoInterval) {
+        clearInterval(designerPhotoInterval);
+        designerPhotoInterval = null;
+    }
     designerPhotoInterval = setInterval(changeDesignerLoadingPhoto, DESIGNER_LOADING_PHOTO_CYCLE_MS);
+    preloadDesignerLoadingScreenPhotos();
 }
 
 function revealDesignerMainContent() {
@@ -110,7 +130,7 @@ function initDesignerPageAssetPreload() {
 
     const { record, otherDesigners } = getDesignerPagePreloadContext();
     const urls = collectDesignerPageImageUrls(record, otherDesigners);
-    preloadGraduateCardImages(urls).then(() => {
+    preloadGraduateCardImages(urls, { concurrency: 6 }).then(() => {
         designerAssetsLoaded = true;
         checkDesignerReadyToReveal();
     });
@@ -165,8 +185,11 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    loadDesignerData({ eagerImages: true });
-    initDesignerPageAssetPreload();
     initDesignerLoadingAnimation();
     initDesignerPageTransition();
+
+    setTimeout(() => {
+        loadDesignerData({ eagerImages: true });
+        initDesignerPageAssetPreload();
+    }, 0);
 });

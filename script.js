@@ -190,13 +190,20 @@ let mainContent = null;
 // ==================== LOADING PHOTO FUNCTIONS ====================
 
 /**
- * Preload gallery images so swaps can decode quickly.
+ * Preload loading-screen slideshow images (used before the interval starts).
  */
-function preloadImages() {
-    [...loadingPhotos, ...featureCardPhotos].forEach(src => {
-        const img = new Image();
-        img.src = src;
-    });
+function preloadLoadingScreenPhotos() {
+    return Promise.all(
+        loadingPhotos.map(
+            (src) =>
+                new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = resolve;
+                    img.onerror = resolve;
+                    img.src = src;
+                })
+        )
+    );
 }
 
 /**
@@ -374,19 +381,28 @@ function startFlipCardBackSlideshowAfterReveal() {
 /**
  * Initialize the loading screen photo animation
  */
-function initLoadingAnimation() {
-    preloadImages();
-    if (loadingImage) {
-        loadingImage.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
-        if (loadingPhotos.length > 0) {
-            loadingScreenPhotoIndex = Math.floor(Math.random() * loadingPhotos.length);
-            loadingImage.src = loadingPhotos[loadingScreenPhotoIndex];
-        }
+function startLoadingScreenSlideshow() {
+    if (!loadingImage || loadingPhotos.length === 0) return;
+
+    loadingImage.classList.add('loading-slideshow-active');
+    loadingImage.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+    loadingScreenPhotoIndex = Math.floor(Math.random() * loadingPhotos.length);
+    loadingImage.src = loadingPhotos[loadingScreenPhotoIndex];
+
+    if (photoInterval) {
+        clearInterval(photoInterval);
+        photoInterval = null;
     }
+    photoInterval = setInterval(changePhoto, LOADING_PHOTO_CYCLE_MS);
+}
+
+function initLoadingAnimation() {
     if (flipCardBackBgImage) {
         flipCardBackBgImage.style.transition = 'none';
     }
-    photoInterval = setInterval(changePhoto, LOADING_PHOTO_CYCLE_MS);
+
+    startLoadingScreenSlideshow();
+    preloadLoadingScreenPhotos();
 }
 
 // ==================== PAGE TRANSITION FUNCTIONS ====================
@@ -497,7 +513,7 @@ function initGraduateImagePreload() {
     }
 
     const urls = collectGraduateCardImageUrls(DESIGNER_DATA);
-    preloadGraduateCardImages(urls).then(() => {
+    preloadGraduateCardImages(urls, { concurrency: 6 }).then(() => {
         graduateImagesLoaded = true;
         checkReadyToReveal();
     });
@@ -639,16 +655,15 @@ document.addEventListener('DOMContentLoaded', () => {
     loadingOverlay = document.getElementById('loadingOverlay');
     mainContent = document.getElementById('mainContent');
 
-    preloadImages();
     initFeatureCardQuizToolHover();
     initFeatureCardSlideshow();
 
     if (hasVisitedSiteBefore()) {
         skipLoadingAndShowMain();
     } else {
-        initGraduateImagePreload();
         initLoadingAnimation();
         initPageTransition();
+        initGraduateImagePreload();
     }
 
     // Mobile: scroll-driven hover substitute for class photo + feature card

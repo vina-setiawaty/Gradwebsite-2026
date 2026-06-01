@@ -2,10 +2,17 @@
 // Requires: data.js to be loaded first
 
 document.addEventListener('DOMContentLoaded', function () {
-    const shouldEagerLoad =
+    const isFirstVisitLoading =
         document.getElementById('loadingOverlay') &&
         !document.documentElement.classList.contains('skip-loading');
-    renderGraduateCards(DESIGNER_DATA, { eagerImages: shouldEagerLoad });
+    const options = { eagerImages: isFirstVisitLoading };
+
+    // Yield so the loading slideshow interval can run while cards render
+    if (isFirstVisitLoading) {
+        setTimeout(() => renderGraduateCards(DESIGNER_DATA, options), 0);
+    } else {
+        renderGraduateCards(DESIGNER_DATA, options);
+    }
 });
 
 function renderGraduateCards(graduates, options) {
@@ -41,21 +48,42 @@ function collectGraduateCardImageUrls(graduates) {
 }
 
 /** Preload card images; resolves when all finish or fail (404 still counts as done). */
-function preloadGraduateCardImages(urls) {
+function preloadGraduateCardImages(urls, options) {
     const unique = [...new Set((urls || []).filter(Boolean))];
     if (unique.length === 0) return Promise.resolve();
 
-    return Promise.all(
-        unique.map(
-            (src) =>
-                new Promise((resolve) => {
-                    const img = new Image();
-                    img.onload = resolve;
-                    img.onerror = resolve;
-                    img.src = src;
-                })
-        )
-    );
+    const concurrency =
+        options && Number.isFinite(options.concurrency) && options.concurrency > 0
+            ? Math.floor(options.concurrency)
+            : unique.length;
+
+    return new Promise((resolve) => {
+        let nextIndex = 0;
+        let inFlight = 0;
+        let completed = 0;
+
+        function pump() {
+            while (inFlight < concurrency && nextIndex < unique.length) {
+                const src = unique[nextIndex++];
+                inFlight += 1;
+                const img = new Image();
+                const finish = () => {
+                    inFlight -= 1;
+                    completed += 1;
+                    if (completed >= unique.length) {
+                        resolve();
+                    } else {
+                        pump();
+                    }
+                };
+                img.onload = finish;
+                img.onerror = finish;
+                img.src = src;
+            }
+        }
+
+        pump();
+    });
 }
 
 function escapeHtml(str) {

@@ -30,7 +30,7 @@ function createHeader(activePage = '') {
             <a href="index.html#about-us-section" class="main-nav-link${activePage === 'about' ? ' active' : ''}" data-nav="about">About Us</a>
             <a href="index.html#graduates-grid-section" class="main-nav-link${activePage === 'graduates' ? ' active' : ''}" data-nav="graduates">Graduates</a>
             <a href="index.html#locate-us-section" class="main-nav-link${activePage === 'locate' ? ' active' : ''}" data-nav="locate">Locate Us</a>
-            <a class="main-nav-link main-nav-link--with-arrow main-nav-link--placeholder" aria-disabled="true">View Gradbook${NAV_LINK_ARROW}</a>
+            <a href="Gradbook_2026.pdf" class="main-nav-link main-nav-link--with-arrow main-nav-link--external" target="_blank" rel="noopener noreferrer">View Gradbook${NAV_LINK_ARROW}</a>
             <a href="https://cde.nus.edu.sg/did/" class="main-nav-link main-nav-link--with-arrow main-nav-link--external" target="_blank" rel="noopener noreferrer">About DID${NAV_LINK_ARROW}</a>
         </div>
     `;
