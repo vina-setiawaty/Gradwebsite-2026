@@ -3210,11 +3210,15 @@ body.main-nav-menu-open {
         margin-bottom: var(--space-3);
     }
 
-    /* .graduates-section-heading,
+    .graduates-section-heading,
     .showcase-intro-title,
     .project-title {
+        font-size: var(--text-h3);
+    }
+
+    .graduates-section-heading.projects {
         font-size: var(--text-h2);
-    } */
+    }
 
     .graduates-grid {
         --graduates-cols: 2;
