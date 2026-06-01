@@ -105,6 +105,11 @@ function createFooter() {
     const footer = document.createElement('footer');
     footer.className = 'main-footer';
     footer.innerHTML = `
+        <div class="footer-container">
+        <div class="footer-left">
+        <div class="footer-text">
+        <p> See you at our graduation show! </p>
+        </div>
         <nav class="footer-nav" aria-label="Footer">
             <div class="footer-icons">
                 <a href="https://maps.app.goo.gl/fa3Wj8d9EWuB1vJaA" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Location">
@@ -161,8 +166,10 @@ function createFooter() {
                 </div>
             </div>
         </nav>
+        </div>
         <div class="footer-logo">
             <img src="./assets/logo2026Horizontal%20copy.png" alt="2026 Division of Industrial Design Graduation Show">
+        </div>
         </div>
     `;
     return footer;

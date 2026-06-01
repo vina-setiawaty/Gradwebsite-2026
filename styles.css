@@ -1229,15 +1229,16 @@ body.main-nav-menu-open {
 
 .feature-card-photos-overlay-desc {
     position: absolute;
+    left: var(--space-8);
     right: var(--space-8);
     bottom: var(--space-8);
-    max-width: 28rem;
+    /* max-width: 28rem; */
     margin: 0;
     font-size: var(--text-m);
     font-weight: 400;
     line-height: 1.45;
     color: var(--color-text-light);
-    text-align: right;
+    text-align: left;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
@@ -1568,51 +1569,58 @@ body.main-nav-menu-open {
     margin-bottom: var(--space-6);
 }
 
+/* Desktop: five equal columns, always one row */
 .sponsors-row {
     display: flex;
-    flex-wrap: wrap;
+    /* grid-template-columns: repeat(5, minmax(0, 1fr)); */
+    flex-direction: row;
+    column-gap: clamp(var(--space-4), 3vw, var(--space-12));
     align-items: center;
-    justify-content: center;
-    gap: var(--space-4) clamp(var(--space-4), 3vw, var(--space-12));
+    justify-content: space-between;
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
 }
 
-.sponsor-logo {
-    flex: 0 1 auto;
-    min-width: 0;
-    height: clamp(40px, 5vw + 24px, 84px);
-    width: auto;
-    max-width: 100%;
-    object-fit: contain;
-    display: block;
+.sponsor-item {
+    /* display: flex; */
+    /* align-items: center; */
+    /* justify-content: center; */
+    /* width: 100%; */
+    /* min-width: 0; */
+    min-height: clamp(48px, 5vw + 28px, 84px);
+    /* padding: 0 var(--space-2); */
+    box-sizing: border-box;
 }
 
-.sponsor-logo.ssp-logo {
-    height: clamp(52px, 6.5vw + 30px, 108px);
+.sponsor-logo {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: clamp(40px, 5vw + 24px, 84px);
+    object-fit: contain;
+}
+
+.sponsor-logo.ssp, .sponsor-logo.james-dyson {
+    max-height: clamp(40px, 5vw + 24px, 108px);
+}
+
+.sponsors-mobile {
+    display: none;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
 }
 
 @media (max-width: 768px) {
     .sponsors-row {
-        row-gap: var(--space-4);
+        display: none;
     }
 
-    .sponsor-logo {
-        flex: 0 1 calc(33.333% - var(--space-4));
-        max-width: calc(33.333% - var(--space-4));
-        height: clamp(28px, 10vw, 64px);
-    }
-
-    .sponsor-logo.ssp-logo {
-        height: clamp(34px, 12vw, 72px);
-    }
-}
-
-@media (min-width: 1024px) {
-    .sponsors-row {
-        flex-wrap: nowrap;
-        justify-content: space-between;
+    .sponsors-mobile {
+        display: block;
     }
 }
 
@@ -1653,7 +1661,7 @@ body.main-nav-menu-open {
 /* ==================== MAIN FOOTER ==================== */
 .main-footer {
     background-color: var(--purple-4);
-    padding: var(--space-6) var(--page-px);
+    padding: var(--space-4) 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1661,6 +1669,36 @@ body.main-nav-menu-open {
     max-width: 1920px;
     margin: 0 auto;
     width: 100%;
+}
+
+.footer-container {
+    max-width: 1560px;
+    padding: 0 var(--page-px);
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+    width: 100%;
+}
+
+.footer-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+    min-width: 0;
+}
+
+.footer-text {
+    font-size: var(--text-m);
+    font-weight: 400;
+    color: var(--color-text-light);
+    text-align: left;
+}
+
+.footer-text p {
+    margin: 0;
 }
 
 .footer-nav {
@@ -2892,10 +2930,8 @@ body.main-nav-menu-open {
 
     .feature-card-photos-overlay-desc {
         left: var(--space-6);
-        right: auto;
         bottom: var(--space-6);
-        max-width: max(18rem, 70%);
-        text-align: left;
+        max-width: max(18rem, 100%);
     }
 
     .section-placeholder-text {
@@ -2915,10 +2951,18 @@ body.main-nav-menu-open {
         font-size: var(--text-h4);
     }
 
-    .main-footer {
-        flex-wrap: wrap;
-        justify-content: center;
+    .footer-container {
         flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-left {
+        align-items: center;
+    }
+
+    .footer-text {
+        text-align: center;
     }
 
     .footer-nav {
@@ -2927,7 +2971,6 @@ body.main-nav-menu-open {
     }
 
     .footer-icons {
-        width: 100%;
         justify-content: center;
     }
 
