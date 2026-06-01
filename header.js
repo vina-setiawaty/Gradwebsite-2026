@@ -108,7 +108,7 @@ function createFooter() {
         <div class="footer-container">
         <div class="footer-left">
         <div class="footer-text">
-        <p>Visit our showcase at Geneo, 11 - 15 June 2026. See you there!</p>
+        <p> See you at our graduation show! </p>
         </div>
         <nav class="footer-nav" aria-label="Footer">
             <div class="footer-icons">
