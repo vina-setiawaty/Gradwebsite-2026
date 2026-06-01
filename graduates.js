@@ -1,5 +1,5 @@
 // Graduates Page JavaScript
-// Requires: data/data.js to be loaded first
+// Requires: data.js to be loaded first
 
 document.addEventListener('DOMContentLoaded', function() {
     renderGraduateCards(DESIGNER_DATA);

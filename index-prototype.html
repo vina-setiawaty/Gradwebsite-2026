@@ -10,7 +10,7 @@
         /* =============================================================================
            Self-contained prototype: fonts + tokens + layout subset (no styles.css).
            Graduate cards: hover anywhere on the card → full project image + project name.
-           Data: external data/data.js (DESIGNER_DATA) — same source as the main site.
+           Data: external data.js (DESIGNER_DATA) — same source as the main site.
            ============================================================================= */
         @font-face {
             font-family: 'Helvetica';
@@ -792,7 +792,7 @@
     <div id="mainContent" class="main-content">
         <p class="prototype-banner" role="note">
             Prototype file: inline CSS/JS only. Hover a graduate card (photo or name) to show the full project image and project title.
-            Designer list still loads from <code>data/data.js</code> (unchanged).
+            Designer list still loads from <code>data.js</code> (unchanged).
         </p>
         <main class="main-page">
             <section class="hero-banner">
@@ -882,7 +882,7 @@
         </footer>
     </div>
 
-    <script src="data/data.js"></script>
+    <script src="data.js"></script>
     <script>
         (function () {
             function escapeHtml(str) {
@@ -1094,7 +1094,7 @@
                     var grid = document.getElementById('graduatesGrid');
                     if (grid) {
                         grid.innerHTML =
-                            '<p class="graduate-name">Could not load DESIGNER_DATA. Ensure data/data.js is available.</p>';
+                            '<p class="graduate-name">Could not load DESIGNER_DATA. Ensure data.js is available.</p>';
                     }
                 }
             });

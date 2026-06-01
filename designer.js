@@ -1,5 +1,5 @@
 // Designer Page JavaScript
-// Requires: data/data.js, graduates.js (createGraduateCard) to be loaded first
+// Requires: data.js, graduates.js (createGraduateCard) to be loaded first
 
 const OTHER_DESIGNERS_DESKTOP_COUNT = 6;
 const OTHER_DESIGNERS_MOBILE_MQL = '(max-width: 768px)';

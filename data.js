@@ -537,7 +537,8 @@ const DESIGNER_DATA = [
         "Nurture_1.jpeg",
         "Nurture_2.jpg",
         "Nurture_3.jpg"
-      ]
+      ],
+      videoUrl: "https://www.youtube.com/embed/rLvpVNTNyuw?si=jHqOGz_0b7_Gwvyj"
     },
     "projectB": {
       "title": "CO-PANION",
@@ -578,9 +579,9 @@ const DESIGNER_DATA = [
       "teammates": [],
       "writeUp": "Unobjectifying Objects reconsiders everyday objects beyond their utility, revealing the emotional meanings embedded within them through three acts: nullify, preserve, and renew. By permanently stripping objects of their original utility, preserving the memories they hold, and reconfiguring them into new forms, the project challenges how objective design doesn't have to end at usability.",
       "images": [
-        "Unobjectifyingobject_1.JPG",
-        "Unobjectifyingobject_2.JPG",
-        "Unobjectifyingobject_3.JPG"
+        "Unobjectifyingobject_1.png",
+        "Unobjectifyingobject_2.png",
+        "Unobjectifyingobject_3.png"
       ]
     },
     "projectB": {
