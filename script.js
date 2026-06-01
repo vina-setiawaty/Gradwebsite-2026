@@ -312,7 +312,7 @@ function initFeatureCardSlideshow() {
 
     startFeatureCardSlideshow(img);
 
-    if (photosCard) {
+    if (photosCard && !window.matchMedia('(max-width: 480px)').matches) {
         photosCard.addEventListener('mouseenter', stopFeatureCardSlideshow);
         photosCard.addEventListener('mouseleave', () => {
             featureCardSlideshowIndex =

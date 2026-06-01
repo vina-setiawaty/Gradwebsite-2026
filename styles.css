@@ -3177,6 +3177,48 @@ body.main-nav-menu-open {
         font-size: var(--text-s);
     }
 
+    /* No hover on narrow mobile (touch sticky-hover) */
+    .feature-card-photos-img {
+        transition: none;
+    }
+
+    .feature-card-photos:hover .feature-card-photos-img {
+        transform: scale(1);
+    }
+
+    .gradquiz-widget__orb,
+    .gradquiz-widget__pop {
+        transition: none;
+    }
+
+    .gradquiz-widget:hover .gradquiz-widget__orb,
+    .gradquiz-widget:focus-visible .gradquiz-widget__orb {
+        transform: none;
+        box-shadow:
+            0 8px 24px rgba(41, 18, 76, 0.22),
+            0 2px 0 rgba(255, 255, 255, 0.35) inset;
+    }
+
+    .gradquiz-widget:hover .gradquiz-widget__pop,
+    .gradquiz-widget:focus-within .gradquiz-widget__pop {
+        opacity: 0;
+        transform: translateY(8px) scale(0.92);
+    }
+
+    /* Tap once to open pop; tap orb or pop again to follow link */
+    .gradquiz-widget.is-pop-open .gradquiz-widget__pop {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+        cursor: pointer;
+    }
+
+    .gradquiz-widget.is-pop-open .gradquiz-widget__orb {
+        box-shadow:
+            0 12px 32px rgba(41, 18, 76, 0.28),
+            0 2px 0 rgba(255, 255, 255, 0.35) inset;
+    }
+
     .section-placeholder-text {
         font-size: var(--text-h3);
     }
