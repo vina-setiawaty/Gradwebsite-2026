@@ -1114,7 +1114,7 @@ let cachedResultShareBlobChar = null;
 
 function getShareText(character) {
   const name = CHARACTERS[character] || "a design tool";
-  return `I am ${name} on the DID Grad Show 2026 Quiz!`;
+  return `I am ${name} on the DID Grad Show 2026 Quiz! Come and find out what you are!`;
 }
 
 function getShareUrl() {
