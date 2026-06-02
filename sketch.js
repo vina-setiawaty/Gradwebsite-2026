@@ -1253,32 +1253,34 @@ function ensureDesktopShareUi() {
   initQuizShareUI();
 }
 
-function pickSharePayload(file, character) {
-  const filesOnly = { files: [file] };
-
-  // iOS: combined url/text/files → Telegram/WhatsApp often receive only the link.
-  if (isIOSDevice()) {
-    return filesOnly;
-  }
-
-  const title = "What Tool Are You?";
-  const text = getShareText(character);
-  const url = getShareUrl();
-  const candidates = [
-    { files: [file], title: title, text: text },
-    { files: [file], text: text + (url ? "\n\n" + url : "") },
-    filesOnly,
-  ];
-  for (let i = 0; i < candidates.length; i++) {
-    const payload = candidates[i];
-    if (!navigator.canShare || navigator.canShare(payload)) {
-      return payload;
-    }
-  }
-  return filesOnly;
+/**
+ * Mobile Web Share (W3C Web Share API).
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share
+ * @see https://web.dev/articles/web-share
+ *
+ * Documented rules we follow:
+ * - Must run over HTTPS, from a user gesture (button tap).
+ * - For files: test with navigator.canShare({ files }) — title/text are not part of that check (web.dev).
+ * - Android: { files, text } with the link inside text works for many apps.
+ * - iOS: do not pass `url` together with `files` — WhatsApp/Telegram often keep only the URL and drop the image.
+ *   Put the link in `text` instead. If one sheet fails, iOS may need files first, then text (WebKit limitation).
+ */
+function canShareData(data) {
+  return !navigator.canShare || navigator.canShare(data);
 }
 
-/** Copy caption while the tap gesture is still active (iOS blocks clipboard after await). */
+function buildMobileSharePayloads(file, character) {
+  const fullCaption = buildShareLine(character);
+  const shareTitle = "What Tool Are You?";
+  return {
+    filesOnly: { files: [file] },
+    filesWithCaption: { files: [file], text: fullCaption },
+    filesWithTitle: { files: [file], title: shareTitle, text: fullCaption },
+    textOnly: { text: fullCaption, title: shareTitle },
+  };
+}
+
+/** Copy caption while the tap gesture is still active (clipboard may fail after await). */
 function copyShareCaptionToClipboard(character) {
   const line = buildShareLine(character);
   if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -1289,16 +1291,61 @@ function copyShareCaptionToClipboard(character) {
   return Promise.resolve();
 }
 
-async function shareToInstagramStory(imageBlob) {
+async function tryNavigatorShare(data) {
+  if (!canShareData(data)) return "unsupported";
+  try {
+    await navigator.share(data);
+    return "ok";
+  } catch (error) {
+    if (error && error.name === "AbortError") return "abort";
+    console.warn("navigator.share failed:", error);
+    return "error";
+  }
+}
+
+async function shareMobileNative(imageBlob) {
   const character = getCharacter();
   const file = buildShareFile(imageBlob, character);
-  const shareData = pickSharePayload(file, character);
+  const P = buildMobileSharePayloads(file, character);
 
+  if (!canShareData(P.filesOnly)) {
+    console.warn("This device cannot share image files via the Web Share API.");
+    return;
+  }
+
+  if (isIOSDevice()) {
+    // 1) One sheet: image + caption (link is inside text, no `url` field).
+    let result = await tryNavigatorShare(P.filesWithCaption);
+    if (result === "ok" || result === "abort") return;
+
+    result = await tryNavigatorShare(P.filesWithTitle);
+    if (result === "ok" || result === "abort") return;
+
+    // 2) Two-step workaround when iOS won't combine files + text (common WebKit issue).
+    result = await tryNavigatorShare(P.filesOnly);
+    if (result === "abort") return;
+    if (result === "ok") {
+      const textResult = await tryNavigatorShare(P.textOnly);
+      if (textResult === "ok" || textResult === "abort") return;
+    }
+
+    await tryNavigatorShare(P.textOnly);
+    return;
+  }
+
+  // Android & other mobile: web.dev pattern — files + text (URL embedded in text).
+  let result = await tryNavigatorShare(P.filesWithCaption);
+  if (result === "ok" || result === "abort") return;
+
+  result = await tryNavigatorShare(P.filesWithTitle);
+  if (result === "ok" || result === "abort") return;
+
+  await tryNavigatorShare(P.filesOnly);
+}
+
+async function shareToInstagramStory(imageBlob) {
   try {
-    await navigator.share(shareData);
-  } catch (error) {
-    if (error && error.name === "AbortError") return;
-    console.error("Share failed:", error);
+    await shareMobileNative(imageBlob);
   } finally {
     shareFlowBusy = false;
   }
@@ -1495,8 +1542,8 @@ function shareResult() {
   const character = getCharacter();
   const desktopMenu = shouldUseDesktopShareMenu();
 
-  // iOS: copy message + link now (user activation); image shares via files-only payload.
-  if (!desktopMenu && isIOSDevice()) {
+  // Copy full caption at tap time (user activation). Backup when share drops text/link.
+  if (!desktopMenu) {
     copyShareCaptionToClipboard(character);
   }
 
