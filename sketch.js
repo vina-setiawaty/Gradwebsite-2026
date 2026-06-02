@@ -1215,6 +1215,14 @@ function isMobileShareDevice() {
   return false;
 }
 
+/** iOS / iPadOS — Web Share must not mix url/text with files or apps often get the link only. */
+function isIOSDevice() {
+  const ua = navigator.userAgent || "";
+  if (/iPhone|iPod|iPad/i.test(ua)) return true;
+  if (navigator.maxTouchPoints > 1 && /Macintosh/i.test(ua)) return true;
+  return false;
+}
+
 /** Desktop landscape only — portrait / touch = mobile site, no link dialog. */
 function shouldUseDesktopShareMenu() {
   if (isMobileShareDevice()) return false;
@@ -1246,14 +1254,20 @@ function ensureDesktopShareUi() {
 }
 
 function pickSharePayload(file, character) {
+  const filesOnly = { files: [file] };
+
+  // iOS: combined url/text/files → Telegram/WhatsApp often receive only the link.
+  if (isIOSDevice()) {
+    return filesOnly;
+  }
+
   const title = "What Tool Are You?";
   const text = getShareText(character);
   const url = getShareUrl();
   const candidates = [
-    { files: [file], title: title, text: text, url: url },
     { files: [file], title: title, text: text },
-    { files: [file], text: text },
-    { files: [file] },
+    { files: [file], text: text + (url ? "\n\n" + url : "") },
+    filesOnly,
   ];
   for (let i = 0; i < candidates.length; i++) {
     const payload = candidates[i];
@@ -1261,12 +1275,24 @@ function pickSharePayload(file, character) {
       return payload;
     }
   }
-  return { files: [file] };
+  return filesOnly;
+}
+
+/** Copy caption while the tap gesture is still active (iOS blocks clipboard after await). */
+function copyShareCaptionToClipboard(character) {
+  const line = buildShareLine(character);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(line).catch(function () {
+      return undefined;
+    });
+  }
+  return Promise.resolve();
 }
 
 async function shareToInstagramStory(imageBlob) {
-  const file = buildShareFile(imageBlob, getCharacter());
-  const shareData = pickSharePayload(file, getCharacter());
+  const character = getCharacter();
+  const file = buildShareFile(imageBlob, character);
+  const shareData = pickSharePayload(file, character);
 
   try {
     await navigator.share(shareData);
@@ -1468,6 +1494,11 @@ function shareResult() {
   markQuizShareContext();
   const character = getCharacter();
   const desktopMenu = shouldUseDesktopShareMenu();
+
+  // iOS: copy message + link now (user activation); image shares via files-only payload.
+  if (!desktopMenu && isIOSDevice()) {
+    copyShareCaptionToClipboard(character);
+  }
 
   shareFlowBusy = true;
 
