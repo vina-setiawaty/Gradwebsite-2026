@@ -692,6 +692,7 @@ html[data-page='designer'] .main-content.page-wrapper {
     margin: 0 auto;
     width: 100%;
     box-sizing: border-box;
+    gap: var(--space-8);
 }
 
 /* Reserve space below fixed navbar (page-wrapper + index main-content layouts) */
@@ -746,6 +747,11 @@ html[data-page='designer'] .main-content.page-wrapper {
     align-items: center;
     align-content: center;
     gap: var(--space-2) var(--space-10);
+}
+
+/* Wrapper for mobile menu animation; transparent to layout on desktop */
+.main-nav-links-inner {
+    display: contents;
 }
 
 @media (min-width: 769px) {
