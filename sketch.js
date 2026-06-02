@@ -222,7 +222,9 @@ function setup() {
   c.elt.style.webkitUserSelect = "none";
   c.elt.style.webkitTouchCallout = "none";
 
-  initQuizShareUI();
+  if (!isMobileShareDevice()) {
+    initQuizShareUI();
+  }
 
   c.elt.addEventListener(
     "touchstart",
@@ -1182,13 +1184,12 @@ function buildShareFile(imageBlob, character) {
   return new File([imageBlob], "did-gradquiz-" + character + ".png", { type: "image/png" });
 }
 
-/** True on phones/tablets where we use Web Share with the PNG (not the link menu). */
-function shouldUseNativeFileShare() {
-  if (!navigator.share) return false;
+/** Phones/tablets — native share only; never show the desktop link dialog. */
+function isMobileShareDevice() {
   const ua = navigator.userAgent || "";
   if (/Android|iPhone|iPod|Mobile/i.test(ua)) return true;
-  // iPadOS 13+ may report as Macintosh
   if (/iPad/i.test(ua)) return true;
+  // iPadOS 13+ may report as Macintosh
   if (navigator.maxTouchPoints > 1 && /Macintosh/i.test(ua)) return true;
   return false;
 }
@@ -1222,7 +1223,6 @@ async function shareToInstagramStory(imageBlob) {
   } catch (error) {
     if (error && error.name === "AbortError") return;
     console.error("Share failed:", error);
-    showFallback(character, imageBlob);
   }
 }
 
@@ -1337,6 +1337,8 @@ function hideShareFallback() {
 }
 
 function showFallback(character, imageBlob) {
+  if (isMobileShareDevice()) return;
+
   initQuizShareUI();
   const wrap = document.getElementById("quizShareFallback");
   if (!wrap) return;
@@ -1413,14 +1415,20 @@ function shareResult() {
 
   getResultImageBlob(character)
     .then(function (blob) {
-      if (shouldUseNativeFileShare()) {
-        return shareToInstagramStory(blob);
+      if (isMobileShareDevice()) {
+        if (navigator.share) {
+          return shareToInstagramStory(blob);
+        }
+        console.warn("Web Share API is not available on this device.");
+        return;
       }
       showFallback(character, blob);
     })
     .catch(function (err) {
       console.error("Could not prepare result image:", err);
-      showFallback(character, null);
+      if (!isMobileShareDevice()) {
+        showFallback(character, null);
+      }
     });
 }
 
