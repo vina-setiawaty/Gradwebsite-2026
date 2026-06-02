@@ -1182,6 +1182,17 @@ function buildShareFile(imageBlob, character) {
   return new File([imageBlob], "did-gradquiz-" + character + ".png", { type: "image/png" });
 }
 
+/** True on phones/tablets where we use Web Share with the PNG (not the link menu). */
+function shouldUseNativeFileShare() {
+  if (!navigator.share) return false;
+  const ua = navigator.userAgent || "";
+  if (/Android|iPhone|iPod|Mobile/i.test(ua)) return true;
+  // iPadOS 13+ may report as Macintosh
+  if (/iPad/i.test(ua)) return true;
+  if (navigator.maxTouchPoints > 1 && /Macintosh/i.test(ua)) return true;
+  return false;
+}
+
 function pickSharePayload(file, character) {
   const title = "What Tool Are You?";
   const text = getShareText(character);
@@ -1198,24 +1209,13 @@ function pickSharePayload(file, character) {
       return payload;
     }
   }
-  return null;
-}
-
-function canShareResultImage(imageBlob, character) {
-  if (!navigator.share) return false;
-  const file = buildShareFile(imageBlob, character);
-  return pickSharePayload(file, character) !== null;
+  return { files: [file] };
 }
 
 async function shareToInstagramStory(imageBlob) {
   const character = getCharacter();
   const file = buildShareFile(imageBlob, character);
   const shareData = pickSharePayload(file, character);
-
-  if (!shareData) {
-    showFallback(character, imageBlob);
-    return;
-  }
 
   try {
     await navigator.share(shareData);
@@ -1333,6 +1333,7 @@ function hideShareFallback() {
   if (!wrap) return;
   wrap.hidden = true;
   document.body.style.overflow = "";
+  document.body.classList.remove("quiz-share-open");
 }
 
 function showFallback(character, imageBlob) {
@@ -1360,6 +1361,7 @@ function showFallback(character, imageBlob) {
 
   wrap.hidden = false;
   document.body.style.overflow = "hidden";
+  document.body.classList.add("quiz-share-open");
 }
 
 function copyShareLine(textToCopy, feedbackBtn) {
@@ -1411,7 +1413,7 @@ function shareResult() {
 
   getResultImageBlob(character)
     .then(function (blob) {
-      if (canShareResultImage(blob, character)) {
+      if (shouldUseNativeFileShare()) {
         return shareToInstagramStory(blob);
       }
       showFallback(character, blob);
