@@ -468,7 +468,7 @@ const DESIGNER_DATA = [
     "industryTypeB": "Material Exploration, Product Design",
     "email": "yuyangohh@gmail.com",
     "linkedinUrl": "",
-    "websitePortfolioUrl": "https://yuyangoh.notion.site",
+    "websitePortfolioUrl": "https://tinyurl.com/yyworks",
     "behanceUrl": "",
     "instagramUrl": "",
     "otherUrl": ""
