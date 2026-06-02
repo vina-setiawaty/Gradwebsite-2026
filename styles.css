@@ -3339,6 +3339,32 @@ body.main-nav-menu-open {
         min-width: 6.25rem;
     }
 
+    /* No hover on narrow mobile (touch sticky-hover) */
+    .graduate-card:hover {
+        transform: none;
+    }
+
+    .graduate-photo-frame--hoverable::after,
+    .graduate-photo-frame--hoverable .graduate-headshot--project {
+        transition: none;
+    }
+
+    .graduate-photo-frame--hoverable:hover::after {
+        opacity: 0;
+    }
+
+    .graduate-photo-frame--hoverable:hover .graduate-headshot--project {
+        top: 100%;
+    }
+
+    .graduate-photo-frame--hoverable:hover + .graduate-info .graduate-name--default {
+        display: block;
+    }
+
+    .graduate-photo-frame--hoverable:hover + .graduate-info .graduate-name--project {
+        display: none;
+    }
+
     .graduate-photo-frame--empty span {
         font-size: var(--text-xs);
     }
