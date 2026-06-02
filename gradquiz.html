@@ -80,6 +80,13 @@
       display: none !important;
     }
 
+    /* Mobile / touch-first: never show the desktop share dialog */
+    html.quiz-native-share-only .quiz-share-fallback {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
     .quiz-share-fallback__backdrop {
       position: absolute;
       inset: 0;

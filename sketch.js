@@ -222,9 +222,7 @@ function setup() {
   c.elt.style.webkitUserSelect = "none";
   c.elt.style.webkitTouchCallout = "none";
 
-  if (!isMobileShareDevice()) {
-    initQuizShareUI();
-  }
+  ensureDesktopShareUi();
 
   c.elt.addEventListener(
     "touchstart",
@@ -963,6 +961,8 @@ function handleGalleryTap(px, py) {
 }
 
 function mousePressed() {
+  // iOS/Android also fire a synthetic mouse event after touch — ignore to avoid double share.
+  if (millis() - lastTouchTapAt < 600) return false;
   handleTap(mouseX, mouseY);
   return false;
 }
@@ -990,6 +990,7 @@ function touchStarted() {
     }
   }
 
+  lastTouchTapAt = millis();
   handleTap(t.x, t.y);
   return false;
 }
@@ -1091,7 +1092,7 @@ function restartQuiz() {
   clearQuizToolFromSession();
   cachedResultShareBlob = null;
   cachedResultShareBlobChar = null;
-  hideShareFallback();
+  hideDesktopShareMenu();
   currentIdx = 0;
   answers = [];
   selectedChoice = null;
@@ -1111,6 +1112,8 @@ const GRADQUIZ_CANONICAL_URL = "https://cde.nus.edu.sg/did/gradshows/2026/gradqu
 let quizShareUiReady = false;
 let cachedResultShareBlob = null;
 let cachedResultShareBlobChar = null;
+let shareFlowBusy = false;
+let lastTouchTapAt = 0;
 
 function getShareText(character) {
   const name = CHARACTERS[character] || "a design tool";
@@ -1186,12 +1189,60 @@ function buildShareFile(imageBlob, character) {
 
 /** Phones/tablets — native share only; never show the desktop link dialog. */
 function isMobileShareDevice() {
+  try {
+    if (window.matchMedia("(hover: none)").matches && window.matchMedia("(pointer: coarse)").matches) {
+      return true;
+    }
+  } catch (e) {
+    // matchMedia unavailable
+  }
+
   const ua = navigator.userAgent || "";
-  if (/Android|iPhone|iPod|Mobile/i.test(ua)) return true;
-  if (/iPad/i.test(ua)) return true;
+  if (/Android|iPhone|iPod|iPad|Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(ua)) {
+    return true;
+  }
   // iPadOS 13+ may report as Macintosh
   if (navigator.maxTouchPoints > 1 && /Macintosh/i.test(ua)) return true;
+
+  try {
+    if (navigator.maxTouchPoints > 0 && window.matchMedia("(max-width: 900px)").matches) {
+      return true;
+    }
+  } catch (e) {
+    // matchMedia unavailable
+  }
+
   return false;
+}
+
+/** Desktop landscape only — portrait / touch = mobile site, no link dialog. */
+function shouldUseDesktopShareMenu() {
+  if (isMobileShareDevice()) return false;
+  if (width > 0 && height > 0 && width <= height) return false;
+  return true;
+}
+
+function markQuizShareContext() {
+  const cls = "quiz-native-share-only";
+  if (shouldUseDesktopShareMenu()) {
+    document.documentElement.classList.remove(cls);
+  } else {
+    document.documentElement.classList.add(cls);
+    hideDesktopShareMenu();
+  }
+}
+
+function ensureDesktopShareUi() {
+  markQuizShareContext();
+  if (!shouldUseDesktopShareMenu()) {
+    const existing = document.getElementById("quizShareFallback");
+    if (existing) {
+      existing.remove();
+      quizShareUiReady = false;
+    }
+    return;
+  }
+  initQuizShareUI();
 }
 
 function pickSharePayload(file, character) {
@@ -1214,15 +1265,16 @@ function pickSharePayload(file, character) {
 }
 
 async function shareToInstagramStory(imageBlob) {
-  const character = getCharacter();
-  const file = buildShareFile(imageBlob, character);
-  const shareData = pickSharePayload(file, character);
+  const file = buildShareFile(imageBlob, getCharacter());
+  const shareData = pickSharePayload(file, getCharacter());
 
   try {
     await navigator.share(shareData);
   } catch (error) {
     if (error && error.name === "AbortError") return;
     console.error("Share failed:", error);
+  } finally {
+    shareFlowBusy = false;
   }
 }
 
@@ -1276,11 +1328,11 @@ function initQuizShareUI() {
   document.body.appendChild(wrap);
 
   wrap.querySelectorAll("[data-quiz-share-close]").forEach(function (el) {
-    el.addEventListener("click", hideShareFallback);
+    el.addEventListener("click", hideDesktopShareMenu);
   });
 
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && !wrap.hidden) hideShareFallback();
+    if (e.key === "Escape" && !wrap.hidden) hideDesktopShareMenu();
   });
 
   const copyBtn = wrap.querySelector('[data-share="copy"]');
@@ -1300,7 +1352,7 @@ function initQuizShareUI() {
 
   wrap.querySelectorAll("a.quiz-share-item").forEach(function (a) {
     a.addEventListener("click", function () {
-      window.setTimeout(hideShareFallback, 0);
+      window.setTimeout(hideDesktopShareMenu, 0);
     });
   });
 
@@ -1328,7 +1380,7 @@ function applyQuizShareLinks(character) {
   }
 }
 
-function hideShareFallback() {
+function hideDesktopShareMenu() {
   const wrap = document.getElementById("quizShareFallback");
   if (!wrap) return;
   wrap.hidden = true;
@@ -1336,8 +1388,8 @@ function hideShareFallback() {
   document.body.classList.remove("quiz-share-open");
 }
 
-function showFallback(character, imageBlob) {
-  if (isMobileShareDevice()) return;
+function showDesktopShareMenu(character, imageBlob) {
+  if (!shouldUseDesktopShareMenu()) return;
 
   initQuizShareUI();
   const wrap = document.getElementById("quizShareFallback");
@@ -1377,7 +1429,7 @@ function copyShareLine(textToCopy, feedbackBtn) {
         label.textContent = orig;
       }, 2400);
     }
-    hideShareFallback();
+    hideDesktopShareMenu();
   }
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -1411,23 +1463,32 @@ function downloadResultImage(character) {
 }
 
 function shareResult() {
+  if (shareFlowBusy) return;
+
+  markQuizShareContext();
   const character = getCharacter();
+  const desktopMenu = shouldUseDesktopShareMenu();
+
+  shareFlowBusy = true;
 
   getResultImageBlob(character)
     .then(function (blob) {
-      if (isMobileShareDevice()) {
+      if (!desktopMenu) {
         if (navigator.share) {
           return shareToInstagramStory(blob);
         }
         console.warn("Web Share API is not available on this device.");
+        shareFlowBusy = false;
         return;
       }
-      showFallback(character, blob);
+      shareFlowBusy = false;
+      showDesktopShareMenu(character, blob);
     })
     .catch(function (err) {
       console.error("Could not prepare result image:", err);
-      if (!isMobileShareDevice()) {
-        showFallback(character, null);
+      shareFlowBusy = false;
+      if (desktopMenu) {
+        showDesktopShareMenu(character, null);
       }
     });
 }
@@ -1994,6 +2055,7 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   dotGridMouseX = constrain(dotGridMouseX, 0, width);
   dotGridMouseY = constrain(dotGridMouseY, 0, height);
+  ensureDesktopShareUi();
   setTimeout(() => {
     window.scrollTo(0, 0);
   }, 100);
