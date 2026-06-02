@@ -79,6 +79,22 @@ const CHARACTERS = {
   thumb: "USB Drive"
 };
 
+/** Full-size result card PNGs (same files as RESULT_IMAGES in preload). */
+const RESULT_PNG_PATHS = {
+  hammer: "./quiz_assets/Hammer.png",
+  calipers: "./quiz_assets/Calipers.png",
+  vr: "./quiz_assets/VR.png",
+  mouse: "./quiz_assets/Mouse.png",
+  mat: "./quiz_assets/CuttingMat.png",
+  glue: "./quiz_assets/GlueStick.png",
+  sewing: "./quiz_assets/Sewing.png",
+  tape: "./quiz_assets/Tape.png",
+  notepad: "./quiz_assets/Notepad.png",
+  coffee: "./quiz_assets/Coffee.png",
+  ruler: "./quiz_assets/Ruler.png",
+  thumb: "./quiz_assets/Thumb.png",
+};
+
 const QUIZ_TOOL_SESSION_KEY = "gradshow2026_quizTool";
 
 const gradSiteVisitLabel = "Visit the Gradsite  ↗";
@@ -205,6 +221,8 @@ function setup() {
   c.elt.style.touchAction = "none";
   c.elt.style.webkitUserSelect = "none";
   c.elt.style.webkitTouchCallout = "none";
+
+  initQuizShareUI();
 
   c.elt.addEventListener(
     "touchstart",
@@ -1069,6 +1087,9 @@ function answerQuestion(choice) {
 
 function restartQuiz() {
   clearQuizToolFromSession();
+  cachedResultShareBlob = null;
+  cachedResultShareBlobChar = null;
+  hideShareFallback();
   currentIdx = 0;
   answers = [];
   selectedChoice = null;
@@ -1084,40 +1105,321 @@ function restartQuiz() {
 
 /* ---------------- SHARE ---------------- */
 
-function shareResult() {
-  const character = getCharacter();
-  const text = `I am ${CHARACTERS[character]} on the DID Grad Show 2026 Quiz!`;
-  const shareUrl = window.location.href;
+const GRADQUIZ_CANONICAL_URL = "https://cde.nus.edu.sg/did/gradshows/2026/gradquiz.html";
+let quizShareUiReady = false;
+let cachedResultShareBlob = null;
+let cachedResultShareBlobChar = null;
 
-  // Use Web Share API - automatically detects the app/browser
-  if (navigator.share) {
-    navigator.share({
-      title: "What Tool Are You?",
-      text: text,
-      url: shareUrl
-    })
-    .then(() => console.log('Shared successfully'))
-    .catch((error) => {
-      // User cancelled or error - fallback to copy
-      if (error.name !== 'AbortError') {
-        copyToClipboard(text);
-      }
-    });
-  } else {
-    // Fallback for browsers without Web Share API
-    copyToClipboard(text);
+function getShareText(character) {
+  const name = CHARACTERS[character] || "a design tool";
+  return `I am ${name} on the DID Grad Show 2026 Quiz!`;
+}
+
+function getShareUrl() {
+  try {
+    const u = new URL(window.location.href);
+    u.hash = "";
+    return u.href;
+  } catch (err) {
+    return GRADQUIZ_CANONICAL_URL;
   }
 }
 
-function copyToClipboard(text) {
-  const fullText = text + " " + window.location.href;
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(fullText)
-      .then(() => alert("Result copied to clipboard!"))
-      .catch(() => alert(fullText));
-  } else {
-    alert(fullText);
+function buildShareLine(character) {
+  const shareUrl = getShareUrl();
+  const shareText = getShareText(character);
+  return shareText + (shareUrl ? "\n\n" + shareUrl : "");
+}
+
+/** Build a PNG blob from the loaded p5 result image, or fetch the asset. */
+function getResultImageBlob(character) {
+  if (cachedResultShareBlob && cachedResultShareBlobChar === character) {
+    return Promise.resolve(cachedResultShareBlob);
   }
+
+  const p5Img = RESULT_IMAGES[character];
+  if (p5Img && p5Img.width > 0) {
+    return new Promise(function (resolve, reject) {
+      const canvas = document.createElement("canvas");
+      canvas.width = p5Img.width;
+      canvas.height = p5Img.height;
+      const ctx = canvas.getContext("2d");
+      const source = p5Img.canvas || p5Img.elt;
+      if (!source) {
+        reject(new Error("Result image not ready"));
+        return;
+      }
+      ctx.drawImage(source, 0, 0);
+      canvas.toBlob(function (blob) {
+        if (!blob) {
+          reject(new Error("Failed to export result PNG"));
+          return;
+        }
+        cachedResultShareBlob = blob;
+        cachedResultShareBlobChar = character;
+        resolve(blob);
+      }, "image/png");
+    });
+  }
+
+  const path = RESULT_PNG_PATHS[character];
+  if (!path) {
+    return Promise.reject(new Error("Unknown quiz result"));
+  }
+  return fetch(path)
+    .then(function (res) {
+      if (!res.ok) throw new Error("Failed to load result image");
+      return res.blob();
+    })
+    .then(function (blob) {
+      cachedResultShareBlob = blob;
+      cachedResultShareBlobChar = character;
+      return blob;
+    });
+}
+
+function buildShareFile(imageBlob, character) {
+  return new File([imageBlob], "did-gradquiz-" + character + ".png", { type: "image/png" });
+}
+
+function pickSharePayload(file, character) {
+  const title = "What Tool Are You?";
+  const text = getShareText(character);
+  const url = getShareUrl();
+  const candidates = [
+    { files: [file], title: title, text: text, url: url },
+    { files: [file], title: title, text: text },
+    { files: [file], text: text },
+    { files: [file] },
+  ];
+  for (let i = 0; i < candidates.length; i++) {
+    const payload = candidates[i];
+    if (!navigator.canShare || navigator.canShare(payload)) {
+      return payload;
+    }
+  }
+  return null;
+}
+
+function canShareResultImage(imageBlob, character) {
+  if (!navigator.share) return false;
+  const file = buildShareFile(imageBlob, character);
+  return pickSharePayload(file, character) !== null;
+}
+
+async function shareToInstagramStory(imageBlob) {
+  const character = getCharacter();
+  const file = buildShareFile(imageBlob, character);
+  const shareData = pickSharePayload(file, character);
+
+  if (!shareData) {
+    showFallback(character, imageBlob);
+    return;
+  }
+
+  try {
+    await navigator.share(shareData);
+  } catch (error) {
+    if (error && error.name === "AbortError") return;
+    console.error("Share failed:", error);
+    showFallback(character, imageBlob);
+  }
+}
+
+function initQuizShareUI() {
+  if (quizShareUiReady || document.getElementById("quizShareFallback")) {
+    quizShareUiReady = true;
+    return;
+  }
+
+  const wrap = document.createElement("div");
+  wrap.id = "quizShareFallback";
+  wrap.className = "quiz-share-fallback";
+  wrap.hidden = true;
+  wrap.setAttribute("role", "dialog");
+  wrap.setAttribute("aria-modal", "true");
+  wrap.setAttribute("aria-labelledby", "quizShareFallbackTitle");
+  wrap.innerHTML =
+    '<div class="quiz-share-fallback__backdrop" data-quiz-share-close></div>' +
+    '<div class="quiz-share-fallback__panel">' +
+    '  <button type="button" class="quiz-share-fallback__close" data-quiz-share-close aria-label="Close">×</button>' +
+    '  <p id="quizShareFallbackTitle" class="quiz-share-fallback__title">Share your result</p>' +
+    '  <p class="quiz-share-fallback__hint">Pick a platform below. Download the image to attach it in Telegram, WhatsApp, or Instagram.</p>' +
+    '  <div class="quiz-share-menu" role="group" aria-label="Share on social media">' +
+    '    <a class="quiz-share-item" data-share="telegram" href="#" target="_blank" rel="noopener noreferrer">' +
+    '      <span class="quiz-share-icon-wrap" aria-hidden="true">' +
+    '        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M15 15 5.5 9.5"></path></svg>' +
+    "      </span>" +
+    '      <span class="quiz-share-label">Telegram</span>' +
+    "    </a>" +
+    '    <a class="quiz-share-item" data-share="whatsapp" href="#" target="_blank" rel="noopener noreferrer">' +
+    '      <span class="quiz-share-icon-wrap" aria-hidden="true">' +
+    '        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.883 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"></path></svg>' +
+    "      </span>" +
+    '      <span class="quiz-share-label">WhatsApp</span>' +
+    "    </a>" +
+    '    <button type="button" class="quiz-share-item" data-share="download">' +
+    '      <span class="quiz-share-icon-wrap" aria-hidden="true">' +
+    '        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>' +
+    "      </span>" +
+    '      <span class="quiz-share-label">Download result image</span>' +
+    "    </button>" +
+    '    <button type="button" class="quiz-share-item quiz-share-item--more" data-share="copy">' +
+    '      <span class="quiz-share-icon-wrap" aria-hidden="true">' +
+    '        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>' +
+    "      </span>" +
+    '      <span class="quiz-share-label">Copy link &amp; message</span>' +
+    "    </button>" +
+    "  </div>" +
+    "</div>";
+
+  document.body.appendChild(wrap);
+
+  wrap.querySelectorAll("[data-quiz-share-close]").forEach(function (el) {
+    el.addEventListener("click", hideShareFallback);
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !wrap.hidden) hideShareFallback();
+  });
+
+  const copyBtn = wrap.querySelector('[data-share="copy"]');
+  if (copyBtn) {
+    copyBtn.addEventListener("click", function () {
+      const character = getCharacter();
+      copyShareLine(buildShareLine(character), copyBtn);
+    });
+  }
+
+  const downloadBtn = wrap.querySelector('[data-share="download"]');
+  if (downloadBtn) {
+    downloadBtn.addEventListener("click", function () {
+      downloadResultImage(getCharacter());
+    });
+  }
+
+  wrap.querySelectorAll("a.quiz-share-item").forEach(function (a) {
+    a.addEventListener("click", function () {
+      window.setTimeout(hideShareFallback, 0);
+    });
+  });
+
+  quizShareUiReady = true;
+}
+
+function applyQuizShareLinks(character) {
+  const wrap = document.getElementById("quizShareFallback");
+  if (!wrap) return;
+  const shareUrl = getShareUrl();
+  const shareText = getShareText(character);
+  const line = buildShareLine(character);
+
+  const tg = wrap.querySelector('[data-share="telegram"]');
+  if (tg) {
+    tg.href =
+      "https://t.me/share/url?url=" +
+      encodeURIComponent(shareUrl) +
+      "&text=" +
+      encodeURIComponent(shareText);
+  }
+  const wa = wrap.querySelector('[data-share="whatsapp"]');
+  if (wa) {
+    wa.href = "https://api.whatsapp.com/send?text=" + encodeURIComponent(line);
+  }
+}
+
+function hideShareFallback() {
+  const wrap = document.getElementById("quizShareFallback");
+  if (!wrap) return;
+  wrap.hidden = true;
+  document.body.style.overflow = "";
+}
+
+function showFallback(character, imageBlob) {
+  initQuizShareUI();
+  const wrap = document.getElementById("quizShareFallback");
+  if (!wrap) return;
+
+  applyQuizShareLinks(character);
+
+  const hint = wrap.querySelector(".quiz-share-fallback__hint");
+  if (hint) {
+    if (imageBlob) {
+      hint.textContent =
+        "On desktop, open a platform below and attach your result image (download it first). Your message and quiz link are included automatically.";
+    } else {
+      hint.textContent =
+        "Sharing with the image is not supported here. Copy the message and link, or try again on your phone.";
+    }
+  }
+
+  const downloadBtn = wrap.querySelector('[data-share="download"]');
+  if (downloadBtn) {
+    downloadBtn.hidden = !imageBlob;
+  }
+
+  wrap.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function copyShareLine(textToCopy, feedbackBtn) {
+  const label = feedbackBtn && feedbackBtn.querySelector(".quiz-share-label");
+  const orig = label ? label.textContent : "";
+
+  function done() {
+    if (label) {
+      label.textContent = "Copied!";
+      window.setTimeout(function () {
+        label.textContent = orig;
+      }, 2400);
+    }
+    hideShareFallback();
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(textToCopy).then(done).catch(function () {
+      window.prompt("Copy this text:", textToCopy);
+      done();
+    });
+    return;
+  }
+  window.prompt("Copy this text:", textToCopy);
+  done();
+}
+
+function downloadResultImage(character) {
+  getResultImageBlob(character)
+    .then(function (blob) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "did-gradquiz-" + character + ".png";
+      a.rel = "noopener";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    })
+    .catch(function (err) {
+      console.error("Download failed:", err);
+      alert("Could not download your result image. Please try again.");
+    });
+}
+
+function shareResult() {
+  const character = getCharacter();
+
+  getResultImageBlob(character)
+    .then(function (blob) {
+      if (canShareResultImage(blob, character)) {
+        return shareToInstagramStory(blob);
+      }
+      showFallback(character, blob);
+    })
+    .catch(function (err) {
+      console.error("Could not prepare result image:", err);
+      showFallback(character, null);
+    });
 }
 
 /* ---------------- CHARACTER SCORING SYSTEM ---------------- */
