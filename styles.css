@@ -2913,7 +2913,7 @@ body.main-nav-menu-open {
     }
 
     .sponsors-section {
-        margin-bottom: var(--space-16);
+        /* margin-bottom: var(--space-16); */
         margin-top: var(--space-8);
     }
 
@@ -3158,7 +3158,7 @@ body.main-nav-menu-open {
     }
 
     .main-nav-links {
-        padding: var(--space-5) var(--page-px);
+        /* padding: var(--space-5) var(--page-px); */
         gap: var(--space-3);
     }
 
@@ -3758,7 +3758,7 @@ body.exhibition-map-lightbox-open {
     .showcase-main-section,
     .showcase-map-section,
     .getting-there-section {
-        margin-bottom: var(--space-8);
+        margin-bottom: var(--space-16);
     }
 
     .locate-us-section {
