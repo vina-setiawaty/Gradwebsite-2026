@@ -1915,7 +1915,7 @@ const DESIGNER_DATA = [
     "industryTypeB": "Product Design, Interaction Design, Experience Design, Game Design",
     "email": "vina.setiawaty@u.nus.edu",
     "linkedinUrl": "www.linkedin.com/in/vina-setiawaty",
-    "websitePortfolioUrl": "https://vina-portfolio-website.vercel.app/",
+    "websitePortfolioUrl": "https://vina-setiawaty.com",
     "behanceUrl": "",
     "instagramUrl": "",
     "otherUrl": ""

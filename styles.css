@@ -232,7 +232,7 @@ body {
     filter: grayscale(100%) contrast(1.2);
 }
 
-/* Slideshow driven by script.js / designer-loading.js (not CSS keyframes) */
+/* Slideshow driven by script.js (not CSS keyframes) */
 .loading-image-wrapper img.loading-slideshow-active {
     animation: none;
 }
@@ -644,6 +644,17 @@ body {
 .main-content.visible {
     opacity: 1;
     visibility: visible;
+}
+
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 html.skip-loading .loading-overlay {
@@ -2751,34 +2762,82 @@ body.main-nav-menu-open {
     }
 
     .main-nav-links {
-        display: none;
         position: absolute;
         top: 100%;
         left: 0;
         right: 0;
+        max-height: 0;
+        overflow: hidden;
+        background-color: var(--color-surface);
+        border-top: 1px solid transparent;
+        box-shadow: none;
+        visibility: hidden;
+        pointer-events: none;
+        transition:
+            max-height 0.55s ease,
+            visibility 0s linear 0.55s,
+            box-shadow 0.5s ease,
+            border-color 0.5s ease;
+    }
+
+    .main-nav-links-inner {
+        display: flex;
         flex-direction: column;
         align-items: center;
         gap: var(--space-4);
         padding: var(--space-8) var(--page-px);
-        background-color: var(--color-surface);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
-        border-top: 1px solid var(--color-border);
+        width: 100%;
+        box-sizing: border-box;
+        transform: translateY(-8px);
+        transition: transform 0.5s ease;
     }
 
     .main-navbar.main-nav-open .main-nav-links {
-        display: flex;
+        max-height: min(85vh, 32rem);
+        border-top-color: var(--color-border);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+        visibility: visible;
+        pointer-events: auto;
+        transition:
+            max-height 0.55s ease,
+            visibility 0s linear 0s,
+            box-shadow 0.5s ease,
+            border-color 0.5s ease;
     }
 
-    .main-nav-link {
+    .main-navbar.main-nav-open .main-nav-links-inner {
+        transform: translateY(0);
+    }
+
+    .main-nav-links-inner .main-nav-link {
         font-size: var(--text-m);
         display: flex;
         align-items: center;
         justify-content: center;
+        align-self: stretch;
         text-align: center;
         width: 100%;
+        max-width: 100%;
         box-sizing: border-box;
         padding: var(--space-3) 0;
         min-height: 48px;
+    }
+
+    .main-nav-links-inner .main-nav-link--with-arrow {
+        display: flex;
+        justify-content: center;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .main-nav-links,
+        .main-nav-toggle-bar {
+            transition-duration: 0.01ms !important;
+            transition-delay: 0s !important;
+        }
+
+        .main-nav-links-inner {
+            transform: none;
+        }
     }
 
     .hero-banner {

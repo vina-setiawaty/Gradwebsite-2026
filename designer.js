@@ -3,13 +3,58 @@
 
 const OTHER_DESIGNERS_DESKTOP_COUNT = 6;
 const OTHER_DESIGNERS_MOBILE_MQL = '(max-width: 768px)';
+const FADE_IN_MOBILE_MQL = '(max-width: 768px)';
 
 let allGraduates = [];
 let currentDesignerIndex = -1;
 
+function createFadeInObserver(threshold) {
+    return new IntersectionObserver(
+        (entries, obs) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    obs.unobserve(entry.target);
+                }
+            });
+        },
+        { root: null, rootMargin: '0px', threshold }
+    );
+}
+
+function isDesignerProjectMobileFadeTarget(element) {
+    return (
+        element.classList.contains('designer-projects-section')
+    );
+}
+
+function initSectionFadeIn() {
+    const fadeInElements = document.querySelectorAll('.fade-in');
+    if (!fadeInElements.length) return;
+
+    const isMobile = window.matchMedia(FADE_IN_MOBILE_MQL).matches;
+    const defaultObserver = createFadeInObserver(0.1);
+    const designerProjectMobileObserver = isMobile ? createFadeInObserver(0.05) : null;
+
+    fadeInElements.forEach((element) => {
+        if (element.getBoundingClientRect().top < window.innerHeight) {
+            element.classList.add('visible');
+            return;
+        }
+
+        const useDesignerProjectMobileObserver =
+            isMobile && isDesignerProjectMobileFadeTarget(element) && designerProjectMobileObserver;
+
+        (useDesignerProjectMobileObserver ? designerProjectMobileObserver : defaultObserver).observe(
+            element
+        );
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
-    if (document.documentElement.dataset.page === 'designer') return;
-    loadDesignerData();
+    if (document.documentElement.dataset.page !== 'designer') return;
+    initSectionFadeIn();
+    loadDesignerData({ eagerImages: true });
 });
 
 function loadDesignerData(options) {

@@ -14,19 +14,7 @@
     <!-- Background Canvas -->
     <canvas id="backgroundCanvas"></canvas>
 
-    <!-- Loading overlay (same pattern as index.html) -->
-    <div id="designerLoadingOverlay" class="loading-overlay">
-        <div id="loading-header-placeholder" data-active=""></div>
-        <main class="loading-screen">
-            <div class="loading-container">
-                <div class="loading-image-wrapper">
-                    <img id="designerLoadingImage" src="./loadingPhotos/DSCF0375.JPG" alt="Loading">
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <div id="mainContent" class="main-content page-wrapper">
+    <div id="mainContent" class="main-content page-wrapper visible">
         <!-- Header placeholder -->
         <div id="header-placeholder" data-active=""></div>
 
@@ -55,7 +43,7 @@
             </section> -->
 
             <!-- Designer Profile Section -->
-            <section class="designer-profile-section">
+            <section class="designer-profile-section fade-in">
                 <div class="designer-layout">
                     <div class="designer-column designer-column-left">
                         <div class="designer-intro">
@@ -139,7 +127,7 @@
             </section>
 
             <!-- Projects Section -->
-            <section class="designer-projects-section">
+            <section class="designer-projects-section fade-in">
                 <div class="designer-projects-header">
                     <h2 class="graduates-section-heading projects">
                         THE <span class="graduates-heading-grad" style="letter-spacing: -0.02em;">PR<span>O</span>J<span>E</span>C<span>TS</span></span>
@@ -183,7 +171,7 @@
                     </div>
                 </article>
 
-                <article class="designer-project">
+                <article class="designer-project fade-in">
                     <div class="designer-project-info">
                         <h3 class="project-title">02 / Project Title</h3>
                         <p class="project-lede" hidden></p>
@@ -226,7 +214,7 @@
             </div> -->
 
             <!-- Other Designers Section -->
-            <section class="other-designers-section">
+            <section class="other-designers-section fade-in">
                 <h2 class="section-heading">Other Designers</h2>
                 <div id="otherDesignersList" class="other-designers-grid">
                     <!-- Will be populated dynamically -->
@@ -247,7 +235,6 @@
     <script src="data.js"></script>
     <script src="graduates.js"></script>
     <script src="designer.js"></script>
-    <script src="designer-loading.js"></script>
 </body>
 
 </html>
