@@ -79,6 +79,22 @@ const CHARACTERS = {
   thumb: "USB Drive"
 };
 
+/** Full-size result card PNGs (same files as RESULT_IMAGES in preload). */
+const RESULT_PNG_PATHS = {
+  hammer: "./quiz_assets/Hammer.png",
+  calipers: "./quiz_assets/Calipers.png",
+  vr: "./quiz_assets/VR.png",
+  mouse: "./quiz_assets/Mouse.png",
+  mat: "./quiz_assets/CuttingMat.png",
+  glue: "./quiz_assets/GlueStick.png",
+  sewing: "./quiz_assets/Sewing.png",
+  tape: "./quiz_assets/Tape.png",
+  notepad: "./quiz_assets/Notepad.png",
+  coffee: "./quiz_assets/Coffee.png",
+  ruler: "./quiz_assets/Ruler.png",
+  thumb: "./quiz_assets/Thumb.png",
+};
+
 const QUIZ_TOOL_SESSION_KEY = "gradshow2026_quizTool";
 
 const gradSiteVisitLabel = "Visit the Gradsite  ↗";
@@ -205,6 +221,8 @@ function setup() {
   c.elt.style.touchAction = "none";
   c.elt.style.webkitUserSelect = "none";
   c.elt.style.webkitTouchCallout = "none";
+
+  ensureDesktopShareUi();
 
   c.elt.addEventListener(
     "touchstart",
@@ -943,6 +961,8 @@ function handleGalleryTap(px, py) {
 }
 
 function mousePressed() {
+  // iOS/Android also fire a synthetic mouse event after touch — ignore to avoid double share.
+  if (millis() - lastTouchTapAt < 600) return false;
   handleTap(mouseX, mouseY);
   return false;
 }
@@ -970,6 +990,7 @@ function touchStarted() {
     }
   }
 
+  lastTouchTapAt = millis();
   handleTap(t.x, t.y);
   return false;
 }
@@ -1069,6 +1090,9 @@ function answerQuestion(choice) {
 
 function restartQuiz() {
   clearQuizToolFromSession();
+  cachedResultShareBlob = null;
+  cachedResultShareBlobChar = null;
+  hideDesktopShareMenu();
   currentIdx = 0;
   answers = [];
   selectedChoice = null;
@@ -1084,40 +1108,467 @@ function restartQuiz() {
 
 /* ---------------- SHARE ---------------- */
 
-function shareResult() {
-  const character = getCharacter();
-  const text = `I am ${CHARACTERS[character]} on the DID Grad Show 2026 Quiz!`;
-  const shareUrl = window.location.href;
+const GRADQUIZ_CANONICAL_URL = "https://cde.nus.edu.sg/did/gradshows/2026/gradquiz.html";
+let quizShareUiReady = false;
+let cachedResultShareBlob = null;
+let cachedResultShareBlobChar = null;
+let shareFlowBusy = false;
+let lastTouchTapAt = 0;
 
-  // Use Web Share API - automatically detects the app/browser
-  if (navigator.share) {
-    navigator.share({
-      title: "What Tool Are You?",
-      text: text,
-      url: shareUrl
-    })
-    .then(() => console.log('Shared successfully'))
-    .catch((error) => {
-      // User cancelled or error - fallback to copy
-      if (error.name !== 'AbortError') {
-        copyToClipboard(text);
-      }
-    });
-  } else {
-    // Fallback for browsers without Web Share API
-    copyToClipboard(text);
+function getShareText(character) {
+  const name = CHARACTERS[character] || "a design tool";
+  return `I am ${name} on the DID Grad Show 2026 Quiz! Come and find out what you are!`;
+}
+
+function getShareUrl() {
+  try {
+    const u = new URL(window.location.href);
+    u.hash = "";
+    return u.href;
+  } catch (err) {
+    return GRADQUIZ_CANONICAL_URL;
   }
 }
 
-function copyToClipboard(text) {
-  const fullText = text + " " + window.location.href;
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(fullText)
-      .then(() => alert("Result copied to clipboard!"))
-      .catch(() => alert(fullText));
-  } else {
-    alert(fullText);
+function buildShareLine(character) {
+  const shareUrl = getShareUrl();
+  const shareText = getShareText(character);
+  return shareText + (shareUrl ? "\n\n" + shareUrl : "");
+}
+
+/** Build a PNG blob from the loaded p5 result image, or fetch the asset. */
+function getResultImageBlob(character) {
+  if (cachedResultShareBlob && cachedResultShareBlobChar === character) {
+    return Promise.resolve(cachedResultShareBlob);
   }
+
+  const p5Img = RESULT_IMAGES[character];
+  if (p5Img && p5Img.width > 0) {
+    return new Promise(function (resolve, reject) {
+      const canvas = document.createElement("canvas");
+      canvas.width = p5Img.width;
+      canvas.height = p5Img.height;
+      const ctx = canvas.getContext("2d");
+      const source = p5Img.canvas || p5Img.elt;
+      if (!source) {
+        reject(new Error("Result image not ready"));
+        return;
+      }
+      ctx.drawImage(source, 0, 0);
+      canvas.toBlob(function (blob) {
+        if (!blob) {
+          reject(new Error("Failed to export result PNG"));
+          return;
+        }
+        cachedResultShareBlob = blob;
+        cachedResultShareBlobChar = character;
+        resolve(blob);
+      }, "image/png");
+    });
+  }
+
+  const path = RESULT_PNG_PATHS[character];
+  if (!path) {
+    return Promise.reject(new Error("Unknown quiz result"));
+  }
+  return fetch(path)
+    .then(function (res) {
+      if (!res.ok) throw new Error("Failed to load result image");
+      return res.blob();
+    })
+    .then(function (blob) {
+      cachedResultShareBlob = blob;
+      cachedResultShareBlobChar = character;
+      return blob;
+    });
+}
+
+function buildShareFile(imageBlob, character) {
+  return new File([imageBlob], "did-gradquiz-" + character + ".png", { type: "image/png" });
+}
+
+/** Phones/tablets — native share only; never show the desktop link dialog. */
+function isMobileShareDevice() {
+  try {
+    if (window.matchMedia("(hover: none)").matches && window.matchMedia("(pointer: coarse)").matches) {
+      return true;
+    }
+  } catch (e) {
+    // matchMedia unavailable
+  }
+
+  const ua = navigator.userAgent || "";
+  if (/Android|iPhone|iPod|iPad|Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(ua)) {
+    return true;
+  }
+  // iPadOS 13+ may report as Macintosh
+  if (navigator.maxTouchPoints > 1 && /Macintosh/i.test(ua)) return true;
+
+  try {
+    if (navigator.maxTouchPoints > 0 && window.matchMedia("(max-width: 900px)").matches) {
+      return true;
+    }
+  } catch (e) {
+    // matchMedia unavailable
+  }
+
+  return false;
+}
+
+/** iOS / iPadOS — Web Share must not mix url/text with files or apps often get the link only. */
+function isIOSDevice() {
+  const ua = navigator.userAgent || "";
+  if (/iPhone|iPod|iPad/i.test(ua)) return true;
+  if (navigator.maxTouchPoints > 1 && /Macintosh/i.test(ua)) return true;
+  return false;
+}
+
+/** Desktop landscape only — portrait / touch = mobile site, no link dialog. */
+function shouldUseDesktopShareMenu() {
+  if (isMobileShareDevice()) return false;
+  if (width > 0 && height > 0 && width <= height) return false;
+  return true;
+}
+
+function markQuizShareContext() {
+  const cls = "quiz-native-share-only";
+  if (shouldUseDesktopShareMenu()) {
+    document.documentElement.classList.remove(cls);
+  } else {
+    document.documentElement.classList.add(cls);
+    hideDesktopShareMenu();
+  }
+}
+
+function ensureDesktopShareUi() {
+  markQuizShareContext();
+  if (!shouldUseDesktopShareMenu()) {
+    const existing = document.getElementById("quizShareFallback");
+    if (existing) {
+      existing.remove();
+      quizShareUiReady = false;
+    }
+    return;
+  }
+  initQuizShareUI();
+}
+
+/**
+ * Mobile Web Share (W3C Web Share API).
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share
+ * @see https://web.dev/articles/web-share
+ *
+ * Documented rules we follow:
+ * - Must run over HTTPS, from a user gesture (button tap).
+ * - For files: test with navigator.canShare({ files }) — title/text are not part of that check (web.dev).
+ * - Android: { files, text } with the link inside text works for many apps.
+ * - iOS: do not pass `url` together with `files` — WhatsApp/Telegram often keep only the URL and drop the image.
+ *   Put the link in `text` instead. If one sheet fails, iOS may need files first, then text (WebKit limitation).
+ */
+function canShareData(data) {
+  return !navigator.canShare || navigator.canShare(data);
+}
+
+function buildMobileSharePayloads(file, character) {
+  const fullCaption = buildShareLine(character);
+  const shareTitle = "What Tool Are You?";
+  return {
+    filesOnly: { files: [file] },
+    filesWithCaption: { files: [file], text: fullCaption },
+    filesWithTitle: { files: [file], title: shareTitle, text: fullCaption },
+    textOnly: { text: fullCaption, title: shareTitle },
+  };
+}
+
+/** Copy caption while the tap gesture is still active (clipboard may fail after await). */
+function copyShareCaptionToClipboard(character) {
+  const line = buildShareLine(character);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(line).catch(function () {
+      return undefined;
+    });
+  }
+  return Promise.resolve();
+}
+
+async function tryNavigatorShare(data) {
+  if (!canShareData(data)) return "unsupported";
+  try {
+    await navigator.share(data);
+    return "ok";
+  } catch (error) {
+    if (error && error.name === "AbortError") return "abort";
+    console.warn("navigator.share failed:", error);
+    return "error";
+  }
+}
+
+async function shareMobileNative(imageBlob) {
+  const character = getCharacter();
+  const file = buildShareFile(imageBlob, character);
+  const P = buildMobileSharePayloads(file, character);
+
+  if (!canShareData(P.filesOnly)) {
+    console.warn("This device cannot share image files via the Web Share API.");
+    return;
+  }
+
+  if (isIOSDevice()) {
+    // 1) One sheet: image + caption (link is inside text, no `url` field).
+    let result = await tryNavigatorShare(P.filesWithCaption);
+    if (result === "ok" || result === "abort") return;
+
+    result = await tryNavigatorShare(P.filesWithTitle);
+    if (result === "ok" || result === "abort") return;
+
+    // 2) Two-step workaround when iOS won't combine files + text (common WebKit issue).
+    result = await tryNavigatorShare(P.filesOnly);
+    if (result === "abort") return;
+    if (result === "ok") {
+      const textResult = await tryNavigatorShare(P.textOnly);
+      if (textResult === "ok" || textResult === "abort") return;
+    }
+
+    await tryNavigatorShare(P.textOnly);
+    return;
+  }
+
+  // Android & other mobile: web.dev pattern — files + text (URL embedded in text).
+  let result = await tryNavigatorShare(P.filesWithCaption);
+  if (result === "ok" || result === "abort") return;
+
+  result = await tryNavigatorShare(P.filesWithTitle);
+  if (result === "ok" || result === "abort") return;
+
+  await tryNavigatorShare(P.filesOnly);
+}
+
+async function shareToInstagramStory(imageBlob) {
+  try {
+    await shareMobileNative(imageBlob);
+  } finally {
+    shareFlowBusy = false;
+  }
+}
+
+function initQuizShareUI() {
+  if (quizShareUiReady || document.getElementById("quizShareFallback")) {
+    quizShareUiReady = true;
+    return;
+  }
+
+  const wrap = document.createElement("div");
+  wrap.id = "quizShareFallback";
+  wrap.className = "quiz-share-fallback";
+  wrap.hidden = true;
+  wrap.setAttribute("role", "dialog");
+  wrap.setAttribute("aria-modal", "true");
+  wrap.setAttribute("aria-labelledby", "quizShareFallbackTitle");
+  wrap.innerHTML =
+    '<div class="quiz-share-fallback__backdrop" data-quiz-share-close></div>' +
+    '<div class="quiz-share-fallback__panel">' +
+    '  <button type="button" class="quiz-share-fallback__close" data-quiz-share-close aria-label="Close">×</button>' +
+    '  <p id="quizShareFallbackTitle" class="quiz-share-fallback__title">Share your result</p>' +
+    '  <p class="quiz-share-fallback__hint">Pick a platform below. Download the image to attach it in Telegram, WhatsApp, or Instagram.</p>' +
+    '  <div class="quiz-share-menu" role="group" aria-label="Share on social media">' +
+    '    <a class="quiz-share-item" data-share="telegram" href="#" target="_blank" rel="noopener noreferrer">' +
+    '      <span class="quiz-share-icon-wrap" aria-hidden="true">' +
+    '        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M15 15 5.5 9.5"></path></svg>' +
+    "      </span>" +
+    '      <span class="quiz-share-label">Telegram</span>' +
+    "    </a>" +
+    '    <a class="quiz-share-item" data-share="whatsapp" href="#" target="_blank" rel="noopener noreferrer">' +
+    '      <span class="quiz-share-icon-wrap" aria-hidden="true">' +
+    '        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.883 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"></path></svg>' +
+    "      </span>" +
+    '      <span class="quiz-share-label">WhatsApp</span>' +
+    "    </a>" +
+    '    <button type="button" class="quiz-share-item" data-share="download">' +
+    '      <span class="quiz-share-icon-wrap" aria-hidden="true">' +
+    '        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>' +
+    "      </span>" +
+    '      <span class="quiz-share-label">Download result image</span>' +
+    "    </button>" +
+    '    <button type="button" class="quiz-share-item quiz-share-item--more" data-share="copy">' +
+    '      <span class="quiz-share-icon-wrap" aria-hidden="true">' +
+    '        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>' +
+    "      </span>" +
+    '      <span class="quiz-share-label">Copy link &amp; message</span>' +
+    "    </button>" +
+    "  </div>" +
+    "</div>";
+
+  document.body.appendChild(wrap);
+
+  wrap.querySelectorAll("[data-quiz-share-close]").forEach(function (el) {
+    el.addEventListener("click", hideDesktopShareMenu);
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !wrap.hidden) hideDesktopShareMenu();
+  });
+
+  const copyBtn = wrap.querySelector('[data-share="copy"]');
+  if (copyBtn) {
+    copyBtn.addEventListener("click", function () {
+      const character = getCharacter();
+      copyShareLine(buildShareLine(character), copyBtn);
+    });
+  }
+
+  const downloadBtn = wrap.querySelector('[data-share="download"]');
+  if (downloadBtn) {
+    downloadBtn.addEventListener("click", function () {
+      downloadResultImage(getCharacter());
+    });
+  }
+
+  wrap.querySelectorAll("a.quiz-share-item").forEach(function (a) {
+    a.addEventListener("click", function () {
+      window.setTimeout(hideDesktopShareMenu, 0);
+    });
+  });
+
+  quizShareUiReady = true;
+}
+
+function applyQuizShareLinks(character) {
+  const wrap = document.getElementById("quizShareFallback");
+  if (!wrap) return;
+  const shareUrl = getShareUrl();
+  const shareText = getShareText(character);
+  const line = buildShareLine(character);
+
+  const tg = wrap.querySelector('[data-share="telegram"]');
+  if (tg) {
+    tg.href =
+      "https://t.me/share/url?url=" +
+      encodeURIComponent(shareUrl) +
+      "&text=" +
+      encodeURIComponent(shareText);
+  }
+  const wa = wrap.querySelector('[data-share="whatsapp"]');
+  if (wa) {
+    wa.href = "https://api.whatsapp.com/send?text=" + encodeURIComponent(line);
+  }
+}
+
+function hideDesktopShareMenu() {
+  const wrap = document.getElementById("quizShareFallback");
+  if (!wrap) return;
+  wrap.hidden = true;
+  document.body.style.overflow = "";
+  document.body.classList.remove("quiz-share-open");
+}
+
+function showDesktopShareMenu(character, imageBlob) {
+  if (!shouldUseDesktopShareMenu()) return;
+
+  initQuizShareUI();
+  const wrap = document.getElementById("quizShareFallback");
+  if (!wrap) return;
+
+  applyQuizShareLinks(character);
+
+  const hint = wrap.querySelector(".quiz-share-fallback__hint");
+  if (hint) {
+    if (imageBlob) {
+      hint.textContent =
+        "On desktop, open a platform below and attach your result image (download it first). Your message and quiz link are included automatically.";
+    } else {
+      hint.textContent =
+        "Sharing with the image is not supported here. Copy the message and link, or try again on your phone.";
+    }
+  }
+
+  const downloadBtn = wrap.querySelector('[data-share="download"]');
+  if (downloadBtn) {
+    downloadBtn.hidden = !imageBlob;
+  }
+
+  wrap.hidden = false;
+  document.body.style.overflow = "hidden";
+  document.body.classList.add("quiz-share-open");
+}
+
+function copyShareLine(textToCopy, feedbackBtn) {
+  const label = feedbackBtn && feedbackBtn.querySelector(".quiz-share-label");
+  const orig = label ? label.textContent : "";
+
+  function done() {
+    if (label) {
+      label.textContent = "Copied!";
+      window.setTimeout(function () {
+        label.textContent = orig;
+      }, 2400);
+    }
+    hideDesktopShareMenu();
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(textToCopy).then(done).catch(function () {
+      window.prompt("Copy this text:", textToCopy);
+      done();
+    });
+    return;
+  }
+  window.prompt("Copy this text:", textToCopy);
+  done();
+}
+
+function downloadResultImage(character) {
+  getResultImageBlob(character)
+    .then(function (blob) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "did-gradquiz-" + character + ".png";
+      a.rel = "noopener";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    })
+    .catch(function (err) {
+      console.error("Download failed:", err);
+      alert("Could not download your result image. Please try again.");
+    });
+}
+
+function shareResult() {
+  if (shareFlowBusy) return;
+
+  markQuizShareContext();
+  const character = getCharacter();
+  const desktopMenu = shouldUseDesktopShareMenu();
+
+  // Copy full caption at tap time (user activation). Backup when share drops text/link.
+  if (!desktopMenu) {
+    copyShareCaptionToClipboard(character);
+  }
+
+  shareFlowBusy = true;
+
+  getResultImageBlob(character)
+    .then(function (blob) {
+      if (!desktopMenu) {
+        if (navigator.share) {
+          return shareToInstagramStory(blob);
+        }
+        console.warn("Web Share API is not available on this device.");
+        shareFlowBusy = false;
+        return;
+      }
+      shareFlowBusy = false;
+      showDesktopShareMenu(character, blob);
+    })
+    .catch(function (err) {
+      console.error("Could not prepare result image:", err);
+      shareFlowBusy = false;
+      if (desktopMenu) {
+        showDesktopShareMenu(character, null);
+      }
+    });
 }
 
 /* ---------------- CHARACTER SCORING SYSTEM ---------------- */
@@ -1682,6 +2133,7 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   dotGridMouseX = constrain(dotGridMouseX, 0, width);
   dotGridMouseY = constrain(dotGridMouseY, 0, height);
+  ensureDesktopShareUi();
   setTimeout(() => {
     window.scrollTo(0, 0);
   }, 100);

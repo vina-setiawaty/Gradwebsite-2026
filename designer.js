@@ -1,24 +1,71 @@
 // Designer Page JavaScript
-// Requires: data/data.js, graduates.js (createGraduateCard) to be loaded first
+// Requires: data.js, graduates.js (createGraduateCard) to be loaded first
 
 const OTHER_DESIGNERS_DESKTOP_COUNT = 6;
 const OTHER_DESIGNERS_MOBILE_MQL = '(max-width: 768px)';
+const FADE_IN_MOBILE_MQL = '(max-width: 768px)';
 
 let allGraduates = [];
 let currentDesignerIndex = -1;
 
-document.addEventListener('DOMContentLoaded', function() {
-    loadDesignerData();
+function createFadeInObserver(threshold) {
+    return new IntersectionObserver(
+        (entries, obs) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    obs.unobserve(entry.target);
+                }
+            });
+        },
+        { root: null, rootMargin: '0px', threshold }
+    );
+}
+
+function isDesignerProjectMobileFadeTarget(element) {
+    return (
+        element.classList.contains('designer-projects-section')
+    );
+}
+
+function initSectionFadeIn() {
+    const fadeInElements = document.querySelectorAll('.fade-in');
+    if (!fadeInElements.length) return;
+
+    const isMobile = window.matchMedia(FADE_IN_MOBILE_MQL).matches;
+    const defaultObserver = createFadeInObserver(0.1);
+    const designerProjectMobileObserver = isMobile ? createFadeInObserver(0.05) : null;
+
+    fadeInElements.forEach((element) => {
+        if (element.getBoundingClientRect().top < window.innerHeight) {
+            element.classList.add('visible');
+            return;
+        }
+
+        const useDesignerProjectMobileObserver =
+            isMobile && isDesignerProjectMobileFadeTarget(element) && designerProjectMobileObserver;
+
+        (useDesignerProjectMobileObserver ? designerProjectMobileObserver : defaultObserver).observe(
+            element
+        );
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    if (document.documentElement.dataset.page !== 'designer') return;
+    initSectionFadeIn();
+    loadDesignerData({ eagerImages: true });
 });
 
-function loadDesignerData() {
+function loadDesignerData(options) {
+    const eagerImages = options && options.eagerImages === true;
     // Use rich designer dataset when available, otherwise fall back to basic list
     if (typeof DESIGNER_DATA !== 'undefined' && Array.isArray(DESIGNER_DATA)) {
         allGraduates = DESIGNER_DATA;
     } else {
         allGraduates = [];
     }
-    initializeDesigner();
+    initializeDesigner({ eagerImages });
 }
 
 /** Match URL ?name= by legal fullName or preferredFullName. */
@@ -47,31 +94,66 @@ function findDesignerIndex(name) {
     });
 }
 
-function initializeDesigner() {
+function initializeDesigner(options) {
+    const eagerImages = options && options.eagerImages === true;
+
     // Get designer name from URL parameter
     const urlParams = new URLSearchParams(window.location.search);
     const designerName = urlParams.get('name');
-    
+
     if (designerName) {
         const decodedName = decodeURIComponent(designerName);
         currentDesignerIndex = findDesignerIndex(decodedName);
-        displayDesignerInfo(decodedName);
+        displayDesignerInfo(decodedName, { eagerImages });
     } else if (allGraduates.length > 0) {
         // Default to first designer
         currentDesignerIndex = 0;
-        displayDesignerInfo(getFullName(allGraduates[0]));
+        displayDesignerInfo(getFullName(allGraduates[0]), { eagerImages });
     } else {
         currentDesignerIndex = -1;
-        displayDesignerInfo('');
+        displayDesignerInfo('', { eagerImages });
     }
-    
+
     // Load other designers
-    loadOtherDesigners();
-    
+    loadOtherDesigners({ eagerImages });
+
     // Update page title
     const currentGraduate = allGraduates[currentDesignerIndex];
-    const currentName = currentGraduate ? getFullName(currentGraduate) : 'Designer';
     document.title = `${getDisplayName(currentGraduate)} | 2026 Division of Industrial Design Graduation Show`;
+}
+
+/** Image URLs for the current profile + "Other designers" cards (loading screen preload). */
+function collectDesignerPageImageUrls(designerRecord, otherDesigners) {
+    const urls = [];
+
+    if (designerRecord) {
+        const headshot = getHeadshotSrc(designerRecord);
+        if (headshot) urls.push(headshot);
+
+        ['projectA', 'projectB'].forEach((key) => {
+            const project = designerRecord[key];
+            if (!project || !Array.isArray(project.images)) return;
+            project.images.forEach((name) => {
+                const trimmed = String(name).trim();
+                if (trimmed) urls.push(`./projectImages/${encodeURIComponent(trimmed)}`);
+            });
+        });
+    }
+
+    if (typeof collectGraduateCardImageUrls === 'function' && Array.isArray(otherDesigners)) {
+        urls.push(...collectGraduateCardImageUrls(otherDesigners));
+    }
+
+    return [...new Set(urls)];
+}
+
+function getDesignerPagePreloadContext() {
+    const record =
+        currentDesignerIndex >= 0 ? allGraduates[currentDesignerIndex] : null;
+    return {
+        record: record || null,
+        otherDesigners: getOtherDesignersToShow(),
+    };
 }
 
 // Helper function to get fullName from graduate (handles both object and string formats)
@@ -92,10 +174,11 @@ function getHeadshotSrc(record) {
     return filename ? `./headshotImages/${filename}` : '';
 }
 
-function renderDesignerHeadshot(record) {
+function renderDesignerHeadshot(record, options) {
     const card = document.getElementById('designerPhotoCard');
     if (!card) return;
 
+    const imageLoading = options && options.eagerImages === true ? 'eager' : 'lazy';
     const src = getHeadshotSrc(record);
     const alt = record ? getDisplayName(record) : 'Designer headshot';
 
@@ -105,7 +188,7 @@ function renderDesignerHeadshot(record) {
         img.className = 'designer-headshot';
         img.src = src;
         img.alt = alt;
-        img.loading = 'lazy';
+        img.loading = imageLoading;
         img.decoding = 'async';
         card.appendChild(img);
     } else {
@@ -118,7 +201,8 @@ function renderDesignerHeadshot(record) {
     }
 }
 
-function displayDesignerInfo(name) {
+function displayDesignerInfo(name, options) {
+    const eagerImages = options && options.eagerImages === true;
     let designerRecord = findDesignerRecord(name);
     if (!designerRecord && currentDesignerIndex >= 0) {
         designerRecord = allGraduates[currentDesignerIndex];
@@ -204,10 +288,10 @@ function displayDesignerInfo(name) {
         }
     }
 
-    renderDesignerHeadshot(designerRecord);
+    renderDesignerHeadshot(designerRecord, { eagerImages });
 
     // Projects and images
-    populateProjects(designerRecord);
+    populateProjects(designerRecord, { eagerImages });
 }
 
 function formatFullDisplayName(fullName) {
@@ -301,9 +385,11 @@ function setupOtherDesignersResponsive() {
     }
 }
 
-function loadOtherDesigners() {
+function loadOtherDesigners(options) {
     const container = document.getElementById('otherDesignersList');
     if (!container) return;
+
+    const eagerImages = options && options.eagerImages === true;
 
     setupOtherDesignersResponsive();
 
@@ -313,7 +399,10 @@ function loadOtherDesigners() {
 
     const designersToShow = getOtherDesignersToShow();
     designersToShow.forEach((graduate, index) => {
-        const card = createGraduateCard(graduate, index, { cardClass: 'other-designer-card' });
+        const card = createGraduateCard(graduate, index, {
+            cardClass: 'other-designer-card',
+            eagerImages,
+        });
         const fullName = getFullName(graduate);
         card.href = `designer.html?name=${encodeURIComponent(fullName)}`;
         container.appendChild(card);
@@ -839,9 +928,11 @@ function renderProjectWriteUp(element, writeUp) {
     element.textContent = writeUp;
 }
 
-function populateProjects(designerRecord) {
+function populateProjects(designerRecord, options) {
     const projectSlots = document.querySelectorAll('.designer-project');
     if (!projectSlots.length) return;
+
+    const imageLoading = options && options.eagerImages === true ? 'eager' : 'lazy';
 
     const projects = [];
     if (designerRecord && designerRecord.projectA) projects.push(designerRecord.projectA);
@@ -942,6 +1033,8 @@ function populateProjects(designerRecord) {
                     const enc = encodeURIComponent(imageName);
                     img.src = `./projectImages/${enc}`;
                     img.alt = `${altBase} — image ${frameIndex + 1}`;
+                    img.loading = imageLoading;
+                    img.decoding = 'async';
                 }
             } else {
                 frame.style.display = 'none';

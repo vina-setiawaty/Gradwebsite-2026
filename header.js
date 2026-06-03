@@ -3,6 +3,9 @@
 
 let mainNavMenuIdCounter = 0;
 
+const NAV_LINK_ARROW =
+    '<span class="main-nav-link__arrow" aria-hidden="true"></span>';
+
 function createHeader(activePage = '') {
     const menuId = `main-nav-menu-${++mainNavMenuIdCounter}`;
     const header = document.createElement('nav');
@@ -23,11 +26,14 @@ function createHeader(activePage = '') {
             </span>
         </button>
         <div class="main-nav-links" id="${menuId}">
-            <a href="index.html" class="main-nav-link${activePage === 'home' ? ' active' : ''}" data-nav="home" style="display: none;">Gradshow 26'</a>
-            <a href="index.html#graduates-grid-section" class="main-nav-link${activePage === 'graduates' ? ' active' : ''}" data-nav="graduates">Graduates</a>
-            <a href="showcase.html" class="main-nav-link${activePage === 'showcase' ? ' active' : ''}" data-nav="showcase">Showcase</a>
-            <a class="main-nav-link main-nav-link--placeholder" aria-disabled="true">Gradbook</a>
-            <a href="https://cde.nus.edu.sg/did/" class="main-nav-link" target="_blank" rel="noopener noreferrer">About DID</a>
+            <div class="main-nav-links-inner">
+                <a href="index.html" class="main-nav-link${activePage === 'home' ? ' active' : ''}" data-nav="home" style="display: none;">Gradshow 26'</a>
+                <a href="index.html#about-us-section" class="main-nav-link${activePage === 'about' ? ' active' : ''}" data-nav="about">About Us</a>
+                <a href="index.html#graduates-grid-section" class="main-nav-link${activePage === 'graduates' ? ' active' : ''}" data-nav="graduates">Graduates</a>
+                <a href="index.html#locate-us-section" class="main-nav-link${activePage === 'locate' ? ' active' : ''}" data-nav="locate">Locate Us</a>
+                <a href="Gradbook_2026.pdf" class="main-nav-link main-nav-link--with-arrow main-nav-link--external" target="_blank" rel="noopener noreferrer">View Gradbook${NAV_LINK_ARROW}</a>
+                <a href="https://cde.nus.edu.sg/did/" class="main-nav-link main-nav-link--with-arrow main-nav-link--external" target="_blank" rel="noopener noreferrer">About DID${NAV_LINK_ARROW}</a>
+            </div>
         </div>
     `;
     return header;
@@ -92,13 +98,21 @@ function initAllMobileNavs() {
     document.querySelectorAll('.main-navbar').forEach(initMobileNav);
 }
 
+
+            // <a class="footer-link" href="index.html#graduates-grid-section">Graduates</a>
+            // <a class="footer-link" href="index.html#locate-us-section">Locate Us</a>
+            // <a href="https://cde.nus.edu.sg/did/" class="footer-link" target="_blank" rel="noopener noreferrer">About DID</a>
+
 function createFooter() {
     const footer = document.createElement('footer');
     footer.className = 'main-footer';
     footer.innerHTML = `
-        <div class="footer-links">
-            <a href="index.html#graduates-grid-section" class="footer-link">Graduates</a>
-            <a href="showcase.html" class="footer-link">Showcase</a>
+        <div class="footer-container">
+        <div class="footer-left">
+        <div class="footer-text">
+        <p> See you at our graduation show! </p>
+        </div>
+        <nav class="footer-nav" aria-label="Footer">
             <div class="footer-icons">
                 <a href="https://maps.app.goo.gl/fa3Wj8d9EWuB1vJaA" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Location">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -153,9 +167,11 @@ function createFooter() {
                     </div>
                 </div>
             </div>
+        </nav>
         </div>
         <div class="footer-logo">
-            <img src="./assets/logo2026HorizontalHALF.png" alt="2026">
+            <img src="./assets/logo2026Horizontal%20copy.png" alt="2026 Division of Industrial Design Graduation Show">
+        </div>
         </div>
     `;
     return footer;
@@ -339,36 +355,49 @@ function initFooter() {
 }
 
 /**
- * On the long home layout (index inside #mainContent), toggle active state between
- * "The Grad Show 26'" and "The Graduates" based on scroll position.
+ * On the long home layout (index inside #mainContent), toggle active nav state
+ * for About Us, Graduates, and Locate Us based on scroll position.
  */
-function initHomePageGraduatesNavSpy() {
+function initHomePageNavSpy() {
     const mainContent = document.getElementById('mainContent');
-    const section = document.getElementById('graduates-grid-section');
-    if (!mainContent || !section || !mainContent.contains(section)) return;
+    if (!mainContent) return;
 
     const nav = mainContent.querySelector('.main-navbar');
     if (!nav) return;
 
-    const homeLink = nav.querySelector('[data-nav="home"]');
-    const gradLink = nav.querySelector('[data-nav="graduates"]');
-    if (!homeLink || !gradLink) return;
+    const navItems = [
+        { id: 'about-us-section', link: nav.querySelector('[data-nav="about"]') },
+        { id: 'graduates-grid-section', link: nav.querySelector('[data-nav="graduates"]') },
+        { id: 'locate-us-section', link: nav.querySelector('[data-nav="locate"]') },
+    ].filter(function (item) {
+        return item.link && document.getElementById(item.id);
+    });
 
+    if (!navItems.length) return;
+
+    const homeLink = nav.querySelector('[data-nav="home"]');
     let rafId = 0;
-    /** Pixels below the navbar bottom where "The Graduates" becomes active (earlier = larger). */
-    const graduatesActivateLeadPx = 140;
+    /** Pixels below the navbar bottom where a section becomes active (earlier = larger). */
+    const sectionActivateLeadPx = 140;
 
     function sync() {
         rafId = 0;
         const navH = nav.getBoundingClientRect().height;
-        const rect = section.getBoundingClientRect();
-        const inGraduates =
-            rect.top <= navH + graduatesActivateLeadPx && rect.bottom > navH + 32;
+        const threshold = navH + sectionActivateLeadPx;
+        let activeLink = navItems[0].link;
 
-        gradLink.classList.toggle('active', inGraduates);
-        if (homeLink.style.display !== 'none') {
-            homeLink.classList.toggle('active', !inGraduates);
-        } else {
+        navItems.forEach(function (item) {
+            const rect = document.getElementById(item.id).getBoundingClientRect();
+            if (rect.top <= threshold) {
+                activeLink = item.link;
+            }
+        });
+
+        navItems.forEach(function (item) {
+            item.link.classList.toggle('active', item.link === activeLink);
+        });
+
+        if (homeLink) {
             homeLink.classList.remove('active');
         }
     }
@@ -381,7 +410,45 @@ function initHomePageGraduatesNavSpy() {
     window.addEventListener('scroll', onScrollOrResize, { passive: true });
     window.addEventListener('resize', onScrollOrResize);
     window.addEventListener('hashchange', onScrollOrResize);
+    window.addEventListener('load', onScrollOrResize, { once: true });
     sync();
+}
+
+/** Keep --navbar-scroll-offset in sync when desktop nav links wrap to two rows. */
+function initNavbarScrollOffset() {
+    const mobileMq = window.matchMedia('(max-width: 768px)');
+
+    function sync() {
+        if (mobileMq.matches) {
+            document.documentElement.style.removeProperty('--navbar-scroll-offset');
+            return;
+        }
+
+        let maxHeight = 0;
+        document.querySelectorAll('.main-navbar:not(.loading-navbar)').forEach(function (navbar) {
+            const h = navbar.offsetHeight;
+            if (h > maxHeight) maxHeight = h;
+        });
+
+        if (maxHeight > 0) {
+            document.documentElement.style.setProperty('--navbar-scroll-offset', maxHeight + 'px');
+        }
+    }
+
+    if (typeof ResizeObserver !== 'undefined') {
+        const observer = new ResizeObserver(sync);
+        document.querySelectorAll('.main-navbar:not(.loading-navbar)').forEach(function (navbar) {
+            observer.observe(navbar);
+        });
+    }
+
+    window.addEventListener('resize', sync);
+    mobileMq.addEventListener('change', sync);
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(sync);
+    }
+    sync();
+    requestAnimationFrame(sync);
 }
 
 // Handle navbar scroll effect
@@ -436,7 +503,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     initAllMobileNavs();
 
-    initHomePageGraduatesNavSpy();
+    initHomePageNavSpy();
+
+    initNavbarScrollOffset();
     
     // Initialize navbar scroll effect
     initNavbarScroll();

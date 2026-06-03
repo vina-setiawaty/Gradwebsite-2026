@@ -10,8 +10,7 @@
     <script>
         (function () {
             try {
-                if (localStorage.getItem('gradshow2026_siteVisited') === '1' ||
-                    sessionStorage.getItem('gradshow2026_loadingSeen') === '1') {
+                if (sessionStorage.getItem('gradshow2026_loadingSeen') === '1') {
                     document.documentElement.classList.add('skip-loading');
                 }
             } catch (e) {}
@@ -27,7 +26,7 @@
     <!-- ==================== LOADING OVERLAY ==================== -->
     <div id="loadingOverlay" class="loading-overlay">
         <!-- Navigation Bar (same as main page) -->
-        <div id="loading-header-placeholder" data-active="home"></div>
+        <div id="loading-header-placeholder" data-active="about"></div>
 
         <!-- Main Content - Loading Screen -->
         <main class="loading-screen">
@@ -81,15 +80,14 @@
     <!-- ==================== MAIN CONTENT ==================== -->
     <div id="mainContent" class="main-content">
         <!-- Header placeholder -->
-        <div id="header-placeholder" data-active="home"></div>
+        <div id="header-placeholder" data-active="about"></div>
 
         <main class="main-page">
             <!-- Hero Banner Section -->
-            <section class="hero-banner">
+            <!-- <section class="hero-banner">
                 <div class="hero-image-container">
                     <img src="./assets/heroBanner.png" alt="Venue" class="hero-image">
                     <div class="hero-overlay"></div>
-                    <!-- Venue Info & Event Details (Bottom Left) -->
                     <div class="hero-left-info">
                         <div class="hero-venue-info">
                             <img src="./assets/geneoLongLogo.svg" alt="Geneo" class="hero-geneo-logo">
@@ -100,22 +98,111 @@
                             <span class="hero-time">10AM - 8PM</span>
                         </div>
                     </div>
-                    <!-- Date (Bottom Right) -->
                     <div class="hero-date">
                         <span class="hero-date-day">11</span>
                         <span class="hero-date-range">- 15</span>
                         <span class="hero-date-month">June 2026</span>
                     </div>
                 </div>
-            </section>
+            </section> -->
 
             <!-- Class Photo Section -->
-            <section class="class-photo-section">
+            <section class="class-photo-section fade-in">
                 <div class="class-photo-container">
                     <img src="./assets/Cohort_Normal.png" alt="Class Photo" class="class-photo class-photo-normal">
                     <img src="./assets/Cohort_26.png" alt="Class Photo Hover" class="class-photo class-photo-hover">
                 </div>
             </section>
+
+            <section id="about-us-section" class="showcase-main-section fade-in">
+                <div class="showcase-main-grid">
+                    <!-- Left: Intro Copy -->
+                    <div class="showcase-intro-panel">
+                        <!-- <p class="showcase-intro-label">The Showcase</p> -->
+                        <h1 class="showcase-intro-title">
+                            ABOUT <span class="showcase-heading-show" style="letter-spacing: -0.04em;">U<span style="letter-spacing: -0.0em;">S</span></span>
+                        </h1>
+
+                        <div class="showcase-copy-block">
+                            <!-- <p class="showcase-intro-text">
+                                We warmly invite you to join us at the DID Graduation Show 2026.
+                            </p> -->
+                            <p class="showcase-intro-text">
+                                This year’s graduation showcase celebrates the design journeys behind the graduating
+                                cohort from the Division of Industrial Design, shaped by curiosity, rigor, and intent.
+                            </p>
+                            <p class="showcase-intro-text">
+                                The works on display sit at the intersection of play and precision, imagination and
+                                purpose. This duality reflects how the designers think, make and adapt. Join us at the
+                                DID Graduation Show 2026.
+                            </p>
+                            <p class="showcase-intro-text showcase-intro-hashtag">
+                                #SeeHowWeDidIt
+                            </p>
+                        </div>
+                        <!-- <button id="showcase-map-open" class="view-all-btn showcase-map-btn" type="button"
+                            aria-haspopup="dialog" aria-controls="exhibition-map-lightbox">
+                            View Exhibition Map
+                            <img src="./assets/arrowDown.svg" alt="" class="arrow-icon arrow-icon--ne" width="16"
+                                height="16">
+                        </button> -->
+                    </div>
+
+                    <!-- <div class="showcase-main-divider" aria-hidden="true"></div> -->
+
+                    <!-- Right: Event Details -->
+                    <div class="event-details-card event-details-card--panel">
+                        <div class="event-details-card__venue">
+                            <img src="./sponsors/Geneo%20Horizontal%20Logo_Transparent%20Background_Black.png"
+                                alt="Geneo" class="event-details-card__logo">
+                            <p class="event-details-card__location">Singapore Science Park 1</p>
+                            <p class="event-details-card__location">The Canopy</p>
+                        </div>
+                        <div class="event-details-card__divider" aria-hidden="true"></div>
+                        <div class="event-details-card__schedule">
+                            <div class="event-schedule-item">
+                                <p class="event-schedule-label">Opening Night:</p>
+                                <p class="event-schedule-value">12 June 2026, 7PM to 9PM</p>
+                            </div>
+                            <div class="event-schedule-item">
+                                <p class="event-schedule-label">Gradshow Runtime:</p>
+                                <p class="event-schedule-value">11 to 15 June 2026, 10AM to 8PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sponsors-section" aria-labelledby="sponsors-heading">
+                    <h2 id="sponsors-heading" class="section-heading">Supported by</h2>
+                    <div class="sponsors-row">
+                        <div class="sponsor-item">
+                            <img class="sponsor-logo" src="./assets/nus.avif" alt="National University of Singapore">
+                        </div>
+                        <div class="sponsor-item">
+                            <img class="sponsor-logo ssp" src="./sponsors/Vector-2.png" alt="Singapore Science Park">
+                        </div>
+                        <div class="sponsor-item">
+                            <img class="sponsor-logo"
+                                src="./sponsors/Geneo%20Horizontal%20Logo_Transparent%20Background_Black.png"
+                                alt="Geneo">
+                        </div>
+                        <div class="sponsor-item">
+                            <img class="sponsor-logo james-dyson" src="./sponsors/Vector.png" alt="James Dyson Foundation">
+                        </div>
+                        <div class="sponsor-item">
+                            <img class="sponsor-logo" src="./sponsors/Vector-3.png" alt="Keppel">
+                        </div>
+                    </div>
+                    <img class="sponsors-mobile"
+                        src="./sponsors/sponsors_mobile.png"
+                        alt="Supported by National University of Singapore, Singapore Science Park, Geneo, James Dyson Foundation, and Keppel"
+                        width="1200"
+                        height="400"
+                        decoding="async"
+                        loading="lazy">
+                </div>
+            </section>
+
+            
 
             <!-- Search Section -->
             <!-- <section class="search-section">
@@ -132,7 +219,7 @@
             </section> -->
 
             <!-- Feature Cards Section -->
-            <section class="feature-cards-section">
+            <section class="feature-cards-section fade-in">
                 <div class="feature-card-link feature-card-link--static">
                     <div class="feature-card">
                         <picture>
@@ -144,13 +231,15 @@
                 <div class="feature-card-photos">
                     <img id="featureCardSlideshow" src="./loadingPhotosOri/IMG_2736.jpg" alt="" class="feature-card-photos-img">
                     <div class="feature-card-photos-overlay">
-                        <p class="feature-card-photos-overlay-desc">The theme this year celebrates the collective effort and design processes that powered the 2026 batch through their design journey in DID</p>
+                        <!-- <p class="feature-card-photos-overlay-desc">The theme this year invites everyone to see and celebrate the collective effort and design processes that powered the 2026 batch through their journey in DID.</p> -->
+                        <!-- <p class="feature-card-photos-overlay-desc">The making of the gradshow 2026. #SeeHowWeDidIt</p> -->
+                        <p class="feature-card-photos-overlay-desc">A celebration of the behind-the-scenes of the 2026 batch's journey through DID. #SeeHowWeDidIt</p>
                     </div>
                 </div>
             </section>
 
             <!-- Graduates Grid Section -->
-            <section class="graduates-grid-section" id="graduates-grid-section">
+            <section class="graduates-grid-section fade-in" id="graduates-grid-section">
                 <header class="graduates-section-intro">
                     <h2 class="graduates-section-heading">
                         THE <span class="graduates-heading-grad">G<span style="letter-spacing: -0.04em;">R</span><span style="letter-spacing: -0.0em;">A</span>DUA<span>TES</span></span>
@@ -171,6 +260,52 @@
                     <span class="bottom-card-title">DID Archive</span>
                 </div>
             </section> -->
+            <section id="locate-us-section" class="locate-us-section fade-in">
+                <h1 class="showcase-intro-title">
+                    LOCATE <span class="showcase-heading-show" style="letter-spacing: -0.04em;">U<span style="letter-spacing: -0.0em;">S</span></span>
+                </h1>
+                <div class="getting-there-grid">
+                    <article class="info-card info-card--transport">
+                        <h3 class="info-card-title">By Public Transport</h3>
+                        <div class="info-card-body">
+                            <p class="info-card-subheading">MRT:</p>
+                            <p class="info-card-text">
+                                Take the Circle Line to Kent Ridge MRT (CC24)<br>
+                                Head to Exit E to Geneo, Level 1
+                            </p>
+                            <p class="info-card-subheading">Bus:</p>
+                            <p class="info-card-text">
+                                Take public bus no. 92/92A from Buona Vista MRT station.<br>
+                                Other buses available include 14, 33, 97, 166, 197, 963/963e.
+                            </p>
+                        </div>
+                    </article>
+
+                    <article class="info-card info-card--car">
+                        <h3 class="info-card-title">By Car</h3>
+                        <div class="info-card-body">
+                            <p class="info-card-text">
+                                From AYE, take the Normanton Park or South Buona Vista Road exit via the new slip road
+                                and then turn into Science Park Drive.
+                            </p>
+                        </div>
+                        <div class="info-card-footer">
+                            <h3 class="info-card-subheading info-card-text-light">Parking:</h3>
+                            <!-- <p class="info-card-subheading info-card-subheading-light">Parking Rates:</p> -->
+                            <p class="info-card-text info-card-text-light">
+                                FREE PARKING from 11:30 am to 2:00pm and 6:00 pm to 11:59 pm on weekdays, plus all day
+                                on weekends and public holidays.
+                            </p>
+                        </div>
+                    </article>
+                </div>
+                <div class="showcase-map-embed">
+                    <iframe title="Map of Geneo at Singapore Science Park 1"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.803394213415!2d103.78258701083472!3d1.2923718617518618!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da1b4b042abf7d%3A0x4cb2426057b627c5!2sSingapore%20Science%20Park%201%2C%20Geneo!5e0!3m2!1sen!2sid!4v1778754294705!5m2!1sen!2sid"
+                        loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+                </div>
+            </section>
+
         </main>
 
         <!-- Footer placeholder -->
@@ -180,7 +315,7 @@
     <script src="canvas.js"></script>
     <script src="header.js"></script>
     <script src="script.js"></script>
-    <script src="data/data.js"></script>
+    <script src="data.js"></script>
     <script src="graduates.js"></script>
 </body>
 

@@ -114,6 +114,51 @@
         return null;
     }
 
+    const GRADQUIZ_URL = 'gradquiz.html';
+    const gradquizWidgetMobileMq = window.matchMedia('(max-width: 480px)');
+
+    function setupGradQuizWidgetMobileTap(link) {
+        const pop = link.querySelector('.gradquiz-widget__pop');
+        if (!pop) return;
+
+        function closePop() {
+            link.classList.remove('is-pop-open');
+            link.setAttribute('aria-expanded', 'false');
+            pop.setAttribute('aria-hidden', 'true');
+        }
+
+        function openPop() {
+            link.classList.add('is-pop-open');
+            link.setAttribute('aria-expanded', 'true');
+            pop.setAttribute('aria-hidden', 'false');
+        }
+
+        link.addEventListener('click', (e) => {
+            if (!gradquizWidgetMobileMq.matches) return;
+
+            if (!link.classList.contains('is-pop-open')) {
+                e.preventDefault();
+                e.stopPropagation();
+                openPop();
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!gradquizWidgetMobileMq.matches || !link.classList.contains('is-pop-open')) return;
+            if (link.contains(e.target)) return;
+            closePop();
+        });
+
+        const onBreakpointChange = () => {
+            if (!gradquizWidgetMobileMq.matches) closePop();
+        };
+        if (typeof gradquizWidgetMobileMq.addEventListener === 'function') {
+            gradquizWidgetMobileMq.addEventListener('change', onBreakpointChange);
+        } else {
+            gradquizWidgetMobileMq.addListener(onBreakpointChange);
+        }
+    }
+
     function initGradQuizWidget() {
         if (/gradquiz\.html/i.test(window.location.pathname)) return;
         if (document.querySelector('.gradquiz-widget')) return;
@@ -129,9 +174,10 @@
         const popDesc = copy?.message || GRADQUIZ_WIDGET_DEFAULT_COPY.desc;
 
         const link = document.createElement('a');
-        link.href = 'gradquiz.html';
+        link.href = GRADQUIZ_URL;
         link.className = 'gradquiz-widget';
         link.setAttribute('aria-label', popTitle);
+        link.setAttribute('aria-expanded', 'false');
         link.innerHTML = `
         <span class="gradquiz-widget__orb">
             <img class="gradquiz-widget__icon" src="${iconSrc}" alt="${iconAlt}">
@@ -143,6 +189,7 @@
     `;
 
         document.body.appendChild(link);
+        setupGradQuizWidgetMobileTap(link);
 
         if (tool) {
             const preload = new Image();

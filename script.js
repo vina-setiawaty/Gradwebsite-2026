@@ -5,9 +5,9 @@
 
 // ==================== CONFIGURATION ====================
 const MINIMUM_LOADING_TIME = 2000; // 2 seconds minimum display time
+const MAX_LOADING_WAIT_MS = 8000; // Force reveal if assets are still loading
 const LOADING_PHOTO_CYCLE_MS = 500;
 const FEATURE_CARD_SLIDESHOW_MS = 1000; // Same interval as teaser.html
-const SITE_VISITED_KEY = 'gradshow2026_siteVisited';
 const LOADING_SEEN_KEY = 'gradshow2026_loadingSeen';
 const QUIZ_TOOL_SESSION_KEY = 'gradshow2026_quizTool';
 
@@ -106,9 +106,8 @@ const QUIZ_TOOL_COPY = {
     },
 };
 
-function hasVisitedSiteBefore() {
+function hasSeenLoadingThisSession() {
     try {
-        if (localStorage.getItem(SITE_VISITED_KEY) === '1') return true;
         if (sessionStorage.getItem(LOADING_SEEN_KEY) === '1') return true;
     } catch {
         /* private mode / blocked storage */
@@ -116,9 +115,8 @@ function hasVisitedSiteBefore() {
     return false;
 }
 
-function markSiteVisited() {
+function markLoadingSeenThisSession() {
     try {
-        localStorage.setItem(SITE_VISITED_KEY, '1');
         sessionStorage.setItem(LOADING_SEEN_KEY, '1');
     } catch {
         /* private mode / blocked storage */
@@ -177,6 +175,7 @@ let featureCardSlideshowTimer = null;
 let featureCardSlideshowIndex = 0;
 let pageLoaded = false;
 let minimumTimePassed = false;
+let graduateImagesLoaded = false;
 
 // ==================== DOM ELEMENTS ====================
 // These will be set after DOM is ready
@@ -184,34 +183,90 @@ let loadingImage = null;
 let flipCardBackBgImage = null;
 let loadingOverlay = null;
 let mainContent = null;
+let loadingPhotoSwapTimeout = null;
+const loadingPhotoCache = new Map();
 
 // ==================== LOADING PHOTO FUNCTIONS ====================
 
-/**
- * Preload gallery images so swaps can decode quickly.
- */
-function preloadImages() {
-    [...loadingPhotos, ...featureCardPhotos].forEach(src => {
-        const img = new Image();
-        img.src = src;
+function getRandomLoadingStartIndex(length) {
+    if (length <= 1) return 0;
+    return Math.floor(Math.random() * length);
+}
+
+function advanceLoadingPhotoIndex(index, length) {
+    if (length <= 1) return 0;
+    return (index + 1) % length;
+}
+
+function clearLoadingPhotoSwapTimeout() {
+    if (loadingPhotoSwapTimeout != null) {
+        clearTimeout(loadingPhotoSwapTimeout);
+        loadingPhotoSwapTimeout = null;
+    }
+}
+
+function whenLoadingPhotoReady(src) {
+    const cached = loadingPhotoCache.get(src);
+    if (!cached) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                loadingPhotoCache.set(src, img);
+                resolve(img);
+            };
+            img.onerror = () => resolve(null);
+            img.src = src;
+        });
+    }
+    if (cached.complete && cached.naturalWidth > 0) {
+        return Promise.resolve(cached);
+    }
+    return new Promise((resolve) => {
+        cached.onload = () => resolve(cached);
+        cached.onerror = () => resolve(null);
     });
+}
+
+/**
+ * Preload loading-screen slideshow images (used before the interval starts).
+ */
+function preloadLoadingScreenPhotos() {
+    return Promise.all(
+        loadingPhotos.map(
+            (src) =>
+                new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        loadingPhotoCache.set(src, img);
+                        resolve();
+                    };
+                    img.onerror = resolve;
+                    img.src = src;
+                })
+        )
+    );
 }
 
 /**
  * Loading overlay: fade / scale between photos (same feel as before).
  */
 function applyLoadingPhotoToLoadingScreen(img, index) {
-    if (!img) return;
-    const t = 'opacity 0.15s ease, transform 0.15s ease';
-    img.style.transition = t;
+    if (!img || loadingPhotos.length === 0) return;
+    clearLoadingPhotoSwapTimeout();
+
+    const src = loadingPhotos[index];
+    img.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
     img.style.opacity = '0';
     img.style.transform = 'scale(0.98)';
 
-    setTimeout(() => {
-        img.src = loadingPhotos[index];
-        img.style.opacity = '1';
-        img.style.transform = 'scale(1)';
-    }, 150);
+    whenLoadingPhotoReady(src).then((preloaded) => {
+        loadingPhotoSwapTimeout = setTimeout(() => {
+            loadingPhotoSwapTimeout = null;
+            img.src = preloaded ? preloaded.src : src;
+            img.style.opacity = '1';
+            img.style.transform = 'scale(1)';
+        }, 150);
+    });
 }
 
 /**
@@ -312,7 +367,7 @@ function initFeatureCardSlideshow() {
 
     startFeatureCardSlideshow(img);
 
-    if (photosCard) {
+    if (photosCard && !window.matchMedia('(max-width: 480px)').matches) {
         photosCard.addEventListener('mouseenter', stopFeatureCardSlideshow);
         photosCard.addEventListener('mouseleave', () => {
             featureCardSlideshowIndex =
@@ -324,27 +379,21 @@ function initFeatureCardSlideshow() {
 }
 
 /**
- * Random index for loading overlay only (avoid repeating the current image).
- */
-function getRandomLoadingPhotoIndex(excludeIndex) {
-    if (loadingPhotos.length <= 1) return 0;
-    let next;
-    do {
-        next = Math.floor(Math.random() * loadingPhotos.length);
-    } while (next === excludeIndex);
-    return next;
-}
-
-/**
- * Advance loading overlay (random) and flip-card back during load (sequential, if present).
+ * Advance loading overlay and flip-card back sequentially through the photo list.
  */
 function changePhoto() {
+    if (loadingPhotos.length === 0) return;
+
+    loadingScreenPhotoIndex = advanceLoadingPhotoIndex(
+        loadingScreenPhotoIndex,
+        loadingPhotos.length
+    );
+    currentPhotoIndex = loadingScreenPhotoIndex;
+
     if (loadingImage) {
-        loadingScreenPhotoIndex = getRandomLoadingPhotoIndex(loadingScreenPhotoIndex);
         applyLoadingPhotoToLoadingScreen(loadingImage, loadingScreenPhotoIndex);
     }
     if (flipCardBackBgImage) {
-        currentPhotoIndex = (currentPhotoIndex + 1) % loadingPhotos.length;
         applyLoadingPhotoToFlipCard(flipCardBackBgImage, currentPhotoIndex);
     }
 }
@@ -372,19 +421,34 @@ function startFlipCardBackSlideshowAfterReveal() {
 /**
  * Initialize the loading screen photo animation
  */
-function initLoadingAnimation() {
-    preloadImages();
-    if (loadingImage) {
-        loadingImage.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
-        if (loadingPhotos.length > 0) {
-            loadingScreenPhotoIndex = Math.floor(Math.random() * loadingPhotos.length);
-            loadingImage.src = loadingPhotos[loadingScreenPhotoIndex];
-        }
+function startLoadingScreenSlideshow() {
+    if (!loadingImage || loadingPhotos.length === 0) return;
+
+    loadingImage.classList.add('loading-slideshow-active');
+    loadingScreenPhotoIndex = getRandomLoadingStartIndex(loadingPhotos.length);
+    currentPhotoIndex = loadingScreenPhotoIndex;
+
+    applyLoadingPhotoToLoadingScreen(loadingImage, loadingScreenPhotoIndex);
+
+    if (flipCardBackBgImage) {
+        applyLoadingPhotoToFlipCard(flipCardBackBgImage, currentPhotoIndex);
     }
+
+    if (photoInterval) {
+        clearInterval(photoInterval);
+        photoInterval = null;
+    }
+    photoInterval = setInterval(changePhoto, LOADING_PHOTO_CYCLE_MS);
+}
+
+function initLoadingAnimation() {
     if (flipCardBackBgImage) {
         flipCardBackBgImage.style.transition = 'none';
     }
-    photoInterval = setInterval(changePhoto, LOADING_PHOTO_CYCLE_MS);
+
+    preloadLoadingScreenPhotos().then(() => {
+        startLoadingScreenSlideshow();
+    });
 }
 
 // ==================== PAGE TRANSITION FUNCTIONS ====================
@@ -406,6 +470,7 @@ function scrollToHashTargetAfterReveal() {
  * Return visit in same tab: overlay already hidden via html.skip-loading; show main immediately.
  */
 function skipLoadingAndShowMain() {
+    clearLoadingPhotoSwapTimeout();
     if (photoInterval) {
         clearInterval(photoInterval);
         photoInterval = null;
@@ -427,8 +492,9 @@ function skipLoadingAndShowMain() {
  * Reveal the main content and hide the loading overlay
  */
 function revealMainContent() {
-    markSiteVisited();
+    markLoadingSeenThisSession();
 
+    clearLoadingPhotoSwapTimeout();
     if (photoInterval) {
         clearInterval(photoInterval);
         photoInterval = null;
@@ -470,9 +536,35 @@ function revealMainContent() {
  * Check if both conditions are met to reveal main content
  */
 function checkReadyToReveal() {
-    if (pageLoaded && minimumTimePassed) {
+    if (pageLoaded && minimumTimePassed && graduateImagesLoaded) {
         revealMainContent();
     }
+}
+
+/**
+ * Preload all graduate card photos before revealing the home page (index only).
+ */
+function initGraduateImagePreload() {
+    const grid = document.getElementById('graduatesGrid');
+    if (!grid) {
+        graduateImagesLoaded = true;
+        return;
+    }
+
+    if (
+        typeof DESIGNER_DATA === 'undefined' ||
+        typeof collectGraduateCardImageUrls !== 'function' ||
+        typeof preloadGraduateCardImages !== 'function'
+    ) {
+        graduateImagesLoaded = true;
+        return;
+    }
+
+    const urls = collectGraduateCardImageUrls(DESIGNER_DATA);
+    preloadGraduateCardImages(urls, { concurrency: 6 }).then(() => {
+        graduateImagesLoaded = true;
+        checkReadyToReveal();
+    });
 }
 
 /**
@@ -491,20 +583,20 @@ function initPageTransition() {
         checkReadyToReveal();
     });
     
-    // Fallback: Force reveal after maximum wait time (5 seconds)
-    // This ensures the loading screen disappears even if some resources fail to load
+    // Fallback: force reveal if assets are slow or unavailable
     setTimeout(() => {
-        if (!pageLoaded) {
-            console.warn('Page load timeout - forcing reveal');
+        if (!pageLoaded || !graduateImagesLoaded) {
+            console.warn('Loading timeout - revealing main content');
             pageLoaded = true;
+            graduateImagesLoaded = true;
             checkReadyToReveal();
         }
-    }, 5000);
+    }, MAX_LOADING_WAIT_MS);
 }
 
 // ==================== MOBILE SCROLL-REVEAL (hover substitute) ====================
 
-const CLASS_PHOTO_SCROLL_THRESHOLD_PX = 50;
+const CLASS_PHOTO_SCROLL_THRESHOLD_PX = 10;
 const SCROLL_REVEAL_ACTIVE_CLASS = 'is-scroll-active';
 
 const scrollRevealMobileMq = window.matchMedia('(max-width: 768px)');
@@ -602,6 +694,45 @@ function initScrollRevealMediaListeners() {
     }
 }
 
+// ==================== SECTION FADE-IN ON SCROLL ====================
+
+const FADE_IN_MOBILE_MQL = '(max-width: 768px)';
+
+function createFadeInObserver(threshold) {
+    return new IntersectionObserver(
+        (entries, obs) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    obs.unobserve(entry.target);
+                }
+            });
+        },
+        { root: null, rootMargin: '0px', threshold }
+    );
+}
+
+function initSectionFadeIn() {
+    const fadeInElements = document.querySelectorAll('.fade-in');
+    if (!fadeInElements.length) return;
+
+    const isMobile = window.matchMedia(FADE_IN_MOBILE_MQL).matches;
+    const defaultObserver = createFadeInObserver(0.1);
+    const graduatesMobileObserver = isMobile ? createFadeInObserver(0.03) : null;
+
+    fadeInElements.forEach((element) => {
+        if (element.getBoundingClientRect().top < window.innerHeight) {
+            element.classList.add('visible');
+            return;
+        }
+
+        const useGraduatesMobileObserver =
+            isMobile && element.id === 'graduates-grid-section' && graduatesMobileObserver;
+
+        (useGraduatesMobileObserver ? graduatesMobileObserver : defaultObserver).observe(element);
+    });
+}
+
 // ==================== INITIALIZATION ====================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -611,18 +742,20 @@ document.addEventListener('DOMContentLoaded', () => {
     loadingOverlay = document.getElementById('loadingOverlay');
     mainContent = document.getElementById('mainContent');
 
-    preloadImages();
     initFeatureCardQuizToolHover();
     initFeatureCardSlideshow();
 
-    if (hasVisitedSiteBefore()) {
+    if (hasSeenLoadingThisSession()) {
         skipLoadingAndShowMain();
     } else {
         initLoadingAnimation();
         initPageTransition();
+        initGraduateImagePreload();
     }
 
     // Mobile: scroll-driven hover substitute for class photo + feature card
     initScrollRevealInteractions();
     initScrollRevealMediaListeners();
+
+    initSectionFadeIn();
 });
