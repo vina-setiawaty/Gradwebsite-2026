@@ -641,11 +641,11 @@ const DESIGNER_DATA = [
       "teammates": [],
       "writeUp": "Cut & Loop explores the potential of transforming flat surfaces into three-dimensional forms through the technique of cutting and looping. Then reimagining these looped strips as a woven surface inspired the design of an outdoor portable seat showcasing a transformative process—utilizing recycled webbing to create a functional and sustainable product.",
       "images": [
-        "Loop&Cut_1.png",
-        "Loop&Cut_2.png",
-        "Loop&Cut_3(extra).png",
-        "Loop&Cut_4.png",
-        "Loop&Cut_5.png"
+        "LoopCut_1.png",
+        "LoopCut_2.png",
+        "LoopCut_3(extra).png",
+        "LoopCut_4.png",
+        "LoopCut_5.png"
       ]
     },
     "industryTypeA": "UIUX Design, User Research, Experience Design",
