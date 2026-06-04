@@ -1108,11 +1108,11 @@ const DESIGNER_DATA = [
       ],
       "writeUp": "The Gräs Chair is a living object that redefines sitting through care. Its grass seat requires ongoing maintenance, shifting use into ritual. The joint between frame and soil forms a tactile interface between user and nature, introducing a slower, more intentional relationship with everyday furniture in urban environments.",
       "images": [
-        "gräs chair_1.png",
-        "gräs chair_2.png",
-        "gräs chair_3.png",
-        "gräs chair_4.png",
-        "gräs chair_5.png"
+        "gras chair_1.png",
+        "gras chair_2.png",
+        "gras chair_3.png",
+        "gras chair_4.png",
+        "gras chair_5.png"
       ]
     },
     "projectB": {
